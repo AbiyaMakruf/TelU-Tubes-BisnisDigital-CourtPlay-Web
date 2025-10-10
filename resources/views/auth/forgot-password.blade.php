@@ -1,23 +1,33 @@
 @extends('layouts.app')
+
+@section('title', 'Forgot Password')
+
 @section('content')
-    <div class="max-w-md mx-auto my-40 bg-white p-6 rounded-lg shadow">
-        <div class="mb-6">
-            <h2 class="text-2xl font-semibold">Lupa Password</h2>
-        </div>
-        @if (session('status'))
-            <div class="mb-3 text-green-600">{{ session('status') }}</div>
+<div class="container py-5 d-flex justify-content-center">
+    <div class="card p-4 shadow bg-black-200 text-white" style="max-width: 450px;">
+        <h4 class="fw-bold text-primary-500 mb-3 text-center">Forgot Password</h4>
+        <p class="text-white-400 text-center">Enter your email address to receive a reset link.</p>
+
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
         @endif
+
+        @if($errors->any())
+            <div class="alert alert-danger">{{ $errors->first('email') }}</div>
+        @endif
+
         <form method="POST" action="{{ route('password.email') }}">
             @csrf
-            <label class="block text-sm font-medium text-slate-800">Email</label>
-            <input type="email" name="email" value="{{ old('email') }}" required autocomplete="off"
-                class="mt-1 block w-full rounded-xl border-line focus:border-brand-400 focus:ring-brand-300 text-sm @error('email') @enderror">
-            @error('email')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-            @enderror
-            <button
-                class="w-full mt-6 inline-flex justify-center rounded-xl bg-brand-700 hover:bg-brand-600 text-white text-sm px-4 py-2.5 disabled:opacity-60 disabled:cursor-not-allowed">Kirim
-                Link Reset</button>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control input-custom" name="email" required autofocus>
+            </div>
+            <button type="submit" class="btn btn-custom2 w-100">Send Reset Link</button>
         </form>
+
+        <div class="text-center mt-3">
+            <a href="{{ route('login') }}" class="text-primary-500">Back to login</a>
+        </div>
     </div>
+</div>
 @endsection

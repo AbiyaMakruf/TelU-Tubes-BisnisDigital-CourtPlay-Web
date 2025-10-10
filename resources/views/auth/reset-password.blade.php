@@ -1,33 +1,51 @@
 @extends('layouts.app')
+
+@section('title', 'Reset Password')
+
 @section('content')
-    <div class="max-w-md mx-auto my-40 bg-white p-6 rounded-lg shadow">
-        <div class="mb-6">
-            <h2 class="text-2xl font-semibold">Reset Password</h2>
+<div class="container-fluid d-flex align-items-center justify-content-center min-vh-100 bg-black-300">
+    <div class="card shadow-lg border-0 bg-black-200 text-white px-5 py-4" style="max-width: 600px; width: 100%;">
+        <div class="text-center mb-4">
+            <img src="{{ asset('assets/Logo Vertical.svg') }}" alt="CourtPlay Logo" width="120" class="mb-3">
+            <h2 class="fw-bold text-primary-500">Reset Password</h2>
+            <p class="text-white-400 mb-0">Enter your new password below</p>
         </div>
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                {{ $errors->first() }}
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('password.update') }}">
             @csrf
             <input type="hidden" name="token" value="{{ $token }}">
-            <label class="block text-sm font-medium text-slate-800 mb-1 mt-3">Email</label>
-            <input type="email" name="email" value="{{ old('email') }}" required
-                class="mt-1 block w-full rounded-xl border-line focus:border-brand-400 focus:ring-brand-300 text-sm @error('email') @enderror">
-            @error('email')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-            @enderror
 
-            <label class="block text-sm font-medium text-slate-800 mb-1 mt-3">Password Baru</label>
-            <input type="password" name="password" required minlength="8"
-                class="mt-1 block w-full rounded-xl border-line focus:border-brand-400 focus:ring-brand-300 text-sm @error('password') @enderror">
-            @error('password')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-            @enderror
+            <div class="mb-3">
+                <label for="email" class="form-label text-primary-500">Email Address</label>
+                <input type="email" id="email" name="email"
+                       class="form-control input-custom bg-primary-500 text-black-300"
+                       required autofocus>
+            </div>
 
-            <label class="block text-sm font-medium text-slate-800 mb-1 mt-3">Konfirmasi Password</label>
-            <input type="password" name="password_confirmation" required minlength="8"
-                class="mt-1 block w-full rounded-xl border-line focus:border-brand-400 focus:ring-brand-300 text-sm">
+            <div class="mb-3">
+                <label for="password" class="form-label text-primary-500">New Password</label>
+                <input type="password" id="password" name="password"
+                       class="form-control input-custom bg-primary-500 text-black-300"
+                       required>
+            </div>
 
-            <button
-                class="w-full mt-6 inline-flex justify-center rounded-xl bg-brand-700 hover:bg-brand-600 text-white text-sm px-4 py-2.5 disabled:opacity-60 disabled:cursor-not-allowed">Reset
-                Password</button>
+            <div class="mb-4">
+                <label for="password_confirmation" class="form-label text-primary-500">Confirm Password</label>
+                <input type="password" id="password_confirmation" name="password_confirmation"
+                       class="form-control input-custom bg-primary-500 text-black-300"
+                       required>
+            </div>
+
+            <button type="submit" class="btn btn-custom2 w-100 py-2 fs-5 fw-semibold">
+                Reset Password
+            </button>
         </form>
     </div>
+</div>
 @endsection

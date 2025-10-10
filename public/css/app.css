@@ -30,6 +30,25 @@ main.fade-in {
     min-height: calc(100vh - 72px); /* full layar minus navbar */
 }
 
+.navbar-brand img {
+    height: 45px;
+    transition: all 0.3s ease;
+}
+
+/* Tablet (≤ 680px) */
+@media (max-width: 680px) {
+    .navbar-brand img {
+        height: 34px;
+    }
+}
+
+/* Smartphone kecil (≤ 480px) */
+@media (max-width: 480px) {
+    .navbar-brand img {
+        height: 28px;
+    }
+}
+
 /* Mobile lebih kecil */
 @media (max-width: 680px) {
     html {
@@ -392,8 +411,9 @@ main {
 
 @media (max-width: 991.98px) {
     .navbar-nav {
-        text-align: right; /* semua menu align kanan */
-        align-items: flex-end; /* align kanan */
+        text-align: center; /* semua menu align tengah */
+        align-items: center;
+        justify-content: flex-end;
     }
     .navbar-nav .nav-item {
         margin: 5px 0;
@@ -405,7 +425,7 @@ main {
     height: 72px; /* buat tinggi stabil */
 }
 
-.navbar-nav .nav-link {
+.nav-link {
     font-family: "Lexend", sans-serif;
     font-size: 20px;
     font-weight: 500;
@@ -417,17 +437,59 @@ main {
     transition: color 0.2s ease-in-out;
 }
 
-.navbar-nav .nav-link:hover {
+.nav-link:hover {
     color: var(--primary-300) !important;
 }
 
-.navbar-nav.mx-auto .nav-link {
+.nav-link {
     margin: 0 12px;
 }
 
-/* Login dan Signup */
-.navbar-nav.ms-auto .nav-link {
-    margin-right: 12px;
+.offcanvas.sidebar-nav {
+    width: 260px;
+    background-color: var(--black-300);
+    height: 100vh;
+    border-left: 1px solid var(--black-300);
+    transition: all 0.3s ease;
+}
+
+.offcanvas.sidebar-nav .nav-link {
+    font-weight: 500;
+    color: var(--white-500);
+    padding: 10px 0;
+}
+
+.offcanvas.sidebar-nav .nav-link:hover {
+    color: #4b23ff; /* warna utama kamu */
+}
+
+.offcanvas.sidebar-nav .btn-custom {
+    background-color: #4b23ff;
+    color: #fff;
+    border-radius: 10px;
+}
+
+.offcanvas.sidebar-nav .btn-custom:hover {
+    background-color: #3a1fd0;
+}
+
+.user-menu {
+    background-color: var(--primary-500) !important;
+    border: none;
+    border-radius: 12px;
+    padding: 0.3rem 0;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.user-menu .dropdown-item {
+    color: var(--black-200);
+    font-weight: 600;
+}
+
+.user-menu .dropdown-item:hover {
+    background-color: var(--primary-400);
+    color: var(--black-100);
+    border-radius: 5px;
 }
 
 /* Navbar Default (black-300) */
@@ -736,3 +798,26 @@ span a:hover {
     text-decoration: underline;
     color: var(--primary-500);
 }
+
+#dropZone {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+#dropZone:hover {
+    background-color: var(--black-300);
+}
+.spinner-border.text-primary-500 {
+    color: var(--primary-500) !important;
+}
+
+<style>
+#loading-screen {
+    display: none !important;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+#loading-screen.active {
+    display: flex !important;
+    opacity: 1;
+}
+</style>
