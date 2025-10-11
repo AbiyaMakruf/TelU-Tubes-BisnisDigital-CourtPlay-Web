@@ -27,7 +27,6 @@ class ResetPasswordController extends Controller
             'password' => 'required|min:8|confirmed',
         ]);
 
-        // 🔄 Reset password via broker Laravel
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
@@ -51,17 +50,14 @@ class ResetPasswordController extends Controller
     {
         $request->validate(['email' => 'required|email']);
 
-        // 🔍 Cari user berdasarkan email
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
             return back()->withErrors(['email' => 'We couldn’t find an account with that email.']);
         }
 
-        // 🔑 Buat token reset unik
         $token = Str::random(64);
 
-        // 🗄️ Simpan ke tabel password_reset_tokens (schema Laravel 10+)
         DB::table('password_reset_tokens')->updateOrInsert(
             ['email' => $user->email],
             [
@@ -70,7 +66,6 @@ class ResetPasswordController extends Controller
             ]
         );
 
-        // ✉️ Kirim email custom dengan template CourtPlay
         Mail::to($user->email)->send(new ResetPasswordMail($user, $token));
 
         return back()->with('success', 'A reset password link has been sent to your email.');

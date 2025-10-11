@@ -25,8 +25,19 @@ class UserWelcomeMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Welcome to CourtPlay 🎾')
+        return $this->subject('Welcome to CourtPlay')
                     ->from('support@courtplay.my.id', 'CourtPlay Team')
-                    ->view('emails.welcome');
+                    ->view('emails.welcome')
+                    ->with([
+                        'user' => $this->user,
+                    ])
+                    ->withSymfonyMessage(function ($message) {
+                        // Tambahkan custom header kategori
+                        $headers = $message->getHeaders();
+                        $headers->addTextHeader('X-Entity-Ref-ID', 'courtplay-user-welcome');
+                        $headers->addTextHeader('Category', 'user_welcome');
+                        $headers->addTextHeader('X-Mailtrap-Categories', 'user_welcome');
+                    });
     }
 }
+

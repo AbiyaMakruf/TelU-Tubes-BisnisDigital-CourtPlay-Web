@@ -37,7 +37,7 @@
             <ul class="navbar-nav ms-auto align-items-center d-none d-lg-flex">
                 {{-- Halo user --}}
                 <li class="nav-item me-2">
-                    <span class="nav-link fw-semibold text-primary-500">Hello, {{ Auth::user()->firstname }}</span>
+                    <span class="nav-link fw-semibold text-primary-500">Hello, {{ Auth::user()->first_name }}</span>
                 </li>
 
                 {{-- Icon dropdown user --}}
@@ -86,7 +86,7 @@
 
             {{-- Menu Bawah --}}
             <div class="border-top pt-3 text-center">
-                <span class="nav-link fw-semibold text-primary-500 mb-2 d-block">Hello, {{ Auth::user()->firstname }}</span>
+                <span class="nav-link fw-semibold text-primary-500 mb-2 d-block">Hello, {{ Auth::user()->first_name }}</span>
                 <form action="{{ route('logout') }}" method="POST" class="d-inline">
                     @csrf
                     <button type="submit" class="btn btn-custom w-100">Logout</button>

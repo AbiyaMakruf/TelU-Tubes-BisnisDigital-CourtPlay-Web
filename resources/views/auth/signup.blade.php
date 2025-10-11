@@ -37,13 +37,13 @@
                     <form method="POST" action="{{ route('signup') }}" class="text-start">
                         @csrf
                         <div class="mb-2">
-                            <label for="firstname" class="form-label">First Name</label>
-                            <input type="text" id="firstname" name="firstname" class="form-control input-custom" required autofocus>
+                            <label for="first_name" class="form-label">First Name</label>
+                            <input type="text" id="first_name" name="first_name" class="form-control input-custom" required autofocus>
                         </div>
 
                         <div class="mb-2">
-                            <label for="lastname" class="form-label">Last Name</label>
-                            <input type="text" id="lastname" name="lastname" class="form-control input-custom" required autofocus>
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" id="last_name" name="last_name" class="form-control input-custom" required autofocus>
                         </div>
 
                         <div class="mb-2">
@@ -63,7 +63,7 @@
                         </div>
 
 
-                        <button type="submit" class="btn btn-custom2 w-100 mt-3">Sign in</button>
+                        <button type="submit" class="btn btn-custom2 w-100 mt-3">Sign up</button>
                     </form>
                 </div>
             </div>

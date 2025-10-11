@@ -8,23 +8,19 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            // Mengganti $table->id() menjadi UUID
+            $table->uuid('id')->primary();
 
-            // Identitas dasar
-            $table->string('firstname');
-            $table->string('lastname')->nullable();
+            $table->string('first_name');
+            $table->string('last_name')->nullable();
 
-            // Akun & autentikasi
             $table->string('email')->unique();
             $table->string('password');
 
-            // 🔹 Role user (default: 'user')
-            $table->string('role')->default('user')->comment('pro, plus, free');
+            $table->string('role')->default('user')->comment('pro, plus, free, admin');
 
-            // 🔹 Token untuk API login
             $table->string('login_token', 80)->nullable()->unique();
 
-            // Laravel built-in fields
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

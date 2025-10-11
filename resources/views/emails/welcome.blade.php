@@ -57,7 +57,7 @@
 </head>
 <body>
     <div class="container">
-        <img src="https://storage.googleapis.com/courtplay-storage/assets/Logo-Horizontal.png" alt="CourtPlay Logo" class="logo">
+        <img src="https://storage.googleapis.com/courtplay-storage/assets/Web/Logo-Horizontal.png" alt="CourtPlay Logo" class="logo">
 
         <h2>Hello, {{ $user->firstname }} 👋</h2>
 

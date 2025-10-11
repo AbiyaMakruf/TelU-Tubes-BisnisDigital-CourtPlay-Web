@@ -7,53 +7,68 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use App\Mail\UserWelcomeMail;
+use Exception;
 
 
 class AuthController extends Controller
 {
-    // 🔹 Tampilkan halaman signup
     public function showSignupForm()
     {
         return view('auth.signup');
     }
 
-    // 🔹 Proses signup
-
-    public function signup(Request $request)
-    {
+public function signup(Request $request)
+{
+    try {
         $request->validate([
-            'firstname' => 'required|string|max:255',
-            'lastname'  => 'required|string|max:255',
-            'email'     => 'required|string|email|max:255|unique:users',
-            'password'  => 'required|string|min:6',
+            'first_name' => 'required|string|max:255',
+            'last_name'  => 'required|string|max:255',
+            'email'      => 'required|string|email|max:255|unique:users',
+            'password'   => 'required|string|min:6',
         ]);
 
         $user = User::create([
-            'firstname'   => $request->firstname,
-            'lastname'    => $request->lastname,
-            'email'       => $request->email,
-            'password'    => Hash::make($request->password),
-            'role'        => 'user',
-            'login_token' => bin2hex(random_bytes(32)),
+            'first_name'   => $request->first_name,
+            'last_name'    => $request->last_name,
+            'email'        => $request->email,
+            'password'     => Hash::make($request->password),
+            'role'         => 'user',
+            'login_token'  => bin2hex(random_bytes(32)), // API token
         ]);
 
-        Auth::login($user, false);
+        Auth::login($user);
 
-        // 🔹 Kirim email selamat datang
-        Mail::to($user->email)->send(new UserWelcomeMail($user));
+        try {
+            Mail::to($user->email)->send(new UserWelcomeMail($user));
+        } catch (Exception $e) {
+            Log::error('❌ Error sending welcome email: ' . $e->getMessage());
+        }
 
-        return redirect()->route('dashboard')->with('success', 'Account created successfully!');
+        return redirect()
+            ->route('dashboard')
+            ->with('success', 'Account created successfully!');
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        Log::warning('⚠️ Validation failed during signup: ' . json_encode($e->errors()));
+        return back()->withErrors($e->errors())->withInput();
+
+    } catch (\Illuminate\Database\QueryException $e) {
+        Log::error('💥 Database error during signup: ' . $e->getMessage());
+        return back()->with('error', 'Database error: ' . $e->getMessage());
+
+    } catch (Exception $e) {
+        Log::error('🔥 Unexpected signup error: ' . $e->getMessage());
+        dd('🔥 Unexpected signup error:', $e->getMessage(), $e->getTraceAsString());
     }
+}
 
-
-    // 🔹 Tampilkan form login
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    // 🔹 Proses login
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -61,16 +76,16 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        // Cek apakah user memilih remember me
-        $remember = $request->filled('remember'); // true jika checkbox dicentang
+        $remember = $request->filled('remember');
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
             $user = Auth::user();
 
-            // 🔹 Generate token API baru setiap login
-            $user->login_token = bin2hex(random_bytes(32)); // token unik 64 karakter
+            $user->login_token = bin2hex(random_bytes(32));
             $user->save();
+
+
 
             return redirect()->route('dashboard')->with('success', 'Welcome back!');
         }
@@ -81,7 +96,6 @@ class AuthController extends Controller
     }
 
 
-    // 🔹 Logout
     public function logout(Request $request)
     {
         Auth::logout();

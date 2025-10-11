@@ -72,7 +72,7 @@
 </head>
 <body>
     <div class="container">
-        <img src="https://storage.googleapis.com/courtplay-storage/assets/Logo-Horizontal.png"
+        <img src="https://storage.googleapis.com/courtplay-storage/assets/Web/Logo-Horizontal.png"
              alt="CourtPlay Logo" class="logo">
 
         <h2>Reset Your Password</h2>
