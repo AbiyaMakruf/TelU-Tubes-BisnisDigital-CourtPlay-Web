@@ -4,53 +4,71 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\PageController;
 
-
-
-// Public routes
-Route::view('/', 'guest.dashboard')->name('home');
-Route::view('/pricing', 'guest.pricing')->name('pricing');
-Route::view('/about', 'guest.about')->name('about');
-
-// Authentication routes
+/*
+|--------------------------------------------------------------------------
+| Guest Routes (Tanpa login)
+|--------------------------------------------------------------------------
+*/
 Route::middleware('guest')->group(function () {
+    Route::get('/', [PageController::class, 'guestDashboard'])->name('home');
+    Route::view('/pricing', 'guest.pricing')->name('pricing');
+    Route::view('/about', 'guest.about')->name('about');
+
+    // Sign Up
     Route::get('/signup', [AuthController::class, 'showSignupForm'])->name('signup.form');
     Route::post('/signup', [AuthController::class, 'signup'])->name('signup');
+
+    // Login
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
-
-
     // Reset Password
-    Route::get('/forgot-password', [ResetPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('/forgot-password', [ResetPasswordController::class, 'sendResetLink'])->name('password.email');
-    Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-    Route::post('/reset-password', [ResetPasswordController::class, 'resetPassword'])->name('password.update');
-
+    Route::prefix('password')->group(function () {
+        Route::get('/forgot', [ResetPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+        Route::post('/forgot', [ResetPasswordController::class, 'sendResetLink'])->name('password.email');
+        Route::get('/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+        Route::post('/reset', [ResetPasswordController::class, 'resetPassword'])->name('password.update');
+    });
 });
 
-//  Authenticated routes
+/*
+|--------------------------------------------------------------------------
+| Authenticated Routes (Hanya login)
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth')->group(function () {
-
     // Dashboard utama
-    Route::get('/dashboard', fn() => view('analytics'))->name('dashboard');
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
 
-    // Halaman user
-    Route::get('/analytics', fn() => view('analytics'))->name('analytics');
-    Route::get('/plan', fn() => view('plan'))->name('plan');
-    Route::get('/profile', fn() => view('profile'))->name('profile');
+    // Halaman tambahan
+    Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
+    Route::get('/plan', [PageController::class, 'plan'])->name('plan');
+    Route::get('/profile', [PageController::class, 'profile'])->name('profile');
 
     // Upload video
-    Route::get('/video-uploads', [UploadController::class, 'index'])->name('videos.index');
-    Route::post('/video-uploads', [UploadController::class, 'store'])->name('videos.store');
-
-    Route::get('/test-analysis-mail/{id}', [UploadController::class, 'testEmail'])->name('test.analysis.mail');
+    Route::prefix('videos')->group(function () {
+        Route::get('/upload', [UploadController::class, 'index'])->name('videos.index');
+        Route::post('/upload', [UploadController::class, 'store'])->name('videos.store');
+        Route::get('/test-mail/{id}', [UploadController::class, 'testEmail'])->name('videos.test.mail');
+    });
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
-// Fallback
+/*
+|--------------------------------------------------------------------------
+| Fallback Route
+|--------------------------------------------------------------------------
+| Jika route tidak ditemukan, arahkan berdasarkan status login.
+|--------------------------------------------------------------------------
+*/
 Route::fallback(function () {
-    return redirect('/dashboard');
+    if (auth()->check()) {
+        return redirect()->route('analytics');
+    }
+    return redirect()->route('home');
 });

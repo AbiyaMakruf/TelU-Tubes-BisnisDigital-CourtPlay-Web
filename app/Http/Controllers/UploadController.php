@@ -8,6 +8,7 @@ use App\Models\ProjectDetail;
 use App\Models\User; // Pastikan ini diimpor jika diperlukan untuk relasi user
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VideoAnalysisCompleteMail; // Diperlukan untuk testEmail
+use Illuminate\Support\Facades\Log;
 
 class UploadController extends Controller
 {
@@ -44,31 +45,30 @@ class UploadController extends Controller
         $user = auth()->user();
         $projectCount = $user->projects()->count();
 
-        // Cek Kuota sebelum memproses upload
+        // === 1. Cek Kuota ===
         if ($projectCount >= self::MAX_UPLOAD_LIMIT) {
-             return back()->withErrors(['video' => 'You have reached your maximum video analysis limit (100 projects). Please contact support for an upgrade.'])->withInput();
+            return back()->withErrors([
+                'video' => 'You have reached your maximum video analysis limit (100 projects). Please contact support for an upgrade.'
+            ])->withInput();
         }
 
-        // 1. Validasi Input
+        // === 2. Validasi Input ===
         $request->validate([
-            'video' => 'required|mimes:mp4,mov,avi|max:51200', // Batas 50MB (51200 KB)
+            'video' => 'required|mimes:mp4,mov,avi|max:51200', // 50MB
             'project_name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
+        // === 3. Upload ke GCS ===
         $file = $request->file('video');
         $localFilePath = $file->getPathname();
         $originalName = $file->getClientOriginalName();
         $timestamp = time();
 
         $objectName = "uploads/videos/{$user->id}/{$timestamp}_{$originalName}";
-
-        // Konfigurasi GCS (Asumsi fungsi upload_object sudah tersedia)
         $bucket = 'courtplay-storage';
         $keyFile = storage_path('app/keys/courtplay-gcs-key.json');
 
-        // 2. Upload ke GCS
-        // Fungsi upload_object harus diimplementasikan secara global atau di service
         $publicUrl = upload_object($bucket, $objectName, $localFilePath, $keyFile);
 
         // Hapus file sementara lokal
@@ -76,25 +76,49 @@ class UploadController extends Controller
             @unlink($localFilePath);
         }
 
-        // 3. Buat entri ProjectDetail
+        // === 4. Simpan ke Database ===
         $projectDetail = ProjectDetail::create([
             'description' => $request->input('description'),
-            'link_original_video' => $publicUrl,
-            // Nilai analisis lainnya menggunakan default
+            'link_video_original' => $publicUrl,
         ]);
 
-        // 4. Buat entri Project
         $project = Project::create([
             'user_id' => $user->id,
-            'project_details_id' => $projectDetail->id, // UUID dari ProjectDetail
+            'project_details_id' => $projectDetail->id,
             'project_name' => $request->input('project_name'),
             'upload_date' => now(),
         ]);
 
-        // TODO: Panggil layanan antrian (Queue Service) di sini untuk memulai AI analysis
+        // === 5. Kirim ke GPU Service (tanpa menunggu respons) ===
+        $url = 'https://courtplay-api-gpu-345589430849.us-central1.run.app/infer/';
+        $data = [
+            'user_id' => $user->id,
+            'project_id' => $project->id,
+            'project_details_id' => $projectDetail->id,
+        ];
 
-        return back()->with('success', 'Video uploaded successfully! Analysis is starting soon.')->with('project_id', $project->id);
+        try {
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Content-Type: application/json',
+            ]);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 1);
+            curl_setopt($ch, CURLOPT_HEADER, false);
+            curl_exec($ch);
+            curl_close($ch);
+        } catch (\Exception $e) {
+            Log::error('Failed to trigger GPU inference: ' . $e->getMessage());
+        }
+
+        // === 6. Response ke User ===
+        return back()
+            ->with('success', 'Video uploaded successfully! Analysis is starting soon.')
+            ->with('project_id', $project->id);
     }
+
 
     /**
      * Fungsi untuk menguji pengiriman email notifikasi analisis selesai.
