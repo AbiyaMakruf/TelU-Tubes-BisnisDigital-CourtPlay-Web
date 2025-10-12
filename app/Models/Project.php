@@ -20,9 +20,10 @@ class Project extends Model
         'user_id',
         'project_details_id',
         'project_name',
-        'upload_date',
-        'thumbnail',
         'is_mailed',
+        'upload_date',
+        'link_image_thumbnail',
+
     ];
 
     protected $casts = [

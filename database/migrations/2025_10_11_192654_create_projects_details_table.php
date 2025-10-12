@@ -14,15 +14,19 @@ return new class extends Migration {
             $table->text('description')->nullable();
 
             // Kolom-kolom link
-            $table->string('link_original_video', 2048)->nullable();
-            $table->string('link_video_object_detection', 2048)->nullable();
-            $table->string('link_video_keypoints', 2048)->nullable();
-            $table->string('link_images_ball_droppings', 2048)->nullable();
+            $table->string('link_video_original', 2048)->nullable();
+            $table->string('link_video_object_detections', 2048)->nullable();
+            $table->string('link_video_player_keypoints', 2048)->nullable();
+            $table->string('link_video_court_keypoints', 2048)->nullable();
+            $table->string('link_image_ball_droppings', 2048)->nullable();
+            $table->string('link_image_heatmap_player', 2048)->nullable();
+
 
             // Kolom hitungan (INT)
             $table->unsignedInteger('forehand_count')->default(0);
             $table->unsignedInteger('backhand_count')->default(0);
             $table->unsignedInteger('serve_count')->default(0);
+            $table->unsignedInteger('ready_position_count')->default(0);
 
             // Kolom waktu (INT)
             $table->unsignedInteger('video_duration')->nullable();

@@ -15,7 +15,7 @@
     <nav class="navbar navbar-expand-lg sticky-top px-4 py-3 navbar-scroll">
         <div class="container-fluid">
             {{-- Logo kiri --}}
-            <a class="navbar-brand fw-bold" href="{{ route('dashboard') }}">
+            <a class="navbar-brand fw-bold" href="{{ route('analytics') }}">
                 <img src="{{ asset('assets/Logo Horizontal.svg') }}" alt="CourtPlay Logo" height="45" class="me-2">
             </a>
 

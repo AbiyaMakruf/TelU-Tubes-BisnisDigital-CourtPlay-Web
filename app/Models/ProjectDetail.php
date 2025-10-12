@@ -18,15 +18,21 @@ class ProjectDetail extends Model
 
     protected $fillable = [
         'description',
-        'link_original_video',
+        'link_video_original',
         'link_video_object_detection',
+        'link_video_player_keypoints',
+        'link_video_court_keypoints',
+        'link_images_ball_droppings',
         'link_video_keypoints',
+        'link_image_heatmap_player',
         'forehand_count',
         'backhand_count',
         'serve_count',
-        'link_images_ball_droppings',
+        'ready_position_count',
+
         'video_duration',
         'video_processing_time',
+
     ];
 
     /**

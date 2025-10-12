@@ -47,7 +47,7 @@ public function signup(Request $request)
         }
 
         return redirect()
-            ->route('dashboard')
+            ->route('analytics')
             ->with('success', 'Account created successfully!');
 
     } catch (\Illuminate\Validation\ValidationException $e) {
@@ -87,7 +87,7 @@ public function signup(Request $request)
 
 
 
-            return redirect()->route('dashboard')->with('success', 'Welcome back!');
+            return redirect()->route('analytics')->with('success', 'Welcome back!');
         }
 
         return back()->withErrors([
