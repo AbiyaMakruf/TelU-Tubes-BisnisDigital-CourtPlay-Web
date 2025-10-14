@@ -62,29 +62,12 @@ class UploadController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        // === 3. Upload ke GCS ===
-        $file = $request->file('video');
-        $localFilePath = $file->getPathname();
-        $originalName = $file->getClientOriginalName();
-        $timestamp = time();
-
-        $objectName = "uploads/videos/{$user->id}/{$timestamp}_{$originalName}";
-        $bucket = 'courtplay-storage';
-        $keyFile = storage_path('app/keys/courtplay-gcs-key.json');
-
-        $publicUrl = upload_object($bucket, $objectName, $localFilePath, $keyFile);
-
-        // Hapus file sementara lokal
-        if (file_exists($localFilePath)) {
-            @unlink($localFilePath);
-        }
-
-        // === 4. Simpan ke Database ===
+        // === 3. Siapkan entri kosong untuk project detail ===
         $projectDetail = ProjectDetail::create([
             'description' => $request->input('description'),
-            'link_video_original' => $publicUrl,
         ]);
 
+        // === 4. Buat project baru untuk mendapatkan UUID ===
         $project = Project::create([
             'user_id' => $user->id,
             'project_details_id' => $projectDetail->id,
@@ -92,15 +75,42 @@ class UploadController extends Controller
             'upload_date' => now(),
         ]);
 
+        // === 5. Upload ke GCS ===
+        $file = $request->file('video');
+        $originalName = $file->getClientOriginalName();
+        $localFilePath = $file->getPathname();
+
+        // Path baru: uploads/videos/{user_id}/{project_id}/{filename}
+        $objectName = "uploads/videos/{$user->id}/{$project->id}/{$originalName}";
+        $bucket = 'courtplay-storage';
+        $keyFile = storage_path('app/keys/courtplay-gcs-key.json');
+
+        try {
+            $publicUrl = upload_object($bucket, $objectName, $localFilePath, $keyFile);
+
+            // Hapus file lokal
+            if (file_exists($localFilePath)) {
+                @unlink($localFilePath);
+            }
+
+            // Update ProjectDetail dengan link video
+            $projectDetail->update([
+                'link_video_original' => $publicUrl,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('GCS Upload failed: ' . $e->getMessage());
+            return back()->withErrors(['video' => 'Failed to upload video to cloud storage.'])->withInput();
+        }
+
+        // === 6. Buat Hwinfo record ===
         Hwinfo::create([
             'user_id'    => $user->id,
             'project_id' => $project->id,
             'is_success' => false,
         ]);
 
-
-
-        // === 5. Kirim ke GPU Service (tanpa menunggu respons) ===
+        // === 7. Trigger GPU Service ===
         $url = 'https://courtplay-api-gpu-345589430849.us-central1.run.app/infer/';
         $data = [
             'user_id' => $user->id,
@@ -112,9 +122,7 @@ class UploadController extends Controller
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Content-Type: application/json',
-            ]);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
             curl_setopt($ch, CURLOPT_TIMEOUT, 1);
             curl_setopt($ch, CURLOPT_HEADER, false);
@@ -124,11 +132,12 @@ class UploadController extends Controller
             Log::error('Failed to trigger GPU inference: ' . $e->getMessage());
         }
 
-        // === 6. Response ke User ===
+        // === 8. Response ke user ===
         return back()
             ->with('success', 'Video uploaded successfully! Analysis is starting soon.')
             ->with('project_id', $project->id);
     }
+
 
 
     /**
