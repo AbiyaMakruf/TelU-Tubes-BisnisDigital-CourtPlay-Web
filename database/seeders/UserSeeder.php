@@ -24,6 +24,7 @@ class UserSeeder extends Seeder
             'first_name'        => 'CourtPlay',
             'last_name'         => 'Admin',
             'password'          => Hash::make('admin12345'), // Ubah jika perlu
+            'username'         => 'admin',
             'role'              => 'admin',
             'login_token'       => Str::random(60),
             'email_verified_at' => now(),
@@ -42,6 +43,7 @@ class UserSeeder extends Seeder
             'first_name'        => 'John',
             'last_name'         => 'Doe',
             'password'          => Hash::make('user12345'), // Ubah jika perlu
+            'username'         => 'johndoe',
             'role'              => 'free',
             'login_token'       => Str::random(60),
             'email_verified_at' => now(),
