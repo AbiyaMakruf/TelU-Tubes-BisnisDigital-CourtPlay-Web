@@ -51,5 +51,5 @@ COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # ===============================
 # 10. Expose Port & Start Services
 # ===============================
-EXPOSE 80
+EXPOSE 8080
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
