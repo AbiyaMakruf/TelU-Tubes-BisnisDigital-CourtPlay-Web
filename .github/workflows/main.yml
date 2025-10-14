@@ -52,6 +52,8 @@ jobs:
       # 🚀 Deploy to Cloud Run (CPU)
       - name: Deploy to Cloud Run (CPU)
         run: |
+          # Convert .env.production (KEY=VALUE) → gcloud format KEY=VALUE,KEY2=VALUE2
+          ENV_VARS=$(grep -v '^#' .env.production | grep '=' | sed '/^$/d' | tr '\n' ',' | sed 's/,$//')
           gcloud run deploy courtplay-web \
             --image=us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/courtplay-repo/courtplay-web:latest \
             --region=us-central1 \
@@ -61,4 +63,4 @@ jobs:
             --port=8080 \
             --cpu=2 \
             --memory=2Gi \
-            --env-vars-file=.env.production
+            --set-env-vars="$ENV_VARS"
