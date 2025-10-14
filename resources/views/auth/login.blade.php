@@ -32,8 +32,8 @@
                         @csrf
 
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" id="email" name="email" class="form-control input-custom" required autofocus>
+                            <label for="email" class="form-label">Email or Username</label>
+                            <input type="text" id="email" name="email" class="form-control input-custom" required autofocus>
                         </div>
 
                         <div class="mb-3 position-relative">

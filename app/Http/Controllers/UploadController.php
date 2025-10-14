@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\ProjectDetail;
+use App\Models\Hwinfo;
 use App\Models\User; // Pastikan ini diimpor jika diperlukan untuk relasi user
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VideoAnalysisCompleteMail; // Diperlukan untuk testEmail
 use Illuminate\Support\Facades\Log;
+
+
 
 class UploadController extends Controller
 {
@@ -88,6 +91,14 @@ class UploadController extends Controller
             'project_name' => $request->input('project_name'),
             'upload_date' => now(),
         ]);
+
+        Hwinfo::create([
+            'user_id'    => $user->id,
+            'project_id' => $project->id,
+            'is_success' => false,
+        ]);
+
+
 
         // === 5. Kirim ke GPU Service (tanpa menunggu respons) ===
         $url = 'https://courtplay-api-gpu-345589430849.us-central1.run.app/infer/';
