@@ -61,4 +61,4 @@ jobs:
             --port=8080 \
             --cpu=2 \
             --memory=2Gi \
-            --set-env-vars-file=.env.production
+            --env-vars-file=.env.production
