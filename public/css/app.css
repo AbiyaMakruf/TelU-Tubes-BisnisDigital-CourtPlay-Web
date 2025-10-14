@@ -810,7 +810,6 @@ span a:hover {
     color: var(--primary-500) !important;
 }
 
-<style>
 #loading-screen {
     display: none !important;
     opacity: 0;
@@ -820,4 +819,188 @@ span a:hover {
     display: flex !important;
     opacity: 1;
 }
-</style>
+
+/* === Dropdown Custom === */
+.dropdown-custom .btn-dropdown {
+    background: var(--primary-500);
+    color: var(--black-300);
+    font-weight: 600;
+    border: none;
+    padding: 6px 18px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+.dropdown-custom .btn-dropdown:hover {
+    box-shadow: 0 0 0 2px var(--primary-300);
+}
+
+.dropdown-menu {
+    background: var(--primary-500);
+}
+.dropdown-menu .dropdown-item.custom-option {
+    border-radius: 50px;
+    padding: 6px 16px;
+    text-align: center;
+}
+.dropdown-menu .dropdown-item.custom-option.active,
+.dropdown-menu .dropdown-item.custom-option:hover {
+    box-shadow: 0 0 0 2px var(--primary-300);
+    background: var(--primary-500);
+    color: var(--black);
+}
+
+/* === Project Card === */
+.project-item {
+    background: var(--black-200);
+    border: 1px solid transparent;
+    transition: all 0.25s ease;
+}
+.project-item:hover {
+    border-color: var(--primary-300);
+    background: #202020;
+}
+.project-thumbnail {
+    width: 100px;
+    height: 100px;
+    background: var(--black-300);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* === Gauge === */
+.gauge-bg {
+    stroke: var(--primary-500);
+    stroke-width: 7;
+    fill: none;
+}
+#gauge-arc {
+    stroke: var(--primary-300);
+    stroke-width: 10;
+    fill: none;
+}
+.divider {
+    border-color: var(--white-300);
+}
+
+/* === SEARCH FORM === */
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-wrapper i {
+    position: absolute;
+    left: 16px;
+    color: var(--black-300);
+    pointer-events: none;
+    transition: color 0.3s ease;
+}
+
+.search-input {
+    background: var(--primary-500);
+    border: none;
+    border-radius: 50px;
+    padding: 8px 16px 8px 42px; /* ruang untuk ikon kiri */
+    height: 40px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+    transition: all 0.25s ease;
+}
+
+.search-input::placeholder {
+    font-weight: 400;
+}
+
+.search-input:hover {
+    box-shadow: 0 0 0 2px var(--primary-300);
+}
+
+.search-input:focus {
+    outline: none;
+    background-color: var(--primary-500);
+    box-shadow: 0 0 0 2px var(--primary-300);
+}
+
+.search-input:focus + i {
+    color: var(--primary-300);
+}
+
+/* === Search in Dark Mode Containers === */
+.bg-black-200 .search-input,
+.bg-black-300 .search-input {
+    background: var(--black-300);
+    color: var(--white-300);
+    box-shadow: none;
+}
+
+.bg-black-200 .search-input::placeholder,
+.bg-black-300 .search-input::placeholder {
+    color: var(--white-300);
+    opacity: 0.5;
+}
+
+/* === FILTER BAR RESPONSIVE === */
+#filterForm {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.search-wrapper {
+    flex-grow: 1;
+    min-width: 240px;
+}
+
+/* Agar dropdown sejajar di layar besar */
+.dropdown-custom {
+    position: relative;
+}
+
+/* === Tablet (≤992px) === */
+@media (max-width: 992px) {
+    #filterForm {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .search-wrapper {
+        flex-grow: 1;
+        width: 100%;
+    }
+}
+
+/* === Mobile (≤768px) === */
+@media (max-width: 768px) {
+    /* bungkus judul dan form agar vertikal */
+    .d-flex.flex-wrap.justify-content-between.align-items-center {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    #filterForm {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .search-wrapper {
+        width: 100%;
+    }
+
+    .dropdown-custom {
+        width: 100%;
+    }
+
+    .dropdown-custom .btn-dropdown {
+        width: 100%;
+        text-align: center;
+    }
+}

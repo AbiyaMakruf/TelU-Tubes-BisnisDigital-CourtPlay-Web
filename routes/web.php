@@ -41,7 +41,6 @@ Route::middleware('guest')->group(function () {
 */
 Route::middleware('auth')->group(function () {
     // Dashboard utama
-    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
 
     // Halaman tambahan
     Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
@@ -53,6 +52,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/upload', [UploadController::class, 'index'])->name('videos.index');
         Route::post('/upload', [UploadController::class, 'store'])->name('videos.store');
         Route::get('/test-mail/{id}', [UploadController::class, 'testEmail'])->name('videos.test.mail');
+    });
+
+    Route::prefix('analytics')->middleware('auth')->group(function () {
+        Route::get('/', [AnalyticsController::class, 'index'])->name('analytics');
+        Route::get('/{id}', [AnalyticsController::class, 'show'])->name('analytics.show');
     });
 
     // Logout

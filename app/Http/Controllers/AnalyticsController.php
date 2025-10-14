@@ -15,67 +15,95 @@ class AnalyticsController extends Controller
     // Tambahkan parameter Request untuk menerima input pencarian dan pengurutan
     public function index(Request $request)
     {
-        // Pastikan pengguna sudah login
-        if (!Auth::check()) {
-            return redirect('/login');
-        }
+        $user = auth()->user();
 
-        $user = Auth::user();
+        $sort = $request->get('sort', 'newest');
+        $search = $request->get('search');
 
-        // Ambil parameter dari request
-        $searchQuery = $request->get('search', '');
-        $sortBy = $request->get('sort', 'newest'); // Default sorting: newest
+        $projects = Project::where('user_id', $user->id)
+            ->when($search, function ($query, $search) {
+                $query->where('project_name', 'ILIKE', "%{$search}%");
+            })
+            ->when($sort, function ($query, $sort) {
+                switch ($sort) {
+                    case 'oldest':
+                        $query->orderBy('upload_date', 'asc');
+                        break;
 
-        // 1. Inisiasi Query Dasar untuk Daftar Proyek
-        $query = Project::where('user_id', $user->id)
-            ->with('projectDetails');
+                    case 'done':
+                        $query->orderByDesc('is_mailed'); // done = true first
+                        break;
 
-        // 2. Terapkan Filter Pencarian
-        if ($searchQuery) {
-            // Menggunakan 'ilike' untuk case-insensitive search di PostgreSQL
-            $query->where('project_name', 'ilike', '%' . $searchQuery . '%');
-        }
+                    case 'inprocess':
+                        $query->orderBy('is_mailed', 'asc'); // in process first
+                        break;
 
-        // 3. Terapkan Pengurutan
-        if ($sortBy === 'alphabet') {
-            // Urutkan berdasarkan nama proyek (A-Z)
-            $query->orderBy('project_name', 'asc');
-        } else {
-            // Default: newest (terakhir diunggah)
-            $query->orderBy('upload_date', 'desc');
-        }
+                    default: // newest
+                        $query->orderBy('upload_date', 'desc');
+                        break;
+                }
+            })
+            ->get();
 
-        // Ambil data proyek yang sudah difilter dan diurutkan
-        $allProjects = $query->get();
-
-        // 4. Hitung Metrik (Selalu berdasarkan SEMUA proyek pengguna untuk statistik)
-        $totalProjectsForUser = Project::where('user_id', $user->id)->count();
+        // Statistik tambahan
+        $projectCount = $projects->count();
+        $maxLimit = UploadController::MAX_UPLOAD_LIMIT;
+        $percentageUsed = ($projectCount / $maxLimit) * 100;
+        $videoInProcessCount = Project::where('user_id', $user->id)->where('is_mailed', false)->count();
         $videoDoneCount = Project::where('user_id', $user->id)->where('is_mailed', true)->count();
 
-        // Video In Process: is_mailed = false, TAPI project_details_id sudah terisi.
-        $videoInProcessCount = Project::where('user_id', $user->id)
-            ->where('is_mailed', false)
-            ->whereNotNull('project_details_id')
-            ->count();
+        return view('analytics', compact(
+            'projects',
+            'projectCount',
+            'maxLimit',
+            'percentageUsed',
+            'videoInProcessCount',
+            'videoDoneCount',
+            'sort',
+            'search'
+        ))->with([
+            'currentSort' => $sort,
+            'currentSearch' => $search,
+        ]);
+    }
 
-        // Hitung persentase untuk Gauge Chart
-        $percentageUsed = ($totalProjectsForUser / self::MAX_UPLOAD_LIMIT) * 50;
+    public function show($id)
+    {
+        $project = \App\Models\Project::with('projectDetails')->findOrFail($id);
+        $detail = $project->projectDetails;
 
-        // 5. Siapkan Data untuk View
+        // Helper untuk ubah detik → jam:menit:detik
+        $formatTime = function ($seconds) {
+            if (is_null($seconds)) return '00:00:00';
+            $hours = floor($seconds / 3600);
+            $minutes = floor(($seconds % 3600) / 60);
+            $secs = $seconds % 60;
+            return sprintf('%02d:%02d:%02d', $hours, $minutes, $secs);
+        };
+
+        $maxValue = max([
+            $detail->forehand_count ?? 0,
+            $detail->backhand_count ?? 0,
+            $detail->serve_count ?? 0,
+            $detail->ready_position_count ?? 0,
+            1 // supaya tidak bagi nol
+        ]);
+
         $data = [
-            // Metrik Atas
-            'maxLimit' => self::MAX_UPLOAD_LIMIT,
-            'projectCount' => $totalProjectsForUser,
-            'percentageUsed' => min(100, $percentageUsed),
-            'videoInProcessCount' => $videoInProcessCount,
-            'videoDoneCount' => $videoDoneCount,
-
-            // Proyek (Card Bawah) - Hasil Filter
-            'projects' => $allProjects,
-            'currentSearch' => $searchQuery,
-            'currentSort' => $sortBy,
+            'project' => $project,
+            'videoUrl' => $detail->link_video_object_detections ?? null,
+            'heatmapUrl' => $detail->link_image_heatmap_player ?? null,
+            'forehand' => $detail->forehand_count ?? 0,
+            'backhand' => $detail->backhand_count ?? 0,
+            'serve' => $detail->serve_count ?? 0,
+            'ready' => $detail->ready_position_count ?? 0,
+            'maxValue' => $maxValue,
+            'videoDuration' => $formatTime($detail->video_duration ?? 0),
+            'processingTime' => $formatTime($detail->video_processing_time ?? 0),
         ];
 
-        return view('analytics', $data);
+        return view('analytics_details', $data);
     }
+
+
 }
