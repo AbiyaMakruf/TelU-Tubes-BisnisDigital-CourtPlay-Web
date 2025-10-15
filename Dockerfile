@@ -43,24 +43,34 @@ RUN php artisan config:clear && php artisan cache:clear
 # ============================================
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# ============================================
-# 9. Copy Nginx & Supervisor configs
-# ============================================
-COPY docker/nginx.conf /etc/nginx/sites-available/default
-COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# ===============================
+# 8. Copy SSL Files (NEW STEP)
+# ===============================
+# Salin file SSL ke direktori yang aman di dalam container
+# Anda harus mempastikan file ini ada di path ./docker/ssl/
+COPY ./docker/ssl/certificate.crt /etc/nginx/ssl/
+COPY ./docker/ssl/ca_bundle.crt /etc/nginx/ssl/
+COPY ./docker/ssl/private.key /etc/nginx/ssl/
 
-# ============================================
-# 10. Environment Variable for Cloud Run
-# ============================================
-# Cloud Run expects the container to listen on PORT (default 8080)
-ENV PORT=8080
+# Gabungkan certificate.crt dan ca_bundle.crt menjadi satu file bundle (standar praktik NGINX)
+# Menggunakan ca_bundle.crt adalah opsional jika NGINX Anda dapat menggunakan kedua file secara terpisah, 
+# tetapi menggabungkannya seringkali lebih sederhana.
+RUN cat /etc/nginx/ssl/certificate.crt /etc/nginx/ssl/ca_bundle.crt > /etc/nginx/ssl/fullchain.crt
 
-# ============================================
-# 11. Expose Port 8080 for Cloud Run
-# ============================================
+# ===============================
+# 9. Copy Nginx Config
+# ===============================
+COPY ./docker/nginx.conf /etc/nginx/sites-available/default
+# Buat symlink agar NGINX menggunakannya
+RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+# ===============================
+# 10. Copy Supervisor Config
+# ===============================
+COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# ===============================
+# 11. Expose Port & Start Services
+# ===============================
 EXPOSE 8080
-
-# ============================================
-# 12. Start Supervisor (which runs PHP-FPM + Nginx)
-# ============================================
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
