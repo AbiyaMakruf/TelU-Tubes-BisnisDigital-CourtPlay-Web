@@ -39,17 +39,33 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # ===============================
-# 8. Copy Nginx Config
+# 8. Copy SSL Files (NEW STEP)
 # ===============================
-COPY ./docker/nginx.conf /etc/nginx/sites-available/default
+# Salin file SSL ke direktori yang aman di dalam container
+# Anda harus mempastikan file ini ada di path ./docker/ssl/
+COPY ./docker/ssl/certificate.crt /etc/nginx/ssl/
+COPY ./docker/ssl/ca_bundle.crt /etc/nginx/ssl/
+COPY ./docker/ssl/private.key /etc/nginx/ssl/
+
+# Gabungkan certificate.crt dan ca_bundle.crt menjadi satu file bundle (standar praktik NGINX)
+# Menggunakan ca_bundle.crt adalah opsional jika NGINX Anda dapat menggunakan kedua file secara terpisah, 
+# tetapi menggabungkannya seringkali lebih sederhana.
+RUN cat /etc/nginx/ssl/certificate.crt /etc/nginx/ssl/ca_bundle.crt > /etc/nginx/ssl/fullchain.crt
 
 # ===============================
-# 9. Copy Supervisor Config
+# 9. Copy Nginx Config
+# ===============================
+COPY ./docker/nginx.conf /etc/nginx/sites-available/default
+# Buat symlink agar NGINX menggunakannya
+RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+# ===============================
+# 10. Copy Supervisor Config
 # ===============================
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # ===============================
-# 10. Expose Port & Start Services
+# 11. Expose Port & Start Services
 # ===============================
-EXPOSE 80
+EXPOSE 8080
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
