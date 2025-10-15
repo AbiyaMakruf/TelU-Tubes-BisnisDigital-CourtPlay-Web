@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+![CourtPlay Logo](README/CP_WEB.png)
+
+![Tech Stack](README/tech_stack.png)
+=======
 # COURT PLAY - Web Application
 
 Court Play is a web application designed to revolutionize tennis and padel training by utilizing artificial intelligence (AI) to analyze video performance. This platform allows players and coaches to upload training or match videos to gain in-depth insights such as stroke counts (forehand, backhand, serve), video duration, and other performance metrics.
@@ -29,3 +34,4 @@ Court Play is a web application designed to revolutionize tennis and padel train
 
 -   username : admin@courtplay.my.id, pw : admin12345
 -   username : user1@courtplay.my.id, pw : user12345
+>>>>>>> staging
