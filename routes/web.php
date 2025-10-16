@@ -68,6 +68,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [ProfileController::class, 'profile'])->name('profile');
         Route::post('/', [ProfileController::class, 'updateProfile'])->name('profile.update');
         Route::post('/picture', [ProfileController::class, 'updateProfilePicture'])->name('profile.picture');
+        Route::delete('/picture', [ProfileController::class, 'deleteProfilePicture'])->name('profile.picture.delete');
     });
 
     // Logout

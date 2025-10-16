@@ -9,6 +9,9 @@ use Illuminate\Validation\Rule;
 use Throwable;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
+use App\Models\User;
+
+
 
 
 class ProfileController extends Controller
@@ -152,5 +155,33 @@ class ProfileController extends Controller
             return back();
         }
     }
+
+    public function deleteProfilePicture()
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) return redirect()->route('login');
+
+            $url = (string) ($user->profile_picture_url ?? '');
+            if ($url !== '') {
+                // cukup panggil helper yang baru
+                delete_object($url);
+            }
+
+            User::whereKey($user->id)->update(['profile_picture_url' => null]);
+
+            toastr()->success('Profile picture removed.');
+            return redirect()->route('profile');
+        } catch (Throwable $e) {
+            Log::error('Delete profile picture failed', [
+                'user_id' => optional(auth()->user())->id,
+                'error'   => $e->getMessage(),
+            ]);
+            toastr()->error('Failed to remove profile picture.');
+            return back();
+        }
+    }
+
+
 
 }

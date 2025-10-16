@@ -32,7 +32,8 @@
         },
         "files": [
             "app/Helpers/UploadGCS.php",
-            "app/Helpers/PubSub.php"
+            "app/Helpers/PubSub.php",
+            "app/helpers/storage.php"
         ]
     },
     "autoload-dev": {

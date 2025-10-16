@@ -54,12 +54,29 @@
             </div>
 
             {{-- Change picture --}}
-            <form id="avatarForm" action="{{ route('profile.picture') }}" method="POST" enctype="multipart/form-data" class="w-100 text-center">
-              @csrf
-              <input type="file" id="avatarInput" name="avatar" class="d-none" accept="image/*">
-              <button type="button" class="btn btn-custom2 px-4" id="changeAvatarBtn">Change Profile Picture</button>
-              @error('avatar') <div class="text-danger small mt-2">{{ $message }}</div> @enderror
+           <form id="avatarForm" action="{{ route('profile.picture') }}" method="POST" enctype="multipart/form-data" class="w-100">
+            @csrf
+            <input type="file" id="avatarInput" name="avatar" class="d-none" accept="image/*">
+
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+            <button type="button" class="btn btn-custom2 px-4" id="changeAvatarBtn">
+                Change Profile Picture
+            </button>
+
+            @if(!empty($photoUrl))
+                <form action="{{ route('profile.picture.delete') }}" method="POST" onsubmit="return confirm('Remove current profile picture?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-trash"></i>
+                </button>
+                </form>
+            @endif
+            </div>
+
+            @error('avatar') <div class="text-danger small mt-2 text-center">{{ $message }}</div> @enderror
             </form>
+
 
             {{-- Public link + copy --}}
             <div class="w-100 mt-3 text-start">
