@@ -19,8 +19,5 @@ class PageController extends Controller
         return view('plan');
     }
 
-    public function profile()
-    {
-        return view('profile');
-    }
+
 }

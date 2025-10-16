@@ -19,6 +19,7 @@ return new class extends Migration {
 
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('profile_picture_url')->nullable();
 
             // Role-based access
             $table->string('role')->default('user')->comment('pro, plus, free, admin');

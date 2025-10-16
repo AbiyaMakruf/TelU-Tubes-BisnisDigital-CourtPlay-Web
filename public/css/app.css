@@ -487,9 +487,10 @@ main {
 }
 
 .user-menu .dropdown-item:hover {
-    background-color: var(--primary-400);
+    background-color: var(--primary-500);
     color: var(--black-100);
     border-radius: 5px;
+    -webkit-text-stroke: 0.2px var(--black-100);
 }
 
 /* Navbar Default (black-300) */
@@ -1013,7 +1014,7 @@ span a:hover {
     transition: 0.3s ease;
 }
 .placeholder-wrapper:hover {
-    box-shadow: 0 0 12px rgba(163, 206, 20, 0.3);
+    box-shadow: 0 0 12px var(--primary-200);
 }
 .bar-bg {
     background: #2b2b2b;
@@ -1034,3 +1035,124 @@ span a:hover {
         max-height: 280px;
     }
 }
+
+.bg-black-200 {
+    background: #1f1f1f !important;
+}
+.text-white-400 {
+    color: #bdbdbd !important;
+}
+.btn-custom2 {
+    background: var(--primary-500);
+    color: #111;
+    border: 0;
+}
+.btn-custom2:hover {
+    filter: brightness(1.05);
+}
+
+/* Inputs */
+.input-custom {
+    background: var(--primary-500) !important;
+    border: 0 !important;
+    color: var(--black-200) !important;
+    border-radius: 0.5rem;
+    padding: 0.875rem 1rem;
+}
+
+/* Avatar KOTAK */
+.avatar-square {
+    --s: var(--avatar-size, 320px);
+    width: var(--s);
+    height: var(--s);
+    border-radius: 1.25rem;
+    position: relative;
+    background: #1f1f1f;
+    border: 2px dashed var(--black-500);
+    box-shadow: inset 0 0 0 4px var(--black-500);
+}
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: inherit;
+}
+
+/* Fallback (inisial) */
+.avatar-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    background: radial-gradient(120% 120% at 10% 10%, #2d2d2d 0%, #222 80%);
+}
+.avatar-initials-text {
+    font-weight: 800;
+    font-size: calc(var(--avatar-size, 320px) * 0.33);
+    letter-spacing: 0.04em;
+    color: var(--primary-300);
+    line-height: 1;
+    text-shadow: 0 2px 0 #111;
+}
+.avatar-square:not(:has(img)),            /* tidak ada img */
+.avatar-square.avatar-fallback-mode       /* img error */ {
+}
+.avatar-square:not(:has(img)) .avatar-fallback,
+.avatar-square.avatar-fallback-mode .avatar-fallback {
+    display: flex;
+}
+
+/* Copy input menyatu */
+.input-group-copy {
+    align-items: stretch;
+}
+.cp-input {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+.btn-copy-like-input {
+    background: var(--primary-500);
+    color: var(--black-200);
+    border: 0;
+    padding: 0 14px;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.btn-copy-like-input:hover {
+    background: var(--primary-500);
+    color: var(--black-200);
+    border: 0;
+    padding: 0 14px;
+}
+
+@media (max-width: 1290px) {
+    .avatar-square {
+        --s: 250px;
+    }
+}
+
+.btn-copy-like-input {
+    cursor: pointer;
+}
+
+/* Floating text ala toast (tanpa library) */
+.float-toast{
+  position: fixed;              /* tetap fixed supaya ikut scroll */
+  z-index: 99999;
+  background: #1f1f1f;
+  color: #e6f7a1;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0 8px 24px rgba(0,0,0,.45);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity .2s ease, transform .2s ease;
+  pointer-events: none;
+  /* posisi (top/left) akan di-set lewat JS */
+}
+.float-toast.show{ opacity:1; transform: translateY(0); }
+
+

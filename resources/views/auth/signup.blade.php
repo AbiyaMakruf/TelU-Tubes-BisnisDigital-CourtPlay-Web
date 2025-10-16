@@ -64,7 +64,7 @@
                                 class="form-control bg-primary-500 text-black-300 pe-5 input-custom"
                                 required
                             >
-                            <i class="bi bi-eye toggle-password" data-toggle="#password" style="position:absolute; right:12px; top:42px; cursor:pointer;"></i>
+                            <i class="bi bi-eye toggle-password" data-toggle="#password" style="position:absolute; right:12px;  cursor:pointer;"></i>
                         </div>
 
                         <button type="submit" class="btn btn-custom2 w-100 mt-3">Sign up</button>
