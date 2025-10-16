@@ -33,7 +33,6 @@ class UserSeeder extends Seeder
         // 👑 Admin - Menggunakan firstOrCreate untuk mencegah duplikasi email
         User::firstOrCreate($adminData, $adminAttributes);
 
-        // ---
 
         $userData = [
             'email' => 'user1@courtplay.my.id',

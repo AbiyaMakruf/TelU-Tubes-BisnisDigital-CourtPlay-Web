@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnText = document.getElementById('btnText');
     const loadingSpinner = document.getElementById('loadingSpinner');
     const projectInput = document.getElementById('project_name');
-    const maxFileSize = 50 * 1024 * 1024; // 50MB (Sesuai Controller)
+    const maxFileSize = 500 * 1024 * 1024; // 50MB (Sesuai Controller)
     const hasReachedLimit = {{ $hasReachedLimit ? 'true' : 'false' }}; // Ambil status batas dari Blade
 
     // Jika batas sudah tercapai, tidak perlu menjalankan logika upload
