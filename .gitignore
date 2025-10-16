@@ -18,3 +18,4 @@ yarn-error.log
 /.vscode
 # Google Cloud service account keys
 /storage/app/keys/*.json
+.env.prod
