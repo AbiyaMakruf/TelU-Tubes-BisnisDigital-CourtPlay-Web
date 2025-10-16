@@ -5,21 +5,17 @@
 
 @section('content')
 <div class="container py-5 text-white">
-    {{-- TITLE --}}
     <h2 class="fw-bold text-primary-500 mb-2">{{ $project->project_name }}</h2>
     <p class="text-white-400 mb-4">Date: {{ \Carbon\Carbon::parse($project->upload_date)->format('d-m-Y') }}</p>
 
-    {{-- VIDEO SECTION --}}
     <h5 class="fw-semibold text-primary-300 mb-3">Match Video</h5>
     <div class="video-wrapper mb-4 position-relative">
         @if ($videoUrl)
-            {{-- ✅ Tampilkan Video jika ada --}}
             <video controls class="w-100 rounded-4 shadow " style="max-height: 480px;">
                 <source src="{{ $videoUrl }}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
         @else
-            {{-- 🕓 Placeholder jika tidak ada video --}}
             <div class="placeholder-wrapper rounded-4 bg-black-300 d-flex align-items-center justify-content-center " style="height: 480px;">
                 <div class="text-center">
                     <i class="bi bi-camera-video-off text-primary-300 mb-3 d-block" style="font-size: 5rem;"></i>
@@ -29,7 +25,6 @@
         @endif
     </div>
 
-    {{-- HEATMAP + BAR STATS --}}
     <div class="row g-4 align-items-start">
         <div class="col-md-6">
             @if ($heatmapUrl)
@@ -44,7 +39,6 @@
             @endif
         </div>
 
-        {{-- === BAR STATS === --}}
         <div class="col-md-6">
             <div class="stat-bars">
                 <p class="fw-semibold text-white-400 mb-1 d-flex justify-content-between">
@@ -70,43 +64,33 @@
         </div>
     </div>
 
-    {{-- STATISTICS --}}
     <div class="mt-5">
         <h5 class="fw-bold text-primary-500 mb-3">Statistic</h5>
         <p class="mb-1">Video duration: <span class="text-primary-300">{{ $videoDuration }}</span></p>
         <p>Video processing time: <span class="text-primary-300">{{ $processingTime }}</span></p>
     </div>
 </div>
-
-{{-- === STYLING === --}}
-<style>
-.video-wrapper video {
-    border: 2px solid var(--primary-300);
-}
-.placeholder-wrapper {
-    border: 2px solid var(--primary-300);
-    transition: 0.3s ease;
-}
-.placeholder-wrapper:hover {
-    box-shadow: 0 0 12px rgba(163, 206, 20, 0.3);
-}
-.bar-bg {
-    background: #2b2b2b;
-    border-radius: 10px;
-    height: 18px;
-    width: 100%;
-    overflow: hidden;
-}
-.bar-fill {
-    height: 100%;
-    border-radius: 10px;
-    background: linear-gradient(90deg, var(--primary-300), var(--primary-500));
-    transition: width 0.8s ease;
-}
-@media (max-width: 768px) {
-    .video-wrapper video, .placeholder-wrapper {
-        max-height: 280px;
-    }
-}
-</style>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    @if(session('toastr'))
+        var n = @json(session('toastr'));
+        if (Array.isArray(n)) {
+            n.forEach(function(item){
+                if (item && item.type && item.message && typeof toastr[item.type] === 'function') {
+                    toastr[item.type](item.message, item.title || '', item.options || {});
+                }
+            });
+        } else if (n && n.type && n.message && typeof toastr[n.type] === 'function') {
+            toastr[n.type](n.message, n.title || '', n.options || {});
+        }
+    @endif
+
+    @if(session('success')) toastr.success(@json(session('success'))); @endif
+    @if(session('error'))   toastr.error(@json(session('error')));   @endif
+    @if($errors->any())     toastr.error(@json($errors->first()));   @endif
+})();
+</script>
+@endpush

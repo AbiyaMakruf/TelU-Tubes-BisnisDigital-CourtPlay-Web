@@ -21,6 +21,7 @@ Court Play is a web application designed to revolutionize tennis and padel train
 
 -   run `git clone https://github.com/NugrohoRahmanto/puskesmas-sukaraja.git`
 -   run `composer install`
+-   run `npm install`
 -   copy .env.example to .env
 -   run `php artisan key:generate`
 -   set up your database in the .env
