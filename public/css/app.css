@@ -1004,3 +1004,33 @@ span a:hover {
         text-align: center;
     }
 }
+
+.video-wrapper video {
+    border: 2px solid var(--primary-300);
+}
+.placeholder-wrapper {
+    border: 2px solid var(--primary-300);
+    transition: 0.3s ease;
+}
+.placeholder-wrapper:hover {
+    box-shadow: 0 0 12px rgba(163, 206, 20, 0.3);
+}
+.bar-bg {
+    background: #2b2b2b;
+    border-radius: 10px;
+    height: 18px;
+    width: 100%;
+    overflow: hidden;
+}
+.bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(90deg, var(--primary-300), var(--primary-500));
+    transition: width 0.8s ease;
+}
+@media (max-width: 768px) {
+    .video-wrapper video,
+    .placeholder-wrapper {
+        max-height: 280px;
+    }
+}
