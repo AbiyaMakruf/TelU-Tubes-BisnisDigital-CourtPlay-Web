@@ -64,3 +64,4 @@ jobs:
             --cpu=2 \
             --memory=2Gi \
             --set-env-vars="$ENV_VARS"
+            --to-latest
