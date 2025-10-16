@@ -9,8 +9,6 @@ use App\Models\Project;
 
 class AnalyticsController extends Controller
 {
-    // Batas Maksimum Proyek yang Diperbolehkan
-    const MAX_UPLOAD_LIMIT = 100;
 
     // Tambahkan parameter Request untuk menerima input pencarian dan pengurutan
     public function index(Request $request)
@@ -31,24 +29,24 @@ class AnalyticsController extends Controller
                         break;
 
                     case 'done':
-                        $query->orderByDesc('is_mailed'); // done = true first
+                        $query->orderByDesc('is_mailed');
                         break;
 
                     case 'inprocess':
-                        $query->orderBy('is_mailed', 'asc'); // in process first
+                        $query->orderBy('is_mailed', 'asc');
                         break;
 
-                    default: // newest
+                    default:
                         $query->orderBy('upload_date', 'desc');
                         break;
                 }
             })
             ->get();
 
-        // Statistik tambahan
+        //   tambahan
         $projectCount = $projects->count();
         $maxLimit = UploadController::MAX_UPLOAD_LIMIT;
-        $percentageUsed = ($projectCount / $maxLimit) * 100;
+        $percentageUsed = ($projectCount / $maxLimit) * 50;
         $videoInProcessCount = Project::where('user_id', $user->id)->where('is_mailed', false)->count();
         $videoDoneCount = Project::where('user_id', $user->id)->where('is_mailed', true)->count();
 
@@ -72,7 +70,6 @@ class AnalyticsController extends Controller
         $project = \App\Models\Project::with('projectDetails')->findOrFail($id);
         $detail = $project->projectDetails;
 
-        // Helper untuk ubah detik → jam:menit:detik
         $formatTime = function ($seconds) {
             if (is_null($seconds)) return '00:00:00';
             $hours = floor($seconds / 3600);
@@ -86,7 +83,7 @@ class AnalyticsController extends Controller
             $detail->backhand_count ?? 0,
             $detail->serve_count ?? 0,
             $detail->ready_position_count ?? 0,
-            1 // supaya tidak bagi nol
+            1
         ]);
 
         $data = [
