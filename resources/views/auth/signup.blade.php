@@ -55,17 +55,25 @@
                             <input type="email" id="email" name="email" class="form-control input-custom" value="{{ old('email') }}" required>
                         </div>
 
-                        <div class="mb-2 position-relative">
-                            <label for="password" class="form-label text-primary-500">Password</label>
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                class="form-control bg-primary-500 text-black-300 pe-5 input-custom"
-                                required
-                            >
-                            <i class="bi bi-eye toggle-password" data-toggle="#password" style="position:absolute; right:12px;  cursor:pointer;"></i>
+                        <div class="mb-2 password-wrapper position-relative">
+                        <label for="password" class="form-label text-primary-500">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form-control input-custom"
+                            required
+                            autocomplete="new-password"
+                        >
+                        <i
+                            class="bi bi-eye toggle-password"
+                            data-toggle-password
+                            role="button"
+                            aria-label="Show password"
+                            tabindex="0"
+                        ></i>
                         </div>
+
 
                         <button type="submit" class="btn btn-custom2 w-100 mt-3">Sign up</button>
                     </form>
@@ -75,54 +83,62 @@
         </div>
     </div>
 </div>
-
+@endsection
 @push('scripts')
 <script>
 (function () {
-    var eye = document.querySelector('.toggle-password');
-    if (eye) {
-        eye.addEventListener('click', function () {
-            var target = document.querySelector(this.getAttribute('data-toggle'));
-            if (!target) return;
-            if (target.type === 'password') {
-                target.type = 'text';
-                this.classList.remove('bi-eye');
-                this.classList.add('bi-eye-slash');
-            } else {
-                target.type = 'password';
-                this.classList.remove('bi-eye-slash');
-                this.classList.add('bi-eye');
-            }
-        });
+  // Toggle password via delegation (kebal re-render)
+  function toggleFrom(btn){
+    const wrap  = btn.closest('.password-wrapper');
+    if(!wrap) return;
+    const input = wrap.querySelector('input[type="password"], input[type="text"]');
+    if(!input) return;
+
+    const isPwd = input.getAttribute('type') === 'password';
+    input.setAttribute('type', isPwd ? 'text' : 'password');
+    btn.classList.toggle('bi-eye', !isPwd);
+    btn.classList.toggle('bi-eye-slash', isPwd);
+    btn.setAttribute('aria-label', isPwd ? 'Hide password' : 'Show password');
+  }
+
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('[data-toggle-password]');
+    if(btn) toggleFrom(btn);
+  });
+  document.addEventListener('keydown', function(e){
+    const btn = e.target.closest && e.target.closest('[data-toggle-password]');
+    if(btn && (e.key === 'Enter' || e.key === ' ')){
+      e.preventDefault();
+      toggleFrom(btn);
     }
+  });
 
-    @if(session('toastr'))
-        var n = @json(session('toastr'));
-        if (Array.isArray(n)) {
-            n.forEach(function(item){
-                if (item && item.type && item.message && typeof toastr[item.type] === 'function') {
-                    toastr[item.type](item.message, item.title || '', item.options || {});
-                }
-            });
-        } else if (n && n.type && n.message && typeof toastr[n.type] === 'function') {
-            toastr[n.type](n.message, n.title || '', n.options || {});
+  // Set ikon awal
+  document.querySelectorAll('[data-toggle-password]').forEach(function(btn){
+    btn.classList.add('bi-eye');
+    btn.classList.remove('bi-eye-slash');
+  });
+
+  // Toastr flashes (biarkan seperti semula)
+  @if(session('toastr'))
+    var n = @json(session('toastr'));
+    if (Array.isArray(n)) {
+      n.forEach(function(item){
+        if (item && item.type && item.message && typeof toastr[item.type] === 'function') {
+          toastr[item.type](item.message, item.title || '', item.options || {});
         }
-    @endif
-
-    @if(session('success'))
-        toastr.success(@json(session('success')));
-    @endif
-
-    @if(session('error'))
-        toastr.error(@json(session('error')));
-    @endif
-
-    @if($errors->any())
-        @foreach($errors->all() as $err)
-            toastr.error(@json($err));
-        @endforeach
-    @endif
+      });
+    } else if (n && n.type && n.message && typeof toastr[n.type] === 'function') {
+      toastr[n.type](n.message, n.title || '', n.options || {});
+    }
+  @endif
+  @if(session('success')) toastr.success(@json(session('success'))); @endif
+  @if(session('error'))   toastr.error(@json(session('error')));   @endif
+  @if($errors->any())
+    @foreach($errors->all() as $err)
+      toastr.error(@json($err));
+    @endforeach
+  @endif
 })();
 </script>
 @endpush
-@endsection

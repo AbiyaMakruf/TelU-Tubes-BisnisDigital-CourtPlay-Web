@@ -1137,22 +1137,37 @@ span a:hover {
 }
 
 /* Floating text ala toast (tanpa library) */
-.float-toast{
-  position: fixed;              /* tetap fixed supaya ikut scroll */
-  z-index: 99999;
-  background: #1f1f1f;
-  color: #e6f7a1;
-  border: 1px solid #2a2a2a;
-  box-shadow: 0 8px 24px rgba(0,0,0,.45);
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-weight: 600;
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity .2s ease, transform .2s ease;
-  pointer-events: none;
-  /* posisi (top/left) akan di-set lewat JS */
+.float-toast {
+    position: fixed; /* tetap fixed supaya ikut scroll */
+    z-index: 99999;
+    background: #1f1f1f;
+    color: #e6f7a1;
+    border: 1px solid #2a2a2a;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+    /* posisi (top/left) akan di-set lewat JS */
 }
-.float-toast.show{ opacity:1; transform: translateY(0); }
+.float-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
 
+#toast-container > .toast-error {
+    background-color: var(--danger);
+}
+#toast-container > .toast-success {
+    background-color: var(--accept);
+}
+#toast-container > .toast-info {
+    background-color: var(--info);
+}
+#toast-container > .toast-warning {
+    background-color: var(--warning);
+}
 

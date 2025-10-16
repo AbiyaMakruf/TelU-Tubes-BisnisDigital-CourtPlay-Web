@@ -33,7 +33,7 @@ class ResetPasswordMail extends Mailable
                         // Tambahkan custom header kategori Mailtrap
                         $headers = $message->getHeaders();
                         $headers->addTextHeader('X-Entity-Ref-ID', 'courtplay-reset-password');
-                    $headers->addTextHeader('Category', 'password_reset');
+                    $headers->addTextHeader('X-MT-Category', 'password_reset');
                     $headers->addTextHeader('X-Mailtrap-Categories', 'password_reset');
                 });
     }
