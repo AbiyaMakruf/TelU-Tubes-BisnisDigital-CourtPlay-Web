@@ -33,6 +33,11 @@ COPY . .
 # ============================================
 RUN composer install --no-dev --optimize-autoloader
 
+# ===============================
+# 6.1 Add Custom PHP Upload Limits <-- BARU
+# ===============================
+COPY ./docker/custom.ini /usr/local/etc/php/conf.d/custom-upload-limits.ini
+
 # ============================================
 # 7. Optimize Laravel
 # ============================================
