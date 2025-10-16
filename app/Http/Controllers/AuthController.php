@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserWelcomeMail;
 use Exception;
+use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -30,13 +32,13 @@ class AuthController extends Controller
             ]);
 
             $user = User::create([
-                'first_name'   => $request->first_name,
-                'last_name'    => $request->last_name,
-                'username'     => $request->username,
-                'email'        => $request->email,
-                'password'     => Hash::make($request->password),
-                'role'         => 'user',
-                'login_token'  => bin2hex(random_bytes(32)),
+                'first_name'  => $request->first_name,
+                'last_name'   => $request->last_name,
+                'username'    => $request->username,
+                'email'       => $request->email,
+                'password'    => Hash::make($request->password),
+                'role'        => 'user',
+                'login_token' => bin2hex(random_bytes(32)),
             ]);
 
             Auth::login($user);
@@ -44,24 +46,23 @@ class AuthController extends Controller
             try {
                 Mail::to($user->email)->send(new UserWelcomeMail($user));
             } catch (Exception $e) {
-                Log::error('❌ Error sending welcome email: ' . $e->getMessage());
+                Log::error('Error sending welcome email', ['user_id' => $user->id, 'error' => $e->getMessage()]);
             }
 
-            return redirect()
-                ->route('analytics')
-                ->with('success', 'Account created successfully!');
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            Log::warning('⚠️ Validation failed during signup: ' . json_encode($e->errors()));
+            toastr()->success('Account created successfully.');
+            return redirect()->route('analytics');
+        } catch (ValidationException $e) {
+            Log::warning('Validation failed during signup', ['errors' => $e->errors()]);
+            toastr()->error('Validation failed. Please check your input.');
             return back()->withErrors($e->errors())->withInput();
-
-        } catch (\Illuminate\Database\QueryException $e) {
-            Log::error('💥 Database error during signup: ' . $e->getMessage());
-            return back()->with('error', 'Database error: ' . $e->getMessage());
-
+        } catch (QueryException $e) {
+            Log::error('Database error during signup', ['error' => $e->getMessage()]);
+            toastr()->error('Database error occurred during signup.');
+            return back()->withInput();
         } catch (Exception $e) {
-            Log::error('🔥 Unexpected signup error: ' . $e->getMessage());
-            dd('🔥 Unexpected signup error:', $e->getMessage(), $e->getTraceAsString());
+            Log::error('Unexpected signup error', ['error' => $e->getMessage()]);
+            toastr()->error('Unexpected error occurred during signup.');
+            return back()->withInput();
         }
     }
 
@@ -72,34 +73,53 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email'    => 'required|string',
-            'password' => 'required|string',
-        ]);
+        try {
+            $credentials = $request->validate([
+                'email'    => 'required|string',
+                'password' => 'required|string',
+            ]);
 
-        $remember = $request->filled('remember');
-        $loginField = filter_var($credentials['email'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+            $remember = $request->filled('remember');
+            $loginField = filter_var($credentials['email'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        if (Auth::attempt([$loginField => $credentials['email'], 'password' => $credentials['password']], $remember)) {
-            $request->session()->regenerate();
-            $user = Auth::user();
-            $user->login_token = bin2hex(random_bytes(32));
-            $user->save();
+            if (Auth::attempt([$loginField => $credentials['email'], 'password' => $credentials['password']], $remember)) {
+                $request->session()->regenerate();
+                $user = Auth::user();
+                $user->login_token = bin2hex(random_bytes(32));
+                $user->save();
 
-            return redirect()->route('analytics')->with('success', 'Welcome back!');
+                toastr()->success('Welcome back.', 'Login Success');
+                return redirect()->route('analytics');
+            }
+
+            toastr()->error('Login failed. Invalid credentials.', 'Login Failed');
+            return back()->withErrors([
+                'email' => 'Invalid credentials. Please check your ' . ($loginField === 'email' ? 'email' : 'username') . '.',
+            ]);
+        } catch (ValidationException $e) {
+            Log::warning('Validation failed during login', ['errors' => $e->errors()]);
+            toastr()->error('Validation failed. Please check your input.');
+            return back()->withErrors($e->errors())->withInput();
+        } catch (Exception $e) {
+            Log::error('Unexpected login error', ['error' => $e->getMessage()]);
+            toastr()->error('Unexpected error occurred during login.');
+            return back()->withInput();
         }
-
-        return back()->withErrors([
-            'email' => 'Invalid credentials. Please check your ' . ($loginField === 'email' ? 'email' : 'username') . '.',
-        ]);
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        try {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'You have been logged out.');
+            toastr()->success('You have been logged out.');
+            return redirect()->route('login');
+        } catch (Exception $e) {
+            Log::error('Unexpected logout error', ['error' => $e->getMessage()]);
+            toastr()->error('Unexpected error occurred during logout.');
+            return redirect()->route('login');
+        }
     }
 }

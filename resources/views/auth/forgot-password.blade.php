@@ -8,19 +8,19 @@
         <h4 class="fw-bold text-primary-500 mb-3 text-center">Forgot Password</h4>
         <p class="text-white-400 text-center">Enter your email address to receive a reset link.</p>
 
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
-        @if($errors->any())
-            <div class="alert alert-danger">{{ $errors->first('email') }}</div>
-        @endif
-
         <form method="POST" action="{{ route('password.email') }}">
             @csrf
             <div class="mb-3">
                 <label for="email" class="form-label">Email Address</label>
-                <input type="email" class="form-control input-custom" name="email" required autofocus>
+                <input
+                    type="email"
+                    id="email"
+                    class="form-control input-custom"
+                    name="email"
+                    value="{{ old('email') }}"
+                    required
+                    autofocus
+                >
             </div>
             <button type="submit" class="btn btn-custom2 w-100">Send Reset Link</button>
         </form>
@@ -30,4 +30,35 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+(function () {
+    @if(session('toastr'))
+        var n = @json(session('toastr'));
+        if (Array.isArray(n)) {
+            n.forEach(function(item){
+                if (item && item.type && item.message && typeof toastr[item.type] === 'function') {
+                    toastr[item.type](item.message, item.title || '', item.options || {});
+                }
+            });
+        } else if (n && n.type && n.message && typeof toastr[n.type] === 'function') {
+            toastr[n.type](n.message, n.title || '', n.options || {});
+        }
+    @endif
+
+    @if(session('success'))
+        toastr.success(@json(session('success')));
+    @endif
+
+    @if(session('error'))
+        toastr.error(@json(session('error')));
+    @endif
+
+    @if($errors->any())
+        toastr.error(@json($errors->first('email') ?? $errors->first()));
+    @endif
+})();
+</script>
+@endpush
 @endsection

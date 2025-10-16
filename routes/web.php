@@ -6,6 +6,7 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\AuthPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +59,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [AnalyticsController::class, 'index'])->name('analytics');
         Route::get('/{id}', [AnalyticsController::class, 'show'])->name('analytics.show');
     });
+    
+    Route::get('/plan', [AuthPageController::class, 'plan'])->name('plan');
+    Route::post('/plan/change', [AuthPageController::class, 'changePlan'])->name('plan.change');
+
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
