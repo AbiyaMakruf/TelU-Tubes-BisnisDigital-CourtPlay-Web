@@ -51,7 +51,8 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 # ===============================
 # 9. Copy Nginx Config
 # ===============================
-COPY ./docker/nginx.conf /etc/nginx/sites-available/default
+COPY ./docker/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/default.conf /etc/nginx/sites-available/default
 
 # ===============================
 # 10. Copy Supervisor Config
