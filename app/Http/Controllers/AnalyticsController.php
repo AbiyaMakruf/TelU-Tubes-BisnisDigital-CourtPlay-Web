@@ -48,7 +48,7 @@ class AnalyticsController extends Controller
             }
 
             $projectCount = $projects->count();
-            $percentageUsed = $maxLimit > 0 ? min(100, ($projectCount / $maxLimit) * 100) : 0;
+            $percentageUsed = $maxLimit > 0 ? min(100, ($projectCount / $maxLimit) * 50) : 0;
             $videoInProcessCount = Project::where('user_id', $user->id)->where('is_mailed', false)->count();
             $videoDoneCount = Project::where('user_id', $user->id)->where('is_mailed', true)->count();
 

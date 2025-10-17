@@ -35,7 +35,7 @@ class UserWelcomeMail extends Mailable
                         // Tambahkan custom header kategori
                         $headers = $message->getHeaders();
                         $headers->addTextHeader('X-Entity-Ref-ID', 'courtplay-user-welcome');
-                        $headers->addTextHeader('Category', 'user_welcome');
+                        $headers->addTextHeader('X-MT-Category', 'user_welcome');
                         $headers->addTextHeader('X-Mailtrap-Categories', 'user_welcome');
                     });
     }
