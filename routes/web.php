@@ -6,7 +6,8 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\PageController;
-use App\Http\Controllers\AuthPageController;
+use App\Http\Controllers\PlanController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,7 +47,7 @@ Route::middleware('auth')->group(function () {
     // Halaman tambahan
     Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
     Route::get('/plan', [PageController::class, 'plan'])->name('plan');
-    Route::get('/profile', [PageController::class, 'profile'])->name('profile');
+    // Route::get('/profile', [PageController::class, 'profile'])->name('profile');
 
     // Upload video
     Route::prefix('videos')->group(function () {
@@ -59,10 +60,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [AnalyticsController::class, 'index'])->name('analytics');
         Route::get('/{id}', [AnalyticsController::class, 'show'])->name('analytics.show');
     });
-    
-    Route::get('/plan', [AuthPageController::class, 'plan'])->name('plan');
-    Route::post('/plan/change', [AuthPageController::class, 'changePlan'])->name('plan.change');
 
+    Route::get('/plan', [PlanController::class, 'plan'])->name('plan');
+    Route::post('/plan/change', [PlanController::class, 'changePlan'])->name('plan.change');
+
+    Route::prefix('profile')->middleware('auth')->group(function () {
+        Route::get('/', [ProfileController::class, 'profile'])->name('profile');
+        Route::post('/', [ProfileController::class, 'updateProfile'])->name('profile.update');
+        Route::post('/picture', [ProfileController::class, 'updateProfilePicture'])->name('profile.picture');
+        Route::delete('/picture', [ProfileController::class, 'deleteProfilePicture'])->name('profile.picture.delete');
+    });
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

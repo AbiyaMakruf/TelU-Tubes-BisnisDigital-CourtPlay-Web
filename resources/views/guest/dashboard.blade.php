@@ -29,3 +29,29 @@
         </section>
     @endauth
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    @if(session('toastr'))
+        (function () {
+            var n = @json(session('toastr'));
+            if (Array.isArray(n)) {
+                n.forEach(function(item){
+                    if (item && item.type && item.message && typeof toastr[item.type] === 'function') {
+                        toastr[item.type](item.message, item.title || '', item.options || {});
+                    }
+                });
+            } else if (n && n.type && n.message && typeof toastr[n.type] === 'function') {
+                toastr[n.type](n.message, n.title || '', n.options || {});
+            }
+        })();
+    @endif
+
+    @if(session('success')) toastr.success(@json(session('success'))); @endif
+    @if(session('error'))   toastr.error(@json(session('error')));   @endif
+    @if($errors->any())     toastr.error(@json($errors->first()));   @endif
+});
+</script>
+@endpush

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-class AuthPageController extends Controller
+class PlanController extends Controller
 {
     public function plan()
     {
