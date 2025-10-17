@@ -75,6 +75,7 @@ jobs:
             --port=8080 \
             --cpu=2 \
             --memory=2Gi \
+            --use-http2 \
             --set-env-vars="$ENV_VARS"
 
       # 🚦 Langkah 2: Update Lalu Lintas ke Revisi Terbaru
