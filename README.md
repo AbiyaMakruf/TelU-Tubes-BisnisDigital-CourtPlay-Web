@@ -37,7 +37,7 @@ Court Play is a web application designed to revolutionize tennis and padel train
 
 # Docker Build
 - Docker build -t laravel-app:latest .
-- docker run -d -p 8090:8080 --env-file ./.env laravel-app:latest
+- docker run -p 8090:8080 --env-file ./.env laravel-app:latest
 - tail -n 50 storage/logs/laravel.log
 
 tail -n 100 storage/logs/laravel.log
