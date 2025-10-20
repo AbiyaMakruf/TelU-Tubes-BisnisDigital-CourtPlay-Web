@@ -1,4 +1,4 @@
-@extends('layouts.app-auth')
+@extends('layouts.app')
 
 @section('title', 'Your Plan')
 @section('fullbleed', true)
@@ -79,19 +79,10 @@
 
 @push('styles')
 <style>
-.pricing-card { border: 0; box-shadow: 0 6px 20px rgba(0,0,0,.25); }
-.ribbon { width: 120px; height: 120px; overflow: hidden; position: absolute; top: -6px; right: -6px; }
-.ribbon span {
-    position: absolute; display: block; width: 160px; padding: 8px 0;
-    background: #a3ce14; color: #111; text-align: center; font-weight: 700;
-    transform: rotate(45deg); top: 18px; right: -38px; box-shadow: 0 3px 10px rgba(0,0,0,.2);
+main {
+  transform: none !important;;
 }
-.bg-black-200 { background: #1e1e1e !important; }
-.text-white-400 { color: #bdbdbd !important; }
-.text-primary-300 { color: var(--primary-300); }
-.text-primary-500 { color: var(--primary-500); }
-.btn-custom2 { background: var(--primary-500); color: #111; border: 0; }
-.btn-custom2:hover { filter: brightness(1.05); }
+
 </style>
 @endpush
 

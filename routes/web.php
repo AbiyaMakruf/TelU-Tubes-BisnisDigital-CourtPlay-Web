@@ -8,6 +8,11 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PostController;
+
+
+Route::get('/news',        [PostController::class, 'index'])->name('news.index');
+Route::get('/news/{slug}', [PostController::class, 'show'])->name('news.show');
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +43,7 @@ Route::middleware('guest')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Authenticated Routes (Hanya login)
+| Authenticated Routes
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
@@ -74,6 +79,39 @@ Route::middleware('auth')->group(function () {
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| Admin Routes
+|--------------------------------------------------------------------------
+*/
+
+use App\Http\Controllers\Admin\AdminController;
+
+Route::prefix('admin')->name('admin.')->middleware(['auth','admin'])->group(function () {
+  Route::get('/', [AdminController::class,'dashboard'])->name('dashboard');
+
+  // Users
+  Route::get('/users', [AdminController::class,'usersIndex'])->name('users.index');
+  Route::patch('/users/{user}/role', [AdminController::class,'usersUpdateRole'])->name('users.role');
+  Route::delete('/users/{user}', [AdminController::class,'usersDestroy'])->name('users.destroy');
+
+  // Projects
+  Route::get('/projects', [AdminController::class,'projectsIndex'])->name('projects.index');
+  Route::delete('/projects/{project}', [AdminController::class,'projectsDestroy'])->name('projects.destroy');
+
+  // Posts (News)
+  Route::get('/posts', [AdminController::class,'postsIndex'])->name('posts.index');
+  Route::get('/posts/create', [AdminController::class,'postsCreate'])->name('posts.create');
+  Route::post('/posts', [AdminController::class,'postsStore'])->name('posts.store');
+  Route::get('/posts/{post}/edit', [AdminController::class,'postsEdit'])->name('posts.edit');
+  Route::put('/posts/{post}', [AdminController::class,'postsUpdate'])->name('posts.update');
+  Route::delete('/posts/{post}', [AdminController::class,'postsDestroy'])->name('posts.destroy');
+  Route::patch('/posts/{post}/toggle', [AdminController::class,'postsToggle'])->name('posts.toggle');
+});
+
+
 
 /*
 |--------------------------------------------------------------------------

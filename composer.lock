@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2412542f3f0172cc1201cdb7a8d4ea12",
+    "content-hash": "3cb380b691ec912d1c46ed842dd8c4c7",
     "packages": [
         {
             "name": "brick/math",
@@ -706,16 +706,16 @@
         },
         {
             "name": "google/cloud-core",
-            "version": "v1.66.0",
+            "version": "v1.67.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-core.git",
-                "reference": "7abbb4d4dc9cd54479d00079e2de9fa4d7a96268"
+                "reference": "2405b8116dcc4ec50756cc44486c149e34b1b4e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/7abbb4d4dc9cd54479d00079e2de9fa4d7a96268",
-                "reference": "7abbb4d4dc9cd54479d00079e2de9fa4d7a96268",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/2405b8116dcc4ec50756cc44486c149e34b1b4e5",
+                "reference": "2405b8116dcc4ec50756cc44486c149e34b1b4e5",
                 "shasum": ""
             },
             "require": {
@@ -766,7 +766,57 @@
             ],
             "description": "Google Cloud PHP shared dependency, providing functionality useful to all components.",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.66.0"
+                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.67.0"
+            },
+            "time": "2025-10-10T18:34:03+00:00"
+        },
+        {
+            "name": "google/cloud-monitoring",
+            "version": "v2.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/googleapis/google-cloud-php-monitoring.git",
+                "reference": "69b14e014e371ce1359d6d94eac170603895b21c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-monitoring/zipball/69b14e014e371ce1359d6d94eac170603895b21c",
+                "reference": "69b14e014e371ce1359d6d94eac170603895b21c",
+                "shasum": ""
+            },
+            "require": {
+                "google/gax": "^1.38.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "google/cloud-core": "^1.52.7",
+                "phpunit/phpunit": "^9.0"
+            },
+            "suggest": {
+                "ext-protobuf": "Provides a significant increase in throughput over the pure PHP protobuf implementation. See https://cloud.google.com/php/grpc for installation instructions."
+            },
+            "type": "library",
+            "extra": {
+                "component": {
+                    "id": "cloud-monitoring",
+                    "path": "Monitoring",
+                    "entry": null,
+                    "target": "googleapis/google-cloud-php-monitoring.git"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Google\\Cloud\\Monitoring\\": "src",
+                    "GPBMetadata\\Google\\Monitoring\\": "metadata"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Stackdriver Monitoring Client for PHP",
+            "support": {
+                "source": "https://github.com/googleapis/google-cloud-php-monitoring/tree/v2.2.1"
             },
             "time": "2025-10-07T18:41:09+00:00"
         },
@@ -1091,16 +1141,16 @@
         },
         {
             "name": "google/protobuf",
-            "version": "v4.32.1",
+            "version": "v4.33.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/protocolbuffers/protobuf-php.git",
-                "reference": "c4ed1c1f9bbc1e91766e2cd6c0af749324fe87cb"
+                "reference": "b50269e23204e5ae859a326ec3d90f09efe3047d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/c4ed1c1f9bbc1e91766e2cd6c0af749324fe87cb",
-                "reference": "c4ed1c1f9bbc1e91766e2cd6c0af749324fe87cb",
+                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/b50269e23204e5ae859a326ec3d90f09efe3047d",
+                "reference": "b50269e23204e5ae859a326ec3d90f09efe3047d",
                 "shasum": ""
             },
             "require": {
@@ -1129,9 +1179,9 @@
                 "proto"
             ],
             "support": {
-                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v4.32.1"
+                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v4.33.0"
             },
-            "time": "2025-09-14T05:14:52+00:00"
+            "time": "2025-10-15T20:10:28+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -6571,6 +6621,66 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.11.0"
             },
             "time": "2022-06-03T18:03:27+00:00"
+        },
+        {
+            "name": "xendit/xendit-php",
+            "version": "7.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xendit/xendit-php.git",
+                "reference": "4c6e1b9899aef8c6224c7c1ae46963b71435280b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xendit/xendit-php/zipball/4c6e1b9899aef8c6224c7c1ae46963b71435280b",
+                "reference": "4c6e1b9899aef8c6224c7c1ae46963b71435280b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "guzzlehttp/guzzle": "^7.3",
+                "guzzlehttp/psr7": "^1.7 || ^2.0",
+                "php": "^7.4 || ^8.0",
+                "vlucas/phpdotenv": "^5.5"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.5",
+                "phpunit/phpunit": "^8.0 || ^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Xendit\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "unlicense"
+            ],
+            "authors": [
+                {
+                    "name": "OpenAPI-Generator contributors",
+                    "homepage": "https://openapi-generator.tech"
+                }
+            ],
+            "description": "Xendit PHP SDK",
+            "homepage": "https://openapi-generator.tech",
+            "keywords": [
+                "api",
+                "openapi",
+                "openapi-generator",
+                "openapitools",
+                "php",
+                "rest",
+                "sdk"
+            ],
+            "support": {
+                "issues": "https://github.com/xendit/xendit-php/issues",
+                "source": "https://github.com/xendit/xendit-php/tree/7.0.0"
+            },
+            "time": "2025-05-29T04:04:47+00:00"
         },
         {
             "name": "yoeunes/toastr",
