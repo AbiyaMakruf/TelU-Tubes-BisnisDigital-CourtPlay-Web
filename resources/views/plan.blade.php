@@ -11,7 +11,7 @@
 
 <div class="container py-5 text-white">
     <h2 class="fw-bold text-primary-500 text-center mb-4">Choose Your Plan</h2>
-    <p class="text-center text-white-400 mb-5">Switch plan during development. Your role will update immediately.</p>
+    <p class="text-center text-white-400 mb-5">Upgrade or downgrade your plan easily using Xendit payment.</p>
 
     <div class="row g-4 justify-content-center">
         @foreach($plans as $key => $plan)
@@ -32,16 +32,18 @@
                         <div class="small text-muted">Max {{ $plan['limit'] }} videos • {{ $plan['max_mb'] }} MB/file</div>
                     </div>
 
-                    <button
-                        class="btn btn-outline-dark rounded-pill px-4 py-2 mb-3"
-                        @if($isCurrent) disabled @endif
-                        data-bs-toggle="modal"
-                        data-bs-target="#changePlanModal"
-                        data-plan="{{ $key }}"
-                        data-title="{{ $plan['name'] }}"
-                    >
-                        {{ $isCurrent ? 'Selected' : 'Choose Plan' }}
-                    </button>
+                    @if($isCurrent)
+                        <button class="btn btn-outline-dark rounded-pill px-4 py-2 mb-3" disabled>Selected</button>
+                    @else
+                        <form action="{{ route('payment.create') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="plan" value="{{ $key }}">
+                            <input type="hidden" name="price" value="{{ $plan['price_raw'] ?? 0 }}">
+                            <button type="submit" class="btn btn-dark rounded-pill px-4 py-2 mb-3">
+                                Choose Plan
+                            </button>
+                        </form>
+                    @endif
 
                     <hr class="my-3" style="border-color: rgba(0,0,0,.1)">
 

@@ -1173,6 +1173,7 @@ span a:hover {
 
 .modal-backdrop.show {
     z-index: 2050 !important;
+    position: fixed !important;
 }
 .modal {
     z-index: 2060 !important;

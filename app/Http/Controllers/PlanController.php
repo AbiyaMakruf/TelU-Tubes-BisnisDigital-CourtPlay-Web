@@ -13,59 +13,33 @@ class PlanController extends Controller
     {
         try {
             $role = strtolower((string) (Auth::user()->role ?? 'free'));
+            $usdToIdr = config('plans.usd_to_idr');
+            $plansRaw = config('plans.plans');
 
-            $plans = [
-                'free' => [
-                    'name' => 'Free',
-                    'price' => '$0/month',
-                    'users' => '1 user',
-                    'limit' => (int) env('UPLOAD_LIMIT_FREE', 3),
-                    'max_mb' => (int) env('UPLOAD_MAX_FILE_MB_FREE', 200),
-                    'features' => [
-                        'Up to '.env('UPLOAD_LIMIT_FREE', 3).' video analytics',
-                        'Dashboard metrics',
-                        'AI mapping',
-                    ],
-                    'tone' => '#e6f9ff',
-                ],
-                'pro' => [
-                    'name' => 'Pro',
-                    'price' => '$49/month',
-                    'users' => '3 user',
-                    'limit' => (int) env('UPLOAD_LIMIT_PRO', 50),
-                    'max_mb' => (int) env('UPLOAD_MAX_FILE_MB_PRO', 1024),
-                    'features' => [
-                        'Up to '.env('UPLOAD_LIMIT_PRO', 50).' video analytics',
-                        'Dashboard metrics',
-                        'AI mapping',
-                        'Priority processing',
-                    ],
-                    'tone' => '#f2f6ff',
-                ],
-                'plus' => [
-                    'name' => 'Plus',
-                    'price' => '$200/month',
-                    'users' => '5 user',
-                    'limit' => (int) env('UPLOAD_LIMIT_PLUS', 200),
-                    'max_mb' => (int) env('UPLOAD_MAX_FILE_MB_PLUS', 2048),
-                    'features' => [
-                        'Up to '.env('UPLOAD_LIMIT_PLUS', 200).' video analytics',
-                        'Dashboard metrics',
-                        'AI mapping',
-                        'Unlocked new feature',
-                        'Custom video analytics',
-                        'Unlimited storage',
-                    ],
-                    'tone' => '#eefcc8',
-                ],
-            ];
+            // === Proses format harga & detail plan ===
+            $plans = [];
+            foreach ($plansRaw as $key => $plan) {
+                $priceUsd = $plan['price_usd'] ?? 0;
+                $priceIdr = $priceUsd * $usdToIdr;
+
+                $plans[$key] = array_merge($plan, [
+                    'price_idr' => $priceIdr,
+                    'price' => $priceUsd > 0
+                        ? 'Rp' . number_format($priceIdr, 0, ',', '.') . ' / month'
+                        : 'Rp0 / month',
+                ]);
+            }
 
             return view('plan', [
                 'plans' => $plans,
                 'currentRole' => $role,
             ]);
+
         } catch (Throwable $e) {
-            Log::error('Plan page load failed', ['user_id' => optional(Auth::user())->id, 'error' => $e->getMessage()]);
+            Log::error('Plan page load failed', [
+                'user_id' => optional(Auth::user())->id,
+                'error' => $e->getMessage()
+            ]);
             toastr()->error('Failed to load plan page.');
             return back();
         }
@@ -75,10 +49,11 @@ class PlanController extends Controller
     {
         $data = $request->validate(['plan' => 'required|in:free,pro,plus']);
         $user = Auth::user();
+
         $user->role = $data['plan'];
         $user->save();
-        toastr()->success('Plan changed to '.$data['plan'].'.');
+
+        toastr()->success('Plan changed to ' . ucfirst($data['plan']) . '.');
         return redirect()->route('plan');
     }
 }
-
