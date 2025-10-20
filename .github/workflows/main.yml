@@ -71,11 +71,12 @@ jobs:
             --region=us-central1 \
             --platform=managed \
             --allow-unauthenticated \
-            --service-account=github-runner-sa@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com \
             --port=8080 \
             --cpu=2 \
             --memory=2Gi \
             --use-http2 \
+            --async \
+            --cpu-boost \
             --set-env-vars="$ENV_VARS"
 
       # 🚦 Langkah 2: Update Lalu Lintas ke Revisi Terbaru
