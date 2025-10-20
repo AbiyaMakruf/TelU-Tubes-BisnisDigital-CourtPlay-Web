@@ -1,4 +1,4 @@
-@extends('layouts.app-auth')
+@extends('layouts.app')
 
 @section('title', 'Uploads')
 @section('fullbleed', true)

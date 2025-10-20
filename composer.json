@@ -6,12 +6,17 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "google/cloud-core": "^1.67",
+        "google/cloud-monitoring": "^2.2",
         "google/cloud-pubsub": "^2.15",
         "google/cloud-storage": "^1.48",
+        "google/gax": "^1.38",
+        "google/protobuf": "^4.33",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
+        "xendit/xendit-php": "^7.0",
         "yoeunes/toastr": "^2.3"
     },
     "require-dev": {
@@ -33,7 +38,8 @@
         "files": [
             "app/Helpers/UploadGCS.php",
             "app/Helpers/PubSub.php",
-            "app/helpers/storage.php"
+            "app/helpers/storage.php",
+            "app/helpers/CloudRunMetrics.php"
         ]
     },
     "autoload-dev": {

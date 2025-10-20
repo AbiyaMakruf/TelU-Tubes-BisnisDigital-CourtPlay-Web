@@ -37,7 +37,7 @@ class AuthController extends Controller
                 'username'    => $request->username,
                 'email'       => $request->email,
                 'password'    => Hash::make($request->password),
-                'role'        => 'user',
+                'role'        => 'free',
                 'login_token' => bin2hex(random_bytes(32)),
             ]);
 
@@ -75,20 +75,31 @@ class AuthController extends Controller
     {
         try {
             $credentials = $request->validate([
-                'email'    => 'required|string',
+                'email'    => 'required|string', // bisa email ATAU username
                 'password' => 'required|string',
             ]);
 
-            $remember = $request->filled('remember');
+            $remember   = $request->filled('remember');
             $loginField = filter_var($credentials['email'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
             if (Auth::attempt([$loginField => $credentials['email'], 'password' => $credentials['password']], $remember)) {
                 $request->session()->regenerate();
+
+                /** @var \App\Models\User $user */
                 $user = Auth::user();
                 $user->login_token = bin2hex(random_bytes(32));
                 $user->save();
 
                 toastr()->success('Welcome back.', 'Login Success');
+
+                $role = strtolower((string) ($user->role ?? 'user'));
+
+                if ($role === 'admin') {
+                    // route halaman admin (pastikan ada)
+                    return redirect()->route('admin.dashboard');
+                }
+
+                // default: user biasa
                 return redirect()->route('analytics');
             }
 
@@ -96,11 +107,13 @@ class AuthController extends Controller
             return back()->withErrors([
                 'email' => 'Invalid credentials. Please check your ' . ($loginField === 'email' ? 'email' : 'username') . '.',
             ]);
-        } catch (ValidationException $e) {
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
             Log::warning('Validation failed during login', ['errors' => $e->errors()]);
             toastr()->error('Validation failed. Please check your input.');
             return back()->withErrors($e->errors())->withInput();
-        } catch (Exception $e) {
+
+        } catch (\Throwable $e) {
             Log::error('Unexpected login error', ['error' => $e->getMessage()]);
             toastr()->error('Unexpected error occurred during login.');
             return back()->withInput();
