@@ -1171,3 +1171,17 @@ span a:hover {
     background-color: var(--warning);
 }
 
+.modal-backdrop.show {
+    z-index: 2050 !important;
+    position: fixed !important;
+}
+.modal {
+    z-index: 2060 !important;
+}
+
+/* Pastikan tidak ada stacking context dari container */
+.container {
+    transform: none !important;
+    perspective: none !important;
+    filter: none !important;
+}

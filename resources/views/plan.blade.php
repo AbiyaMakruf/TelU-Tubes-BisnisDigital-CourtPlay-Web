@@ -1,4 +1,4 @@
-@extends('layouts.app-auth')
+@extends('layouts.app')
 
 @section('title', 'Your Plan')
 @section('fullbleed', true)
@@ -11,7 +11,7 @@
 
 <div class="container py-5 text-white">
     <h2 class="fw-bold text-primary-500 text-center mb-4">Choose Your Plan</h2>
-    <p class="text-center text-white-400 mb-5">Switch plan during development. Your role will update immediately.</p>
+    <p class="text-center text-white-400 mb-5">Upgrade or downgrade your plan easily using Xendit payment.</p>
 
     <div class="row g-4 justify-content-center">
         @foreach($plans as $key => $plan)
@@ -32,16 +32,18 @@
                         <div class="small text-muted">Max {{ $plan['limit'] }} videos • {{ $plan['max_mb'] }} MB/file</div>
                     </div>
 
-                    <button
-                        class="btn btn-outline-dark rounded-pill px-4 py-2 mb-3"
-                        @if($isCurrent) disabled @endif
-                        data-bs-toggle="modal"
-                        data-bs-target="#changePlanModal"
-                        data-plan="{{ $key }}"
-                        data-title="{{ $plan['name'] }}"
-                    >
-                        {{ $isCurrent ? 'Selected' : 'Choose Plan' }}
-                    </button>
+                    @if($isCurrent)
+                        <button class="btn btn-outline-dark rounded-pill px-4 py-2 mb-3" disabled>Selected</button>
+                    @else
+                        <form action="{{ route('payment.create') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="plan" value="{{ $key }}">
+                            <input type="hidden" name="price" value="{{ $plan['price_raw'] ?? 0 }}">
+                            <button type="submit" class="btn btn-dark rounded-pill px-4 py-2 mb-3">
+                                Choose Plan
+                            </button>
+                        </form>
+                    @endif
 
                     <hr class="my-3" style="border-color: rgba(0,0,0,.1)">
 
@@ -79,19 +81,10 @@
 
 @push('styles')
 <style>
-.pricing-card { border: 0; box-shadow: 0 6px 20px rgba(0,0,0,.25); }
-.ribbon { width: 120px; height: 120px; overflow: hidden; position: absolute; top: -6px; right: -6px; }
-.ribbon span {
-    position: absolute; display: block; width: 160px; padding: 8px 0;
-    background: #a3ce14; color: #111; text-align: center; font-weight: 700;
-    transform: rotate(45deg); top: 18px; right: -38px; box-shadow: 0 3px 10px rgba(0,0,0,.2);
+main {
+  transform: none !important;;
 }
-.bg-black-200 { background: #1e1e1e !important; }
-.text-white-400 { color: #bdbdbd !important; }
-.text-primary-300 { color: var(--primary-300); }
-.text-primary-500 { color: var(--primary-500); }
-.btn-custom2 { background: var(--primary-500); color: #111; border: 0; }
-.btn-custom2:hover { filter: brightness(1.05); }
+
 </style>
 @endpush
 
