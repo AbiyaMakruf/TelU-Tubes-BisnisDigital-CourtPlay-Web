@@ -38,7 +38,7 @@
         "files": [
             "app/Helpers/UploadGCS.php",
             "app/Helpers/PubSub.php",
-            "app/Helpers/Storage.php",
+            "app/Helpers/storage.php",
             "app/Helpers/CloudRunMetrics.php"
         ]
     },
