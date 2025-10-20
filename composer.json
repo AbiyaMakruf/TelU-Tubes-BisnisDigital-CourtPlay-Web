@@ -38,8 +38,8 @@
         "files": [
             "app/Helpers/UploadGCS.php",
             "app/Helpers/PubSub.php",
-            "app/helpers/storage.php",
-            "app/helpers/CloudRunMetrics.php"
+            "app/Helpers/Storage.php",
+            "app/Helpers/CloudRunMetrics.php"
         ]
     },
     "autoload-dev": {
