@@ -33,6 +33,11 @@ COPY . .
 # ============================================
 RUN composer install --no-dev --optimize-autoloader
 
+# ===============================
+# 6.1 Add Custom PHP Upload Limits <-- BARU
+# ===============================
+COPY ./docker/custom.ini /usr/local/etc/php/conf.d/custom-upload-limits.ini
+
 # ============================================
 # 7. Optimize Laravel
 # ============================================
@@ -46,7 +51,8 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 # ===============================
 # 9. Copy Nginx Config
 # ===============================
-COPY ./docker/nginx.conf /etc/nginx/sites-available/default
+COPY ./docker/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/default.conf /etc/nginx/sites-available/default
 
 # ===============================
 # 10. Copy Supervisor Config
