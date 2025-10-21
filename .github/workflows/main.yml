@@ -2,7 +2,7 @@ name: Build, Push, and Deploy Laravel to Cloud Run
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, staging ]
   workflow_dispatch:
 
 jobs:
@@ -14,17 +14,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 🛠️ Set up PH P
+      # 🛠️ Set up PHP
       - name: Create Laravel GCS Key File from Secret
         run: |
-          # 1. Buat direktori yang dibutuhkan oleh Laravel
           mkdir -p storage/app/keys
           
-          # 2. Tulis Secret JSON ke file yang diharapkan oleh GCS_KEY_PATH Laravel
-          # Gunakan tanda kutip tunggal untuk menjaga format JSON (termasuk private key yang multi-baris)
           echo '${{ secrets.GCP_SA_KEY_WEB }}' > storage/app/keys/courtplay-gcs-key.json
-          
-          echo "File kunci GCS berhasil dibuat di: storage/app/keys/courtplay-gcs-key.json"
 
       # 🧩 Create GCP credentials file
       - name: Create GCP credentials file
@@ -44,17 +39,17 @@ jobs:
       - name: Configure Docker for Artifact Registry
         run: |
           gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-          gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+          gcloud auth configure-docker asia-southeast1-docker.pkg.dev --quiet
 
       # 🧱 Build Docker image
       - name: Build Docker image
         run: |
-          docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/courtplay-repo/courtplay-web:latest .
+          docker build -t asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/courtplay-repo/courtplay-web:latest .
 
       # 📦 Push Docker image
       - name: Push Docker image
         run: |
-          docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/courtplay-repo/courtplay-web:latest
+          docker push asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/courtplay-repo/courtplay-web:latest
 
       # 🔐 Create .env.production file from GitHub Secret
       - name: Create .env.production file
@@ -66,9 +61,9 @@ jobs:
         run: |
           # Convert .env.production (KEY=VALUE) → gcloud format KEY=VALUE,KEY2=VALUE2
           ENV_VARS=$(grep -v '^#' .env.production | grep '=' | sed '/^$/d' | tr '\n' ',' | sed 's/,$//')
-          gcloud run deploy courtplay-web \
-            --image=us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/courtplay-repo/courtplay-web:latest \
-            --region=us-central1 \
+          gcloud run deploy courtplay-web-sg \
+            --image=asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/courtplay-repo/courtplay-web:latest \
+            --region=asia-southeast1 \
             --platform=managed \
             --allow-unauthenticated \
             --port=8080 \
@@ -84,4 +79,4 @@ jobs:
         run: |
           gcloud run services update-traffic courtplay-web \
             --to-latest \
-            --region=us-central1
+            --region=asia-southeast1
