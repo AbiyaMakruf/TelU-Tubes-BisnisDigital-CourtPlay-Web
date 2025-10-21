@@ -77,6 +77,6 @@ jobs:
       # 🚦 Langkah 2: Update Lalu Lintas ke Revisi Terbaru
       - name: Route Traffic to Latest Revision
         run: |
-          gcloud run services update-traffic courtplay-web \
+          gcloud run services update-traffic courtplay-web-sg \
             --to-latest \
             --region=asia-southeast1
