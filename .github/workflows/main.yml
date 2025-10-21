@@ -2,7 +2,7 @@ name: Build, Push, and Deploy Laravel to Cloud Run
 
 on:
   push:
-    branches: [ main, staging ]
+    branches: [ main]
   workflow_dispatch:
 
 jobs:
@@ -61,10 +61,11 @@ jobs:
         run: |
           # Convert .env.production (KEY=VALUE) → gcloud format KEY=VALUE,KEY2=VALUE2
           ENV_VARS=$(grep -v '^#' .env.production | grep '=' | sed '/^$/d' | tr '\n' ',' | sed 's/,$//')
-          gcloud run deploy courtplay-web-sg \
+          gcloud run deploy courtplay-web \
             --image=asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/courtplay-repo/courtplay-web:latest \
             --region=asia-southeast1 \
             --platform=managed \
+            --service-account=github-runner-sa@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com \
             --allow-unauthenticated \
             --port=8080 \
             --cpu=2 \
@@ -74,9 +75,9 @@ jobs:
             --cpu-boost \
             --set-env-vars="$ENV_VARS"
 
-      # 🚦 Langkah 2: Update Lalu Lintas ke Revisi Terbaru
+      # 🚦Update Lalu Lintas ke Revisi Terbaru
       - name: Route Traffic to Latest Revision
         run: |
-          gcloud run services update-traffic courtplay-web-sg \
+          gcloud run services update-traffic courtplay-web \
             --to-latest \
             --region=asia-southeast1
