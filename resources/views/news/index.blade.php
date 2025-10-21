@@ -45,7 +45,7 @@
               {{ optional($post->published_at)->format('F d, Y') ?? '' }}
             </div>
             <a href="{{ $post->url }}" class="text-decoration-none">
-              <h3 class="mb-2 text-primary-100 fw-bold">{{ $post->title }}</h3>
+              <h3 class="mb-2 text-primary-300 fw-bold">{{ $post->title }}</h3>
             </a>
             @if($post->excerpt)
               <p class="text-white-400 mb-2" style="max-width:62ch">{{ $post->excerpt }}</p>

@@ -616,17 +616,25 @@ main {
 .pricing-card.basic {
     background-color: transparent;
     border: 5px solid var(--primary-500);
-    color: var(--white-500);
+    color: var(--primary-500);
+    transform: translateY(-6px);
 }
 .pricing-card.basic h3,
 .pricing-card.basic .price {
-    color: var(--white-500);
+    color: var(--primary-500);
+}
+
+.pricing-card.pro {
+    background-color: var(--primary-300);
+    color: var(--black-300);
+    transform: translateY(-6px);
 }
 
 /* Plus & Pro highlight */
 .pricing-card.highlight {
     background-color: var(--primary-500);
     color: var(--black-200);
+    transform: translateY(-6px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 .pricing-card.highlight h3,

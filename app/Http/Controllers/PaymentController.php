@@ -15,7 +15,6 @@ class PaymentController extends Controller
 
     public function __construct()
     {
-        // Ambil API key dari config/xendit.php
         Configuration::setXenditKey(config('xendit.secret_key'));
         $this->invoiceApi = new InvoiceApi();
     }
@@ -30,16 +29,23 @@ class PaymentController extends Controller
             $user = Auth::user();
             $planKey = $request->plan;
 
+            // Ambil konfigurasi plan dari config/plans.php
             $plans = config('plans.plans');
-            $usdToIdr = config('plans.usd_to_idr');
-            $priceUsd = $plans[$planKey]['price_usd'] ?? 0;
-            $amount = $priceUsd * $usdToIdr;
+            if (!isset($plans[$planKey])) {
+                toastr()->error('Selected plan not found.');
+                return back();
+            }
 
-            // Jika free plan → langsung ubah role tanpa Xendit
+            $selectedPlan = $plans[$planKey];
+            $amount = (int) ($selectedPlan['price_idr'] ?? 0);
+
+            // Jika Free Plan → langsung ubah role tanpa Xendit
             if ($amount <= 0) {
                 $user->role = 'free';
                 $user->save();
-                return redirect()->route('plan')->with('success', 'You are now on Free Plan');
+
+                toastr()->success('You are now on Free Plan!');
+                return redirect()->route('plan');
             }
 
             $externalId = 'PLAN-' . strtoupper($planKey) . '-' . uniqid();
@@ -61,26 +67,28 @@ class PaymentController extends Controller
             // Buat invoice di Xendit
             $invoice = $this->invoiceApi->createInvoice($params);
 
-
-
-            // Log
-            Log::info('Xendit Invoice created', [
-                'user_id' => $user->id,
-                'plan' => $planKey,
-                'amount' => $amount,
+            Log::info('✅ Xendit Invoice created', [
+                'user_id'    => $user->id,
+                'plan'       => $planKey,
+                'amount'     => $amount,
                 'invoice_id' => $invoice['id'] ?? null,
             ]);
 
-            // Langsung redirect ke Hosted Invoice Page (UI bawaan Xendit)
+            // Redirect ke Hosted Invoice Page (Xendit UI)
             if (!empty($invoice['invoice_url'])) {
+                toastr()->info("Redirecting to payment page for {$selectedPlan['name']} Plan...");
                 return redirect()->away($invoice['invoice_url']);
             }
 
-            return back()->withErrors(['error' => 'Failed to generate Xendit invoice.']);
+            toastr()->error('Failed to generate Xendit invoice.');
+            return back();
 
         } catch (\Throwable $e) {
-            Log::error('Xendit Payment create failed: ' . $e->getMessage());
-            return back()->withErrors(['error' => 'Payment creation failed: ' . $e->getMessage()]);
+            Log::error('❌ Xendit Payment create failed', [
+                'error' => $e->getMessage(),
+            ]);
+            toastr()->error('Payment creation failed: ' . $e->getMessage());
+            return back();
         }
     }
 
@@ -91,7 +99,7 @@ class PaymentController extends Controller
     {
         try {
             $payload = $request->all();
-            Log::info('Xendit Callback received', $payload);
+            Log::info('📩 Xendit Callback received', $payload);
 
             $status = $payload['status'] ?? null;
             $externalId = $payload['external_id'] ?? null;
@@ -102,31 +110,23 @@ class PaymentController extends Controller
                 $user = User::where('email', $payerEmail)->first();
 
                 if ($user) {
-                    $planController = new \App\Http\Controllers\PlanController();
+                    // Ganti role user
+                    $user->role = $plan;
+                    $user->save();
 
-                    $fakeRequest = new Request([
-                        'plan' => $plan
-                    ]);
-
-                    Auth::login($user);
-
-                    // Jalankan changePlan
-                    $response = $planController->changePlan($fakeRequest);
-
-                    Log::info("✅ PlanController::changePlan berhasil dipanggil untuk {$user->email} ke {$plan}");
-                    Auth::logout();
-
+                    Log::info("✅ User {$user->email} upgraded to {$plan} plan (via callback)");
                     return response()->json(['success' => true]);
-                } else {
-                    Log::warning("⚠️ User not found for callback: {$payerEmail}");
                 }
+
+                Log::warning("⚠️ User not found for callback email: {$payerEmail}");
+                return response()->json(['error' => 'User not found'], 404);
             }
 
+            Log::warning("⚠️ Invalid callback status: {$status}");
             return response()->json(['success' => true]);
         } catch (\Throwable $e) {
-            Log::error('Xendit callback error: ' . $e->getMessage());
+            Log::error('❌ Xendit callback error: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
-
     }
 }

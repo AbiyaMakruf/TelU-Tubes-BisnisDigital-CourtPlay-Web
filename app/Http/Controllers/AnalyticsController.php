@@ -23,29 +23,27 @@ class AnalyticsController extends Controller
                 })
                 ->when($sort, function ($query, $sort) {
                     switch ($sort) {
-                        case 'oldest': $query->orderBy('upload_date', 'asc'); break;
-                        case 'done': $query->orderByDesc('is_mailed'); break;
-                        case 'inprocess': $query->orderBy('is_mailed', 'asc'); break;
-                        default: $query->orderBy('upload_date', 'desc'); break;
+                        case 'oldest':
+                            $query->orderBy('upload_date', 'asc');
+                            break;
+                        case 'done':
+                            $query->orderBy('is_mailed', 'desc');
+                            break;
+                        case 'inprocess':
+                            $query->orderBy('is_mailed', 'asc');
+                            break;
+                        default:
+                            $query->orderBy('upload_date', 'desc');
+                            break;
                     }
                 })
                 ->get();
 
             $role = strtolower((string) ($user->role ?? 'free'));
-            switch ($role) {
-                case 'pro':
-                    $maxLimit = (int) env('UPLOAD_LIMIT_PRO', 50);
-                    $maxUploadMb = (int) env('UPLOAD_MAX_FILE_MB_PRO', 1024);
-                    break;
-                case 'plus':
-                    $maxLimit = (int) env('UPLOAD_LIMIT_PLUS', 200);
-                    $maxUploadMb = (int) env('UPLOAD_MAX_FILE_MB_PLUS', 2048);
-                    break;
-                default:
-                    $maxLimit = (int) env('UPLOAD_LIMIT_FREE', 3);
-                    $maxUploadMb = (int) env('UPLOAD_MAX_FILE_MB_FREE', 200);
-                    break;
-            }
+            $uploadConfig = config("files.upload.plans.{$role}", config('files.upload.plans.free'));
+
+            $maxLimit = (int) $uploadConfig['limit'];
+            $maxUploadMb = (int) $uploadConfig['max_file_mb'];
 
             $projectCount = $projects->count();
             $percentageUsed = $maxLimit > 0 ? min(100, ($projectCount / $maxLimit) * 50) : 0;
@@ -67,7 +65,10 @@ class AnalyticsController extends Controller
                 'currentSearch' => $search,
             ]);
         } catch (\Throwable $e) {
-            Log::error('Analytics index failed', ['user_id' => optional(Auth::user())->id, 'error' => $e->getMessage()]);
+            Log::error('Analytics index failed', [
+                'user_id' => optional(Auth::user())->id,
+                'error' => $e->getMessage()
+            ]);
             toastr()->error('Failed to load analytics.');
             return back();
         }
@@ -76,7 +77,10 @@ class AnalyticsController extends Controller
     public function show($id)
     {
         try {
-            $project = Project::with('projectDetails')->where('user_id', Auth::id())->findOrFail($id);
+            $project = Project::with('projectDetails')
+                ->where('user_id', Auth::id())
+                ->findOrFail($id);
+
             $detail = $project->projectDetails;
 
             $formatTime = function ($seconds) {
@@ -108,11 +112,18 @@ class AnalyticsController extends Controller
                 'processingTime' => $formatTime($detail->video_processing_time ?? 0),
             ]);
         } catch (ModelNotFoundException $e) {
-            Log::warning('Project not found for show', ['user_id' => Auth::id(), 'project_id' => $id]);
+            Log::warning('Project not found for show', [
+                'user_id' => Auth::id(),
+                'project_id' => $id
+            ]);
             toastr()->error('Project not found.');
             return redirect()->route('analytics');
         } catch (\Throwable $e) {
-            Log::error('Analytics show failed', ['user_id' => Auth::id(), 'project_id' => $id, 'error' => $e->getMessage()]);
+            Log::error('Analytics show failed', [
+                'user_id' => Auth::id(),
+                'project_id' => $id,
+                'error' => $e->getMessage()
+            ]);
             toastr()->error('Failed to load project details.');
             return redirect()->route('analytics');
         }

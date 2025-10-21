@@ -11,11 +11,10 @@
             <div class="col-md-4 d-flex">
                 <div class="pricing-card basic w-100">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h3 class="mb-0">Basic</h3>
-                        <span class="small">1 user</span>
+                        <h3 class="mb-0">Free</h3>
                     </div>
-                    <h4 class="price">Free</h4>
-                    <a href="#" class="btn btn-outline-custom2 mb-3">Sign Up</a>
+                    <h4 class="price">Rp0 / month</h4>
+                    <a href="{{ route('signup.form') }}" class="btn btn-outline-custom2 mb-3">Sign Up</a>
                     <hr>
                     <ul class="features list-unstyled mt-3">
                         <li>✔ Free 1 video analytics</li>
@@ -30,10 +29,9 @@
                 <div class="pricing-card highlight w-100">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h3 class="mb-0">Plus</h3>
-                        <span class="small">5 user</span>
                     </div>
-                    <h4 class="price">$200<span class="small">/month</span></h4>
-                    <a href="#" class="btn btn-outline-custom mb-3">Buy Now</a>
+                    <h4 class="price">Rp129.000 / month</h4>
+                    <a href="{{ route('signup.form') }}" class="btn btn-outline-custom mb-3">Buy Now</a>
                     <hr>
                     <ul class="features list-unstyled mt-3">
                         <li>✔ Up to 10 video analytics</li>
@@ -48,13 +46,12 @@
 
             {{-- Pro --}}
             <div class="col-md-4 d-flex">
-                <div class="pricing-card highlight w-100">
+                <div class="pricing-card pro w-100">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h3 class="mb-0">Pro</h3>
-                        <span class="small">20 user</span>
                     </div>
-                    <h4 class="price">$300<span class="small">/month</span></h4>
-                    <a href="#" class="btn btn-outline-custom mb-3">Buy Now</a>
+                    <h4 class="price">Rp299.000 / month</span></h4>
+                    <a href="{{ route('signup.form') }}" class="btn btn-outline-custom mb-3">Buy Now</a>
                     <hr>
                     <ul class="features list-unstyled mt-3">
                         <li>✔ Up to 100 video analytics</li>

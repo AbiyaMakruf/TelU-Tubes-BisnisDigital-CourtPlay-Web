@@ -13,20 +13,15 @@ class PlanController extends Controller
     {
         try {
             $role = strtolower((string) (Auth::user()->role ?? 'free'));
-            $usdToIdr = config('plans.usd_to_idr');
             $plansRaw = config('plans.plans');
 
-            // === Proses format harga & detail plan ===
+            // === Format harga & detail plan ===
             $plans = [];
             foreach ($plansRaw as $key => $plan) {
-                $priceUsd = $plan['price_usd'] ?? 0;
-                $priceIdr = $priceUsd * $usdToIdr;
-
+                $priceIdr = $plan['price_idr'] ?? 0;
                 $plans[$key] = array_merge($plan, [
                     'price_idr' => $priceIdr,
-                    'price' => $priceUsd > 0
-                        ? 'Rp' . number_format($priceIdr, 0, ',', '.') . ' / month'
-                        : 'Rp0 / month',
+                    'price' => 'Rp' . number_format($priceIdr, 0, ',', '.') . ' / month',
                 ]);
             }
 

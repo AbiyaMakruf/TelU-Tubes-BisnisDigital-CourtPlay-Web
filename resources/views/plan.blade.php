@@ -1,92 +1,133 @@
 @extends('layouts.app')
-
-@section('title', 'Your Plan')
-@section('fullbleed', true)
+@section('title', 'Pricing')
 
 @section('content')
-@php
-    $plans = $plans ?? [];
-    $currentRole = strtolower($currentRole ?? (optional(Auth::user())->role ?? 'free'));
-@endphp
+<section class="pricing py-5">
+    <div class="container">
+        <div class="row justify-content-center g-4">
 
-<div class="container py-5 text-white">
-    <h2 class="fw-bold text-primary-500 text-center mb-4">Choose Your Plan</h2>
-    <p class="text-center text-white-400 mb-5">Upgrade or downgrade your plan easily using Xendit payment.</p>
+            {{-- Free / Basic --}}
+            <div class="col-md-4 d-flex">
+                <div class="pricing-card basic w-100">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h3 class="mb-0">{{ $plans['free']['name'] ?? 'Free' }}</h3>
+                    </div>
+                    <h4 class="price">{{ $plans['free']['price'] }}</h4>
 
-    <div class="row g-4 justify-content-center">
-        @foreach($plans as $key => $plan)
-            @php $isCurrent = ($currentRole === $key); @endphp
-            <div class="col-md-4">
-                <div class="pricing-card position-relative h-100 rounded-4 shadow-sm p-4" style="background: {{ $plan['tone'] }}; color: #111;">
-                    @if($isCurrent)
+                    @if($currentRole === 'free')
+                        <button class="btn btn-outline-custom2 rounded-pill px-4 py-2 mb-3" disabled>Selected</button>
                         <div class="ribbon ribbon-top-right"><span>Current</span></div>
-                    @endif
-
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h4 class="fw-bold mb-0">{{ $plan['name'] }}</h4>
-                        <small class="text-muted">{{ $plan['users'] }}</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <div class="fs-3 fw-bold">{{ $plan['price'] }}</div>
-                        <div class="small text-muted">Max {{ $plan['limit'] }} videos • {{ $plan['max_mb'] }} MB/file</div>
-                    </div>
-
-                    @if($isCurrent)
-                        <button class="btn btn-outline-dark rounded-pill px-4 py-2 mb-3" disabled>Selected</button>
                     @else
-                        <form action="{{ route('payment.create') }}" method="POST">
+                        <form method="POST" action="{{ route('payment.create') }}">
                             @csrf
-                            <input type="hidden" name="plan" value="{{ $key }}">
-                            <input type="hidden" name="price" value="{{ $plan['price_raw'] ?? 0 }}">
-                            <button type="submit" class="btn btn-dark rounded-pill px-4 py-2 mb-3">
-                                Choose Plan
-                            </button>
+                            <input type="hidden" name="plan" value="free">
+                            <input type="hidden" name="price" value="{{ $plans['free']['price_idr'] }}">
+                            <button type="submit" class="btn btn-outline-custom2 mb-3 w-100">Choose Plan</button>
                         </form>
                     @endif
 
-                    <hr class="my-3" style="border-color: rgba(0,0,0,.1)">
-
-                    <ul class="list-unstyled mb-0">
-                        @foreach($plan['features'] as $f)
-                            <li class="mb-2">✔ {{ $f }}</li>
+                    <hr>
+                    <ul class="features list-unstyled mt-3">
+                        @foreach($plans['free']['features'] as $feature)
+                            <li>✔ {{ $feature }}</li>
                         @endforeach
                     </ul>
                 </div>
             </div>
-        @endforeach
-    </div>
-</div>
 
-<div class="modal fade" id="changePlanModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <form class="modal-content bg-black-200 text-white" method="POST" action="{{ route('plan.change') }}">
-      @csrf
-      <div class="modal-header border-0">
-        <h5 class="modal-title fw-bold text-primary-500" id="changePlanTitle">Change Plan</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" name="plan" id="selectedPlanInput">
-        <p class="mb-1">You are switching plan to: <span id="selectedPlanLabel" class="fw-bold text-primary-300"></span></p>
-        <small class="text-white-400">In development, this updates your role immediately.</small>
-      </div>
-      <div class="modal-footer border-0">
-        <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-custom2">Confirm</button>
-      </div>
-    </form>
-  </div>
-</div>
+            {{-- Plus --}}
+            <div class="col-md-4 d-flex">
+                <div class="pricing-card highlight w-100">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h3 class="mb-0">{{ $plans['plus']['name'] ?? 'Plus' }}</h3>
+                    </div>
+                    <h4 class="price">{{ $plans['plus']['price'] }}</h4>
+
+                    @if($currentRole === 'plus')
+                        <button class="btn btn-outline-dark rounded-pill px-4 py-2 mb-3" disabled>Selected</button>
+                        <div class="ribbon ribbon-top-right"><span>Current</span></div>
+                    @else
+                        <form method="POST" action="{{ route('payment.create') }}">
+                            @csrf
+                            <input type="hidden" name="plan" value="plus">
+                            <input type="hidden" name="price" value="{{ $plans['plus']['price_idr'] }}">
+                            <button type="submit" class="btn btn-outline-custom mb-3 w-100">Choose Plan</button>
+                        </form>
+                    @endif
+
+                    <hr>
+                    <ul class="features list-unstyled mt-3">
+                        @foreach($plans['plus']['features'] as $feature)
+                            <li>✔ {{ $feature }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+
+            {{-- Pro --}}
+            <div class="col-md-4 d-flex">
+                <div class="pricing-card pro w-100">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h3 class="mb-0">{{ $plans['pro']['name'] ?? 'Pro' }}</h3>
+                    </div>
+                    <h4 class="price">{{ $plans['pro']['price'] }}</h4>
+
+                    @if($currentRole === 'pro')
+                        <button class="btn btn-outline-dark rounded-pill px-4 py-2 mb-3" disabled>Selected</button>
+                        <div class="ribbon ribbon-top-right"><span>Current</span></div>
+                    @else
+                        <form method="POST" action="{{ route('payment.create') }}">
+                            @csrf
+                            <input type="hidden" name="plan" value="pro">
+                            <input type="hidden" name="price" value="{{ $plans['pro']['price_idr'] }}">
+                            <button type="submit" class="btn btn-outline-custom mb-3 w-100">Choose Plan</button>
+                        </form>
+                    @endif
+
+                    <hr>
+                    <ul class="features list-unstyled mt-3">
+                        @foreach($plans['pro']['features'] as $feature)
+                            <li>✔ {{ $feature }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+@endsection
 
 @push('styles')
 <style>
-main {
-  transform: none !important;;
+
+/* --- Ribbon Style --- */
+.ribbon {
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    position: absolute;
+    top: -5px;
+    right: -5px;
 }
+.ribbon span {
+    position: absolute;
+    display: block;
+    width: 140px;
+    padding: 5px 0;
+    background: #ffc107;
+    color: #111;
+    text-align: center;
+    font-weight: 600;
+    transform: rotate(45deg);
+    top: 25px;
+    right: -30px;
+}
+
 
 </style>
 @endpush
+
 
 @push('scripts')
 <script>
@@ -121,4 +162,3 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 @endpush
-@endsection
