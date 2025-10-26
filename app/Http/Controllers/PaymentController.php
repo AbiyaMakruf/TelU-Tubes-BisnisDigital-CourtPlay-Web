@@ -118,8 +118,7 @@ class PaymentController extends Controller
                 // Temukan user berdasarkan email
                 $user = User::where('email', $payerEmail)->first();
 
-                $oldPlan = $user->role;
-                Mail::to($payerEmail)->send(new PlanChangedMail($user, $oldPlan, $plan));
+                
 
                 if ($user) {
                     // dd($plan);
