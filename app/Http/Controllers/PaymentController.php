@@ -98,19 +98,20 @@ class PaymentController extends Controller
             Log::info('📩 Xendit Callback received', $payload);
 
             // Ambil field penting dari payload
-            $status        = strtoupper($payload['status'] ?? '');
-            $payerEmail    = $payload['payer_email'] ?? null;
-            $externalId    = $payload['external_id'] ?? null;
-            $paymentMethod = $payload['payment_method'] ?? null;
-            $paymentChannel = $payload['payment_channel'] ?? null;
+            $status          = strtoupper($payload['status'] ?? '');
+            $payerEmail      = $payload['payer_email'] ?? null;
+            $externalId      = $payload['external_id'] ?? null;
+            $paymentMethod   = $payload['payment_method'] ?? null;
+            $paymentChannel  = $payload['payment_channel'] ?? null;
 
-            // Validasi status berhasil
-            if ($status === 'PAID' && $externalId) {
+            // Validasi status sukses dan external_id ada
+            if ($status === 'PAID' && !empty($externalId)) {
+
                 // Contoh external_id: PLAN-PLUS-68fe2f0344037 → ambil "PLUS"
                 $parts = explode('-', $externalId);
                 $plan  = strtolower($parts[1] ?? 'free');
 
-                if (!$payerEmail) {
+                if (empty($payerEmail)) {
                     Log::warning("⚠️ Missing payer_email for external_id: {$externalId}");
                     return response()->json(['error' => 'Missing payer email'], 400);
                 }
@@ -118,22 +119,34 @@ class PaymentController extends Controller
                 // Temukan user berdasarkan email
                 $user = User::where('email', $payerEmail)->first();
 
-                
-
-                if ($user) {
-                    // dd($plan);
-                    $oldPlan = $user->role;
-                    Mail::to($payerEmail)->send(new PlanChangedMail($user, $oldPlan, $plan));
-
-                    $user->role = $plan;
-                    $user->save();
-
-                    Log::info("✅ User {$user->email} upgraded to {$plan} plan (via Xendit {$paymentMethod}-{$paymentChannel})");
-                    return response()->json(['success' => true]);
+                if (!$user) {
+                    Log::warning("⚠️ User not found for callback email: {$payerEmail}");
+                    return response()->json(['error' => 'User not found'], 404);
                 }
 
-                Log::warning("⚠️ User not found for callback email: {$payerEmail}");
-                return response()->json(['error' => 'User not found'], 404);
+                // Hindari double-update kalau user sudah di-plan yang sama
+                if ($user->role === $plan) {
+                    Log::info("ℹ️ Callback ignored — User {$user->email} already on {$plan} plan.");
+                    return response()->json(['success' => true, 'message' => 'User already on this plan']);
+                }
+
+                // Simpan plan lama untuk email
+                $oldPlan = $user->role;
+
+                // Kirim email notifikasi sebelum update role
+                try {
+                    Mail::to($user->email)->send(new PlanChangedMail($user, $oldPlan, $plan));
+                    Log::info("📧 Plan change email sent to {$user->email} ({$oldPlan} → {$plan})");
+                } catch (\Throwable $mailError) {
+                    Log::error("❌ Failed to send plan change email to {$user->email}: {$mailError->getMessage()}");
+                }
+
+                // Update role user
+                $user->role = $plan;
+                $user->save();
+
+                Log::info("✅ User {$user->email} upgraded to {$plan} plan (via Xendit {$paymentMethod}-{$paymentChannel})");
+                return response()->json(['success' => true]);
             }
 
             Log::warning("⚠️ Ignored callback with status={$status}, external_id={$externalId}");
@@ -144,5 +157,6 @@ class PaymentController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
 
 }
