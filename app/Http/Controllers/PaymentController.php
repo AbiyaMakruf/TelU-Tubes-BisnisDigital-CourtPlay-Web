@@ -73,7 +73,7 @@ class PaymentController extends Controller
 
             // Redirect ke Hosted Invoice Page (Xendit UI)
             if (!empty($invoice['invoice_url'])) {
-                toastr()->info("Redirecting to payment page for {$selectedPlan['name']} Plan...");
+                toastr()->success("Your plan updated to {$selectedPlan['name']}.");
                 return redirect()->away($invoice['invoice_url']);
             }
 
