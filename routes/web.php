@@ -16,7 +16,7 @@ use App\Http\Controllers\Admin\AdminController;
 
 Route::get('/news',        [PostController::class, 'index'])->name('news.index');
 Route::get('/news/{slug}', [PostController::class, 'show'])->name('news.show');
-Route::post('/payment/callback', [PaymentController::class, 'handleCallback'])->name('payment.callback');
+// Route::post('/payment-complete', [PaymentController::class, 'handleCallbackSuccess'])->name('payment.callback');
 
 /*
 |--------------------------------------------------------------------------

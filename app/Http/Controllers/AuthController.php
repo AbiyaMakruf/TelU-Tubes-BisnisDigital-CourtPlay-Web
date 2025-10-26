@@ -75,7 +75,7 @@ class AuthController extends Controller
     {
         try {
             $credentials = $request->validate([
-                'email'    => 'required|string', // bisa email ATAU username
+                'email'    => 'required|string', 
                 'password' => 'required|string',
             ]);
 

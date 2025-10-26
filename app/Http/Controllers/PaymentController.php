@@ -19,17 +19,15 @@ class PaymentController extends Controller
         $this->invoiceApi = new InvoiceApi();
     }
 
-    /**
-     * Membuat transaksi dan langsung redirect ke Hosted Invoice Page (UI bawaan Xendit)
-     */
     public function createTransaction(Request $request)
     {
         try {
+
+
             $request->validate(['plan' => 'required|in:free,pro,plus']);
             $user = Auth::user();
             $planKey = $request->plan;
 
-            // Ambil konfigurasi plan dari config/plans.php
             $plans = config('plans.plans');
             if (!isset($plans[$planKey])) {
                 toastr()->error('Selected plan not found.');
@@ -39,7 +37,6 @@ class PaymentController extends Controller
             $selectedPlan = $plans[$planKey];
             $amount = (int) ($selectedPlan['price_idr'] ?? 0);
 
-            // Jika Free Plan → langsung ubah role tanpa Xendit
             if ($amount <= 0) {
                 $user->role = 'free';
                 $user->save();
@@ -92,29 +89,39 @@ class PaymentController extends Controller
         }
     }
 
-    /**
-     * Callback webhook dari Xendit
-     */
-    public function handleCallback(Request $request)
+    public function handleCallbackSuccess(Request $request)
     {
         try {
             $payload = $request->all();
             Log::info('📩 Xendit Callback received', $payload);
 
-            $status = $payload['status'] ?? null;
-            $externalId = $payload['external_id'] ?? null;
-            $payerEmail = $payload['payer_email'] ?? null;
+            // Ambil field penting dari payload
+            $status        = strtoupper($payload['status'] ?? '');
+            $payerEmail    = $payload['payer_email'] ?? null;
+            $externalId    = $payload['external_id'] ?? null;
+            $paymentMethod = $payload['payment_method'] ?? null;
+            $paymentChannel = $payload['payment_channel'] ?? null;
 
+            // Validasi status berhasil
             if ($status === 'PAID' && $externalId) {
-                $plan = strtolower(explode('-', $externalId)[1] ?? 'free');
+                // Contoh external_id: PLAN-PLUS-68fe2f0344037 → ambil "PLUS"
+                $parts = explode('-', $externalId);
+                $plan  = strtolower($parts[1] ?? 'free');
+
+                if (!$payerEmail) {
+                    Log::warning("⚠️ Missing payer_email for external_id: {$externalId}");
+                    return response()->json(['error' => 'Missing payer email'], 400);
+                }
+
+                // Temukan user berdasarkan email
                 $user = User::where('email', $payerEmail)->first();
 
                 if ($user) {
-                    // Ganti role user
+                    // dd($plan);
                     $user->role = $plan;
                     $user->save();
 
-                    Log::info("✅ User {$user->email} upgraded to {$plan} plan (via callback)");
+                    Log::info("✅ User {$user->email} upgraded to {$plan} plan (via Xendit {$paymentMethod}-{$paymentChannel})");
                     return response()->json(['success' => true]);
                 }
 
@@ -122,11 +129,13 @@ class PaymentController extends Controller
                 return response()->json(['error' => 'User not found'], 404);
             }
 
-            Log::warning("⚠️ Invalid callback status: {$status}");
-            return response()->json(['success' => true]);
+            Log::warning("⚠️ Ignored callback with status={$status}, external_id={$externalId}");
+            return response()->json(['success' => true, 'message' => 'No action taken']);
+
         } catch (\Throwable $e) {
             Log::error('❌ Xendit callback error: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
 }

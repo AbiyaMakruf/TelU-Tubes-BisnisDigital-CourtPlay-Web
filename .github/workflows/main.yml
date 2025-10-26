@@ -2,7 +2,7 @@ name: Build, Push, and Deploy Laravel to Cloud Run
 
 on:
   push:
-    branches: [ main ]
+    branches: [main, developement]
   workflow_dispatch:
 
 jobs:
@@ -19,11 +19,11 @@ jobs:
         run: |
           # 1. Buat direktori yang dibutuhkan oleh Laravel
           mkdir -p storage/app/keys
-          
+
           # 2. Tulis Secret JSON ke file yang diharapkan oleh GCS_KEY_PATH Laravel
           # Gunakan tanda kutip tunggal untuk menjaga format JSON (termasuk private key yang multi-baris)
           echo '${{ secrets.GCP_SA_KEY_WEB }}' > storage/app/keys/courtplay-gcs-key.json
-          
+
           echo "File kunci GCS berhasil dibuat di: storage/app/keys/courtplay-gcs-key.json"
 
       # 🧩 Create GCP credentials file
