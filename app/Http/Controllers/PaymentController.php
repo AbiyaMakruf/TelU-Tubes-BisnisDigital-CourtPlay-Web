@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Log;
 use Xendit\Configuration;
 use Xendit\Invoice\InvoiceApi;
 use App\Models\User;
+use App\Mail\PlanChangedMail;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -116,8 +118,14 @@ class PaymentController extends Controller
                 // Temukan user berdasarkan email
                 $user = User::where('email', $payerEmail)->first();
 
+                $oldPlan = $user->role;
+                Mail::to($payerEmail)->send(new PlanChangedMail($user, $oldPlan, $plan));
+
                 if ($user) {
                     // dd($plan);
+                    $oldPlan = $user->role;
+                    Mail::to($payerEmail)->send(new PlanChangedMail($user, $oldPlan, $plan));
+
                     $user->role = $plan;
                     $user->save();
 
