@@ -23,13 +23,13 @@
                     <!-- Floating Logos -->
                     <div class="col-lg-5 mb-5 mb-lg-0 d-flex justify-content-center justify-content-lg-end">
                         <section class="floating-field">
-                            <img src="/assets/logo.svg" class="float-logo center" alt="Main Logo">
-                            <img src="/assets/logo.svg" class="float-logo small s1" alt="">
-                            <img src="/assets/logo.svg" class="float-logo small s2" alt="">
-                            <img src="/assets/logo.svg" class="float-logo small1 s3" alt="">
-                            <img src="/assets/logo.svg" class="float-logo small1 s4" alt="">
-                            <img src="/assets/logo.svg" class="float-logo small s5" alt="">
-                            <img src="/assets/logo.svg" class="float-logo small s6" alt="">
+                            <img src="/assets/Logo.svg" class="float-logo center" alt="Main Logo">
+                            <img src="/assets/Logo.svg" class="float-logo small s1" alt="">
+                            <img src="/assets/Logo.svg" class="float-logo small s2" alt="">
+                            <img src="/assets/Logo.svg" class="float-logo small1 s3" alt="">
+                            <img src="/assets/Logo.svg" class="float-logo small1 s4" alt="">
+                            <img src="/assets/Logo.svg" class="float-logo small s5" alt="">
+                            <img src="/assets/Logo.svg" class="float-logo small s6" alt="">
                         </section>
                     </div>
 
