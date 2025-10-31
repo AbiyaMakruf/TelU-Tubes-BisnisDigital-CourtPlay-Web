@@ -7,6 +7,11 @@
     <div class="container">
         <div class="row align-items-center">
 
+
+            <div class="col-md-6 text-center" >
+                <img src="{{ asset('assets/Logo Vertical.svg') }}" alt="About Us Image" id="about-logo-section" class="img-fluid about-img">
+            </div>
+
             {{-- Text Section --}}
             <div class="col-md-6">
                 <h2 class="fw-bold mb-4">About Us</h2>
@@ -19,11 +24,6 @@
                     Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                 </p>
                 {{-- <a href="#" class="btn btn-custom2 mt-3">Learn More</a> --}}
-            </div>
-
-            {{-- Image Section --}}
-            <div class="col-md-6 text-center">
-                <img src="{{ asset('assets/img-1.svg') }}" alt="About Us Image" class="img-fluid about-img">
             </div>
         </div>
     </div>

@@ -180,7 +180,7 @@ class UploadController extends Controller
                 ]);
             }
 
-            toastr()->success("Video uploaded. Max per file for {$role} plan: {$limits['maxFileMb']} MB. Processing has started.");
+            toastr()->success("Video uploaded, processing has started.");
             return back();
         } catch (ValidationException $e) {
             Log::warning('Validation failed during upload', ['errors' => $e->errors()]);

@@ -4,12 +4,12 @@
 @section('fullbleed', true)
 
 @section('content')
-<div class="login-page d-flex min-vh-100 align-items-center">
+<div class="login-page d-flex align-items-center my-auto py-5">
     <div class="container">
         <div class="row align-items-center">
 
-            <div class="col-lg-6 text-center justify-content-center mb-5 mb-lg-0">
-                <img src="{{ asset('assets/Logo Vertical.svg') }}" alt="Court Play" class="mb-4" style="width: 300px;">
+            <div class="col-lg-6 text-center justify-content-center mb-5 mb-lg-0" >
+                <img src="{{ asset('assets/Logo Vertical.svg') }}" alt="Court Play" id="login-logo-section" class="mb-4" >
             </div>
 
             <div class="col-lg-6">

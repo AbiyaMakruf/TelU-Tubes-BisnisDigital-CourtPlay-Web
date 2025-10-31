@@ -101,8 +101,12 @@ class AnalyticsController extends Controller
 
             return view('analytics_details', [
                 'project' => $project,
-                'videoUrl' => $detail->link_video_object_detections ?? null,
+                'video_object_detection_Url' => $detail->link_video_object_detections ?? null,
+                'video_player_keypoints_Url' => $detail->link_video_player_keypoints ?? null,
                 'heatmapUrl' => $detail->link_image_heatmap_player ?? null,
+                'balldropUrl' => $detail->link_image_ball_droppings ?? null,
+                'text_heatmap' => $detail->genai_heatmap_player_understanding ?? null,
+                'text_balldrop' => $detail->genai_ball_droppings_understanding ?? null,
                 'forehand' => $detail->forehand_count ?? 0,
                 'backhand' => $detail->backhand_count ?? 0,
                 'serve' => $detail->serve_count ?? 0,

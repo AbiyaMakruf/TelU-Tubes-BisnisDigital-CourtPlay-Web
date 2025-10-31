@@ -11,23 +11,32 @@ body {
     font-size: 100%;
 }
 
-main {
-    opacity: 0;
-    transform: translateY(15px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-}
-
 /* Saat halaman siap ditampilkan */
 main.fade-in {
     opacity: 1;
     transform: translateY(0);
 }
 
+/* Hero Section */
 .hero {
-    background: url("../assets/Hero-bg.svg") no-repeat center center;
+    /* background: url("../assets/Hero-bg.svg"); */
     background-size: cover;
     background-color: var(--black-300);
     min-height: calc(100vh - 72px); /* full layar minus navbar */
+}
+
+.hero h1 {
+    font-size: 4rem; /* sesuai Title-1 */
+    font-weight: 600;
+    color: var(--primary-500);
+    line-height: 1;
+}
+
+.hero h1 span {
+    background: linear-gradient(90deg, #ff0080, #4b23ffce); /* pink ke ungu */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .navbar-brand img {
@@ -418,6 +427,11 @@ main {
     .navbar-nav .nav-item {
         margin: 5px 0;
     }
+    #login-logo-section,
+    #about-logo-section {
+        width: 50%;
+        margin-bottom: 2rem;
+    }
 }
 /* Navbar Styling */
 .navbar {
@@ -560,28 +574,6 @@ main {
 .btn-custom2:hover {
     background-color: var(--primary-500) !important;
     color: var(--black-100) !important;
-}
-
-/* Hero Section */
-.hero {
-    background-color: var(--black-300);
-    min-height: calc(100vh - 72px); /* full screen minus navbar */
-    display: flex;
-    align-items: center;
-}
-
-.hero h1 {
-    font-size: 4rem; /* sesuai Title-1 */
-    font-weight: 600;
-    color: var(--primary-500);
-    line-height: 1;
-}
-
-.hero h1 span {
-    background: linear-gradient(90deg, #ff0080, #4b23ffce); /* pink ke ungu */
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 /* ===== Cards (Pricing) ===== */
@@ -743,7 +735,9 @@ main {
 
 /* Image */
 .about-img {
-    max-height: 400px;
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
 }
 
 /* Background halaman login */
@@ -1192,4 +1186,9 @@ span a:hover {
     transform: none !important;
     perspective: none !important;
     filter: none !important;
+}
+
+.container {
+    padding-right: var(--bs-gutter-x, 0.75rem); /* ≈ 12px */
+    padding-left: var(--bs-gutter-x, 0.75rem);
 }

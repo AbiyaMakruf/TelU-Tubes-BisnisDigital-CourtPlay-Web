@@ -15,7 +15,7 @@
                     <h4 class="price">{{ $plans['free']['price'] }}</h4>
 
                     @if($currentRole === 'free')
-                        <button class="btn btn-outline-custom2 rounded-pill px-4 py-2 mb-3" disabled>Selected</button>
+                        <button class="btn btn-outline-custom2 rounded-pill px-4 py-2 mb-3 w-100" disabled>Selected</button>
                         <div class="ribbon ribbon-top-right"><span>Current</span></div>
                     @else
                         <form method="POST" action="{{ route('payment.create') }}">
@@ -44,7 +44,7 @@
                     <h4 class="price">{{ $plans['plus']['price'] }}</h4>
 
                     @if($currentRole === 'plus')
-                        <button class="btn btn-outline-dark rounded-pill px-4 py-2 mb-3" disabled>Selected</button>
+                        <button class="btn btn-outline-dark rounded-pill px-4 py-2 mb-3 w-100" disabled>Selected</button>
                         <div class="ribbon ribbon-top-right"><span>Current</span></div>
                     @else
                         <form method="POST" action="{{ route('payment.create') }}">
@@ -73,7 +73,7 @@
                     <h4 class="price">{{ $plans['pro']['price'] }}</h4>
 
                     @if($currentRole === 'pro')
-                        <button class="btn btn-outline-dark rounded-pill px-4 py-2 mb-3" disabled>Selected</button>
+                        <button class="btn btn-outline-dark rounded-pill px-4 py-2 mb-3 w-100" disabled>Selected</button>
                         <div class="ribbon ribbon-top-right"><span>Current</span></div>
                     @else
                         <form method="POST" action="{{ route('payment.create') }}">

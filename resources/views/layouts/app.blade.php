@@ -140,7 +140,7 @@
       </button>
     </div>
 
-    <div class="offcanvas-body d-flex flex-column justify-content-between">
+    <div class="offcanvas-body d-flex flex-column justify-content ">
       <ul class="navbar-nav text-center">
         {{-- AUTH --}}
         @auth
@@ -159,13 +159,17 @@
 
         {{-- Umum --}}
         <li class="nav-item"><a class="nav-link" href="{{ route('news.index') }}">News</a></li>
+        <div class="border-top pt-3 text-center">
+
+        </div>
+
+
       </ul>
 
       <div class="border-top pt-3 text-center">
         @auth
-          <span class="nav-link fw-semibold text-primary-500 mb-2 d-block">
-            Hello, {{ \Illuminate\Support\Str::limit(auth()->user()->first_name ?? 'User', 18) }}
-          </span>
+
+        <a class="btn btn-custom w-100 mb-2" href="{{ route('profile') }}">Profile</a>
           <form action="{{ route('logout') }}" method="POST" class="d-inline">
             @csrf
             <button type="submit" class="btn btn-custom w-100">Logout</button>

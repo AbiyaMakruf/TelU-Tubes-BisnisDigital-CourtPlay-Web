@@ -4,7 +4,7 @@
 @section('fullbleed', true)
 
 @section('content')
-<div class="container-fluid min-vh-100 d-flex align-items-center bg-black-300">
+<div class="login-page d-flex align-items-center my-auto py-5">
     <div class="container">
         <div class="row align-items-center">
 
