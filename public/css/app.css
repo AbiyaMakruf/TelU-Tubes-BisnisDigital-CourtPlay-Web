@@ -19,24 +19,48 @@ main.fade-in {
 
 /* Hero Section */
 .hero {
-    /* background: url("../assets/Hero-bg.svg"); */
-    background-size: cover;
+    position: relative;
+    overflow: hidden;
     background-color: var(--black-300);
-    min-height: calc(100vh - 72px); /* full layar minus navbar */
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-light {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at center,
+        rgba(var(--primary-300-rgb), 0.35) 0%,
+        rgba(var(--primary-300-rgb), 0.1) 30%,
+        transparent 70%
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hero:hover .hero-light {
+    opacity: 1;
 }
 
 .hero h1 {
-    font-size: 4rem; /* sesuai Title-1 */
+    font-size: 3.5rem;
     font-weight: 600;
     color: var(--primary-500);
-    line-height: 1;
+    line-height: 1.1;
 }
 
 .hero h1 span {
-    background: linear-gradient(90deg, #ff0080, #4b23ffce); /* pink ke ungu */
+    background: linear-gradient(90deg, #ff0080, #4b23ffce);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
+}
+
+.hero-light {
+    filter: blur(25px);
 }
 
 .navbar-brand img {
@@ -86,6 +110,7 @@ main {
     --primary-100: #4c6311;
     --primary-200: #5f7d0e;
     --primary-300: #a3ce14;
+    --primary-300-rgb: 163, 206, 20;
     --primary-400: #d7f462;
     --primary-500: #f4fdca;
 
@@ -1191,4 +1216,363 @@ span a:hover {
 .container {
     padding-right: var(--bs-gutter-x, 0.75rem); /* ≈ 12px */
     padding-left: var(--bs-gutter-x, 0.75rem);
+}
+
+/* marquee */
+.logo-marquee {
+    width: 75%;
+    overflow: hidden;
+    position: relative;
+    background: transparent;
+    mask-image: linear-gradient(
+        to right,
+        transparent,
+        black 10%,
+        black 90%,
+        transparent
+    );
+    -webkit-mask-image: linear-gradient(
+        to right,
+        transparent,
+        black 10%,
+        black 90%,
+        transparent
+    );
+}
+
+/* Jalur logo bergerak */
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 35s linear infinite;
+}
+
+.logo-marquee img {
+    height: 45px;
+    opacity: 0.8;
+    filter: grayscale(100%);
+    transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+.logo-marquee img:hover {
+    opacity: 1;
+    filter: grayscale(0%);
+}
+
+/* hero content */
+.floating-field {
+    position: relative;
+    width: 100%;
+    height: 70vh;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* === Semua logo === */
+.float-logo {
+    position: absolute;
+    filter: drop-shadow(0 0 15px var(--primary-300));
+    animation: floatY 6s ease-in-out infinite;
+    opacity: 0.9;
+    transition: transform 0.4s ease, filter 0.4s ease, opacity 0.4s ease;
+    cursor: pointer;
+}
+
+/* Logo utama */
+.float-logo.center {
+    width: 400px;
+    z-index: 2;
+    opacity: 1;
+}
+
+/* Logo kecil */
+.float-logo.small {
+    width: 80px;
+    opacity: 0.75;
+}
+.float-logo.small1 {
+    width: 50px;
+    opacity: 0.75;
+}
+
+/* === Posisi acak === */
+.s1 {
+    top: 25%;
+    left: 20%;
+    animation-delay: 0s;
+}
+.s2 {
+    top: 26%;
+    right: 15%;
+    animation-delay: 1.2s;
+}
+.s3 {
+    bottom: 25%;
+    left: 15%;
+    animation-delay: 2.1s;
+}
+.s4 {
+    bottom: 20%;
+    right: 10%;
+    animation-delay: 0.6s;
+}
+.s5 {
+    top: 20%;
+    right: 40%;
+    animation-delay: 3.5s;
+}
+.s6 {
+    bottom: 15%;
+    left: 40%;
+    animation-delay: 2.8s;
+}
+
+/* === Animasi melayang acak === */
+@keyframes floatY {
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-10px) rotate(1.5deg);
+    }
+    50% {
+        transform: translateY(-25px) rotate(-1.5deg);
+    }
+    75% {
+        transform: translateY(-15px) rotate(1deg);
+    }
+}
+
+/* === Efek Hover === */
+.float-logo:hover {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 30px var(--primary-300)) brightness(1.3);
+    opacity: 1;
+}
+
+/* === Responsive Adjustments === */
+@media (max-width: 1200px) {
+    .marquee-track img {
+        height: 30px;
+        margin: 0 2rem;
+    }
+    .marquee-track {
+        animation-duration: 45s;
+    } /* slightly slower */
+}
+
+@media (max-width: 992px) {
+    .hero h1 {
+        font-size: 2.8rem;
+        text-align: center;
+    }
+    .floating-field {
+        height: 240px;
+        margin-bottom: 1rem;
+    }
+    .float-logo.center {
+        width: 130px;
+    }
+    .float-logo.small {
+        width: 40px;
+    }
+    .marquee-track img {
+        height: 28px;
+        margin: 0 1.5rem;
+    }
+    .marquee-track {
+        animation-duration: 50s;
+    } /* slower scroll */
+}
+
+@media (max-width: 768px) {
+    .hero {
+        text-align: center;
+        min-height: auto;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+    .floating-field {
+        order: -1;
+        margin-bottom: 2rem;
+    }
+    .logo-marquee {
+        margin-top: 2rem;
+    }
+    .marquee-track img {
+        height: 24px;
+        margin: 0 1rem;
+    }
+    .marquee-track {
+        animation-duration: 55s;
+    } /* slower for mobile */
+}
+
+@media (max-width: 576px) {
+    .hero h1 {
+        font-size: 2.2rem;
+        line-height: 1.3;
+    }
+    .float-logo.center {
+        width: 100px;
+    }
+    .float-logo.small {
+        width: 30px;
+    }
+    .marquee-track img {
+        height: 20px;
+        margin: 0 0.8rem;
+    }
+    .marquee-track {
+        animation-duration: 60s;
+    } /* slowest for readability */
+}
+
+.container-section {
+    background-color: var(--black-200);
+    position: relative;
+    overflow: hidden;
+}
+
+/* === STEP LAYOUT === */
+.steps-wrapper {
+    position: relative;
+    padding-left: 2.3rem;
+}
+
+.vertical-line {
+    position: absolute;
+    top: 0;
+    left: 16px; /* posisinya sejajar titik */
+    width: 5px;
+    height: 100%;
+    background: var(--black-300);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.vertical-line::before {
+    content: "";
+    position: absolute;
+    top: -40%;
+    left: 0;
+    width: 100%;
+    height: 35%;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        var(--primary-300),
+        transparent
+    );
+    animation: lineGlow 12s linear infinite;
+}
+
+@keyframes lineGlow {
+    0% {
+        top: -40%;
+    }
+    100% {
+        top: 100%;
+    }
+}
+
+/* === Setiap Step === */
+.step {
+    position: relative;
+    margin-bottom: 2.5rem;
+    padding-left: 0.5rem;
+}
+
+.step:last-child {
+    margin-bottom: 0;
+}
+
+/* Titik sejajar garis */
+.step .dot {
+    position: absolute;
+    left: -25px;
+    top: 6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: var(--black-300);
+    transition: all 1s ease;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+/* Step aktif */
+.step.active .dot {
+    background-color: var(--primary-300);
+    box-shadow: 0 0 12px var(--black-300);
+}
+
+.step h4 {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: var(--primary-300);
+}
+
+.step p {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .steps-wrapper {
+        padding-left: 1.7rem;
+        margin-bottom: 2rem;
+    }
+    .vertical-line {
+        left: 12px;
+    }
+    .step .dot {
+        left: -20px;
+    }
+}
+
+.vertical-line::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -1px;
+    width: 4px;
+    height: 100%;
+    background: radial-gradient(
+        circle,
+        rgba(var(--primary-300-rgb), 0.3) 0%,
+        transparent 70%
+    );
+    opacity: 0.3;
+    pointer-events: none;
+    filter: blur(4px);
+}
+
+.step.active ~ .step .dot {
+    background-color: var(--black-300);
+    box-shadow: none;
+}
+
+/* === RIGHT IMAGE === */
+.image-preview {
+    position: relative;
+    min-height: 300px;
+}
+.step-image {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  max-height: 360px;
+}
+.step-image.active {
+  opacity: 1;
+  z-index: 2;
 }

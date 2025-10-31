@@ -82,7 +82,7 @@
                 <div class="placeholder-wrapper  rounded-4 bg-black-300 d-flex align-items-center justify-content-center" style="height: 300px;">
                     <div class="text-center">
                         <i class="bi bi-bar-chart text-primary-300 mb-3 d-block" style="font-size: 4rem;"></i>
-                        <p class="fw-semibold text-white-400">Heatmap in process...</p>
+                        <p class="fw-semibold text-white-400">Image is being process...</p>
                     </div>
                 </div>
             @endif
@@ -99,7 +99,7 @@
                 </p>
                 @else
                     <div class="text-center ">
-                        <p class="fw-semibold text-white-400 mt-3">Insight in process...</p>
+                        <p class="fw-semibold text-white-400 mt-3">Image is being process...</p>
                     </div>
                 @endif
             </div>

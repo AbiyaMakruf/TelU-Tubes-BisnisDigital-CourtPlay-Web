@@ -26,9 +26,9 @@ class ProfileController extends Controller
             if ($initials === '') $initials = 'U';
 
             // Public profile URL
-            $baseUrl   = rtrim(config('app.url') ?: url('/'), '/');
+            $baseUrl   = 'https://courtplay.my.id';
             $slug      = $user->username ?: Str::slug(trim($fn . ' ' . $ln)) ?: 'user';
-            $publicUrl = "{$baseUrl}/profiles/{$slug}";
+            $publicUrl = "{$baseUrl}/{$slug}";
 
             $photoUrl = $user->profile_picture_url;
 
