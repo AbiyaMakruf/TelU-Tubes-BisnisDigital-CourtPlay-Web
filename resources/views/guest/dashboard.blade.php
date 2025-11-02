@@ -180,7 +180,7 @@
     <section class="testimonials-section py-5">
         <div class="container py-5">
             <div class="text-center mb-5">
-                <h2 class="section-title mb-3 text-primary-500 ">
+                <h2 class="section-title mb-3 text-primary-300 ">
                     Trusted by Players and Coaches Worldwide
                 </h2>
                 <p class="text-primary-500  fs-5">
@@ -262,7 +262,7 @@
     <section class="faq-section py-5">
             <div class="container py-5">
                 <div class="text-center mb-5">
-                    <h2 class="section-title mb-3 ">
+                    <h2 class="section-title mb-3 text-primary-300">
                     Frequently Asked Questions (FAQ)
                     </h2>
                     <p class="-400 fs-5">
