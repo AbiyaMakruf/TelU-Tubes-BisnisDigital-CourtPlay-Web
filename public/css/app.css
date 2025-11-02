@@ -1248,8 +1248,8 @@ span a:hover {
 }
 
 .logo-marquee img {
-    height: 45px;
-    opacity: 0.8;
+    height: 30px;
+    opacity: 0.6;
     filter: grayscale(100%);
     transition: opacity 0.3s ease, filter 0.3s ease;
 }
@@ -1275,10 +1275,12 @@ span a:hover {
 .float-logo {
     position: absolute;
     filter: drop-shadow(0 0 15px var(--primary-300));
-    animation: floatY 6s ease-in-out infinite;
+    animation: logofloat 1s ease-in-out infinite alternate;
     opacity: 0.9;
-    transition: transform 0.4s ease, filter 0.4s ease, opacity 0.4s ease;
+    transition: transform 0.26s ease, filter 0.4s ease, opacity 0.4s ease;
     cursor: pointer;
+    will-change: transform;
+    transform-origin: center;
 }
 
 /* Logo utama */
@@ -1302,7 +1304,7 @@ span a:hover {
 .s1 {
     top: 25%;
     left: 20%;
-    animation-delay: 0s;
+    animation-delay: 0.3s;
 }
 .s2 {
     top: 26%;
@@ -1317,7 +1319,7 @@ span a:hover {
 .s4 {
     bottom: 20%;
     right: 10%;
-    animation-delay: 0.6s;
+    animation-delay: 0.8s;
 }
 .s5 {
     top: 20%;
@@ -1331,7 +1333,7 @@ span a:hover {
 }
 
 /* === Animasi melayang acak === */
-@keyframes floatY {
+/* @keyframes floatY {
     0%,
     100% {
         transform: translateY(0) rotate(0deg);
@@ -1344,6 +1346,14 @@ span a:hover {
     }
     75% {
         transform: translateY(-15px) rotate(1deg);
+    }
+} */
+@keyframes logofloat {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(15px) rotate(1deg);
     }
 }
 
@@ -1492,7 +1502,7 @@ span a:hover {
 }
 
 /* Titik sejajar garis */
-.step .dot {
+/* .step .dot {
     position: absolute;
     left: -25px;
     top: 6px;
@@ -1502,7 +1512,7 @@ span a:hover {
     background-color: var(--black-300);
     transition: all 1s ease;
     box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-}
+} */
 
 /* Step aktif */
 .step.active .dot {
@@ -1564,15 +1574,15 @@ span a:hover {
     min-height: 300px;
 }
 .step-image {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.8s ease;
-  max-height: 360px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    max-height: 360px;
 }
 .step-image.active {
-  opacity: 1;
-  z-index: 2;
+    opacity: 1;
+    z-index: 2;
 }

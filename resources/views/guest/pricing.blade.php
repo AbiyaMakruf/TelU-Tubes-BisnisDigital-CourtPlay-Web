@@ -17,9 +17,10 @@
                     <a href="{{ route('signup.form') }}" class="btn btn-outline-custom2 mb-3">Sign Up</a>
                     <hr>
                     <ul class="features list-unstyled mt-3">
-                        <li>✔ Free 1 video analytics</li>
-                        <li>✔ Dashboard metrics</li>
-                        <li>✔ AI mapping</li>
+                        <li>✔ 5 Analysis Videos</li>
+                        <li>✔ 10 Minutes per Video</li>
+                        <li>✔ Standard Match Analysis</li>
+                        <li>✔ 2GB of Storages</li>
                     </ul>
                 </div>
             </div>
@@ -34,12 +35,12 @@
                     <a href="{{ route('signup.form') }}" class="btn btn-outline-custom mb-3">Buy Now</a>
                     <hr>
                     <ul class="features list-unstyled mt-3">
-                        <li>✔ Up to 10 video analytics</li>
-                        <li>✔ Dashboard metrics</li>
-                        <li>✔ AI mapping</li>
-                        <li>✔ Unlocked new feature</li>
-                        <li>✔ Custom video analytics</li>
-                        <li>✔ Unlimited storage</li>
+                        <li>✔ 15 Videos per Month</li>
+                        <li>✔ 15 Minutes per Video</li>
+                        <li>✔ Advanced Match Analysis</li>
+                        <li>✔ 5GB of Storage</li>
+                        <li>✔ Skill-Based Matchmaking</li>
+                        <li>✔ Advanced Profile Customization</li>
                     </ul>
                 </div>
             </div>
@@ -54,15 +55,15 @@
                     <a href="{{ route('signup.form') }}" class="btn btn-outline-custom mb-3">Buy Now</a>
                     <hr>
                     <ul class="features list-unstyled mt-3">
-                        <li>✔ Up to 100 video analytics</li>
-                        <li>✔ Dashboard metrics</li>
-                        <li>✔ AI mapping</li>
-                        <li>✔ All features unlocked</li>
-                        <li>✔ Custom video analytics</li>
-                        <li>✔ Unlimited storage</li>
-                        <li>✔ Heatmap systems</li>
-                        <li>✔ Player report</li>
-                        <li>✔ Communities sharing</li>
+                        <li>✔ 40 Videos per Month</li>
+                        <li>✔ 20 Minutes per Video</li>
+                        <li>✔ Pro-Level Match Analysis</li>
+                        <li>✔ 25GB of Storage</li>
+                        <li>✔ Skill-Based Matchmaking</li>
+                        <li>✔ Advanced Profile Customization</li>
+                        <li>✔ AI-Generated Highlights</li>
+                        <li>✔ AI-Coach Access</li>
+                        <li>✔ Premium Profile Badge</li>
                     </ul>
                 </div>
             </div>

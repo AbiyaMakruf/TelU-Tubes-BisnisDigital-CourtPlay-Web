@@ -45,12 +45,24 @@
                     <img src="/assets/Google_Cloud_logo.svg" alt="Google Cloud" class="mx-5" />
                     <img src="/assets/Docker_logo.svg" alt="Docker" class="mx-5" />
                     <img src="/assets/Github_logo.svg" alt="GitHub" class="mx-5" />
+                    <img src="/assets/Xendit_logo.svg" alt="Xendit" class="mx-5" />
+                    <img src="/assets/Supabase_logo.svg" alt="Supabase" class="mx-5" />
+                    <img src="/assets/Roboflow_logo.svg" alt="Roboflow" class="mx-5" />
+                    <img src="/assets/Mlflow_logo.svg" alt="Mlflow" class="mx-5" />
+                    <img src="/assets/Dagshub_logo.svg" alt="Dagshub" class="mx-5" />
+                    <img src="/assets/Mailtrap_logo.svg" alt="Mailtrap" class="mx-5" />
                     <!-- Duplicate for seamless loop -->
                     <img src="/assets/Gemini_logo.svg" alt="Gemini" class="mx-5" />
                     <img src="/assets/Ultralytics_logo.svg" alt="Ultralytics" class="mx-5" />
                     <img src="/assets/Google_Cloud_logo.svg" alt="Google Cloud" class="mx-5" />
                     <img src="/assets/Docker_logo.svg" alt="Docker" class="mx-5" />
                     <img src="/assets/Github_logo.svg" alt="GitHub" class="mx-5" />
+                    <img src="/assets/Xendit_logo.svg" alt="Xendit" class="mx-5" />
+                    <img src="/assets/Supabase_logo.svg" alt="Supabase" class="mx-5" />
+                    <img src="/assets/Roboflow_Cloud_logo.svg" alt="Roboflow Cloud" class="mx-5" />
+                    <img src="/assets/Mlflow_logo.svg" alt="Mlflow" class="mx-5" />
+                    <img src="/assets/Dagshub_logo.svg" alt="Dagshub" class="mx-5" />
+                    <img src="/assets/Mailtrap_logo.svg" alt="Mailtrap" class="mx-5" />
                 </div>
             </div>
         </section>

@@ -11,7 +11,7 @@
     <p>Video processing time: <span class="text-primary-300">{{ $processingTime }}</span></p>
 
     <div class="video-wrapper mb-4 position-relative">
-        <h6 class="fw-semibold text-primary-300 mb-3 text-center">Object Detection</h6>
+        <h6 class="fw-semibold text-primary-300 mb-3 text-center">Player & Ball Position</h6>
         @if ($video_object_detection_Url != "IN DEVELOPMENT" && $video_object_detection_Url != null)
             <video controls autoplay loop muted playsinline class="w-100 rounded-4 shadow " style="max-height: 480px;">
                 <source src="{{ $video_object_detection_Url }}" type="video/mp4">
