@@ -74,7 +74,7 @@
                 <h2 class="section-title mb-4 text-primary-300">
                 Make Your Game Smarter with AI
                 </h2>
-                <p class="text-white-400 mb-5">
+                <p class="text-primary-500 mb-5">
                 From video upload to in-depth analytics and actionable advice — CourtPlay automates your tennis and padel insights.
                 </p>
 
@@ -88,7 +88,7 @@
                     <div class="step" data-step="1">
                         <div class="dot"></div>
                         <h4 class="text-primary-300">1. Upload Your Match</h4>
-                        <p class="text-white-400">
+                        <p class="text-primary-500">
                         Upload your tennis or padel match video directly. CourtPlay processes frames automatically.
                         </p>
                     </div>
@@ -96,7 +96,7 @@
                     <div class="step" data-step="2">
                         <div class="dot"></div>
                         <h4 class="text-primary-300">2. AI Analytics</h4>
-                        <p class="text-white-400">
+                        <p class="text-primary-500">
                         Detect every shot, track player movement, visualize player heatmaps, and ball heatmap instantly.
                         </p>
                     </div>
@@ -104,7 +104,7 @@
                     <div class="step" data-step="3">
                         <div class="dot"></div>
                         <h4 class="text-primary-300">3. AI Coaching Advice</h4>
-                        <p class="text-white-400">
+                        <p class="text-primary-500">
                         Get smart insights and personalized recommendations to improve your play.
                         </p>
                     </div>
@@ -124,6 +124,262 @@
         </div>
         </section>
 
+    <section class="demo-section py-5">
+    <div class="container text-center">
+        <h2 class="section-title mb-3 text-primary-300">See CourtPlay in Action</h2>
+        <p class="text-primary-500 mb-5">
+        From raw match video to actionable performance analytics — all in under 5 minutes.
+        </p>
+
+        <div class="demo-video-wrapper mx-auto shadow-lg rounded-4 overflow-hidden border border-primary-500">
+        <video autoplay muted loop playsinline>
+            <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+        </video>
+        </div>
+    </div>
+    </section>
+
+    <section class="usecase-section py-5">
+    <div class="container text-center">
+        <h2 class="section-title mb-3 text-primary-300">Built for Players, Coaches, and Clubs</h2>
+        <p class="text-primary-500 mb-5">
+        CourtPlay adapts to your workflow — from solo training sessions to professional team management.
+        </p>
+
+        <div class="row justify-content-center g-4">
+        <div class="col-md-4">
+            <div class="usecase-card p-4 border border-dark rounded-4 h-100">
+            <i class="bi bi-person-badge fs-2 text-primary-300 mb-3"></i>
+            <h5 class="text-primary-500 ">For Players</h5>
+            <p class="text-primary-500">Get personalized AI insights on your technique, movement, and decision-making.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="usecase-card p-4 border border-dark rounded-4 h-100">
+            <i class="bi bi-graph-up fs-2 text-primary-300 mb-3"></i>
+            <h5 class="text-primary-500 ">For Coaches</h5>
+            <p class="text-primary-500 ">Track athlete performance, analyze trends, and optimize training plans using data.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="usecase-card p-4 border border-dark rounded-4 h-100">
+            <i class="bi bi-building fs-2 text-primary-300 mb-3"></i>
+            <h5 class="text-primary-500 ">For Clubs</h5>
+            <p class="text-primary-500 ">Centralize team stats, compare players, and elevate your club’s performance analytics.</p>
+            </div>
+        </div>
+        </div>
+    </div>
+    </section>
+
+
+
+
+    <section class="testimonials-section py-5">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="section-title mb-3 text-primary-500 ">
+                    Trusted by Players and Coaches Worldwide
+                </h2>
+                <p class="text-primary-500  fs-5">
+                    Hear how CourtPlay is transforming training sessions and match results.
+                </p>
+            </div>
+
+            <div class="row justify-content-center">
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card testimonial-card h-100 p-4 border-0 shadow-lg" >
+                        <div class="card-body">
+                            <p class="card-text fs-6 fst-italic text-white-400">
+                                <i class="fas fa-quote-left text-primary-300 me-2"></i>
+                                "CourtPlay has revolutionized my coaching. I now have **objective data** to show my athletes, cutting correction time from weeks to just minutes. The heatmap analysis is a game-changer."
+                                <i class="fas fa-quote-right text-primary-300 ms-2"></i>
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-center mt-3">
+                            <i class="bi bi-person-circle fs-2 text-primary-300 me-3"></i>
+                            <div>
+                                <h5 class="mb-0 text-primary-300">Coach David R.</h5>
+                                <p class="text-primary-500  small">Certified Tennis Instructor</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card testimonial-card h-100 p-4 border-0 shadow-lg">
+                        <div class="card-body">
+                            <p class="card-text fs-6 fst-italic text-white-400">
+                                <i class="fas fa-quote-left text-primary-300 me-2"></i>
+                                "I always thought my forehand was my strength, but CourtPlay instantly showed me where I was making **unforced errors under pressure**. The personalized AI advice helped me fix it fast!"
+                                <i class="fas fa-quote-right text-primary-300 ms-2"></i>
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-center mt-3">
+                            <i class="bi bi-person-circle fs-2 text-primary-300 me-3"></i>
+                            <div>
+                                <h5 class="mb-0 text-primary-300">Sarah K.</h5>
+                                <p class="text-primary-500  small">Competitive Padel Player</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card testimonial-card h-100 p-4 border-0 shadow-lg" >
+                        <div class="card-body">
+                            <p class="card-text fs-6 fst-italic text-white-400">
+                                <i class="fas fa-quote-left text-primary-300 me-2"></i>
+                                "The ability to track player movement and fatigue over multiple matches is invaluable. It’s like having an **entire analytics team** for a fraction of the cost. Highly recommended for any club."
+                                <i class="fas fa-quote-right text-primary-300 ms-2"></i>
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-center mt-3">
+                            <i class="bi bi-person-circle fs-2 text-primary-300 me-3"></i>
+                            <div>
+                                <h5 class="mb-0 text-primary-300">Michael L.</h5>
+                                <p class="text-primary-500 small">Sports Club Manager</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section class="faq-section py-5">
+            <div class="container py-5">
+                <div class="text-center mb-5">
+                    <h2 class="section-title mb-3 ">
+                    Frequently Asked Questions (FAQ)
+                    </h2>
+                    <p class="-400 fs-5">
+                        Find quick answers to common questions about CourtPlay.
+                    </p>
+                </div>
+            <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="accordion accordion-flush" id="faqAccordion">
+
+                    {{-- Q1: Hardware Requirements --}}
+                    <div class="accordion-item" >
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="background-color: transparent;">
+                                Do I need special cameras or sensors to use CourtPlay?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body ">
+                                **Not at all!** One of CourtPlay's main advantages is its ability to analyze video recorded with standard devices, such as a smartphone (Android/iOS) or a regular digital camera. Just ensure your footage has decent resolution and the players and court are clearly visible.
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Q2: Processing Time --}}
+                    <div class="accordion-item" >
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="background-color: transparent;">
+                                How long does it take to analyze one match?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body ">
+                                Processing time is very fast, thanks to cloud infrastructure optimization. On average, a **60-minute** match video will be fully analyzed and reported within **5 to 15 minutes**. You will receive a notification once your report is ready.
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Q3: Data Security --}}
+                    <div class="accordion-item" >
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="background-color: transparent;">
+                                Are my match data and personal information secure?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body ">
+                                Yes. We treat data privacy seriously. All uploaded videos are encrypted, and access to your analytics data is solely yours. We use leading cloud services (Google Cloud/Supabase) that comply with global data security standards.
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Q4: Other Sports Support --}}
+                    <div class="accordion-item" >
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" style="background-color: transparent;">
+                                Does CourtPlay support sports other than Tennis and Padel?
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body ">
+                                Currently, our main focus is on **Tennis and Padel**, where our AI delivers the most accurate results. However, we are developing and planning to expand the analysis scope to other racquet sports (like Badminton and Squash) in the future.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            </div>
+            </div>
+        </section>
+
+        <footer class="footer-section py-5 mt-5 border-top border-dark bg-black text-light">
+        <div class="container">
+            <div class="row gy-4 align-items-start justify-content-between">
+
+                <!-- LEFT: Logo & Copyright -->
+                <div class="col-md-4 d-flex flex-column">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="/assets/Logo.svg" alt="CourtPlay Logo" class="me-2" style="height: 32px;">
+                        <h5 class="m-0 fw-bold text-primary-300">CourtPlay</h5>
+                    </div>
+                    <small class="text-primary-500">&copy; 2025 CourtPlay. All rights reserved.</small>
+                </div>
+
+                <!-- MIDDLE: Navigation Links -->
+                <div class="col-md-4 d-flex justify-content-center">
+                    <div class="row w-100 text-center text-md-start ">
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="/features" class="footer-link text-primary-500">Features</a></li>
+                                <li><a href="/pricing" class="footer-link text-primary-500">Pricing</a></li>
+                                <li><a href="/blog" class="footer-link text-primary-500">Blog</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-6 ">
+                            <ul class="list-unstyled">
+                                <li><a href="/about" class="footer-link text-primary-500">About Us</a></li>
+                                <li><a href="/contact" class="footer-link text-primary-500">Contact</a></li>
+                                <li><a href="/privacy" class="footer-link text-primary-500">Privacy Policy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Social Icons & Address -->
+                <div class="col-md-4 d-flex flex-column align-items-md-end align-items-center text-md-end text-center">
+                    <div class="d-flex gap-3 mb-3 fs-5 text-primary-500">
+                        <a href="https://www.instagram.com/courtplay" class="footer-icon text-primary-500"><i class="bi bi-instagram"></i></a>
+                        <a href="https://x.com/courtplay" class="footer-icon text-primary-500"><i class="bi bi-twitter-x"></i></a>
+                        <a href="https://www.tiktok.com/@courtplay" class="footer-icon text-primary-500"><i class="bi bi-tiktok"></i></a>
+                    </div>
+                    <small class="text-primary-500">
+                        Bandung, Indonesia<br>
+                        <span class="text-primary-300">contact@courtplay.my.id</span>
+                    </small>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+
+
     @endguest
 
     @auth
@@ -131,7 +387,7 @@
         <section class="dashboard py-5 d-flex align-items-center justify-content-center text-center py-0">
             <div class="container">
                 <h2 class="mb-3 fw-bold text-primary-500">Welcome back, {{ Auth::user()->firstname }} 👋</h2>
-                <p class="text-white-400 fs-5">Belum ada hasil video yang dianalisis.</p>
+                <p class="text-primary-500 fs-5">Belum ada hasil video yang dianalisis.</p>
 
                 {{-- (opsional: tombol untuk upload video nantinya) --}}
                 <button class="btn btn-custom2 mt-3" disabled>Upload Video (Coming Soon)</button>
@@ -146,6 +402,10 @@
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); } /* bergerak ke kiri tanpa henti */
+}
+.navbar-expand-lg.sticky-top {
+    /* Ini akan memastikan navbar berada di atas konten lain (modal menggunakan 1050) */
+    z-index: 1030;
 }
 </style>
 @endpush

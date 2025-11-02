@@ -34,7 +34,7 @@
 <body>
 
   {{-- NAVBAR universal (guest & auth) --}}
-  <nav class="navbar navbar-expand-lg sticky-top px-4 py-3 navbar-scroll">
+  <nav class="navbar navbar-expand-lg fixed-top px-4 py-3 navbar-scroll">
     <div class="container-fluid">
       {{-- Brand: guest -> home, auth -> analytics --}}
       <a class="navbar-brand fw-bold" href="@auth {{ route('analytics') }} @else {{ route('home') }} @endauth">
