@@ -9,6 +9,10 @@ body {
     min-height: 100vh;
     height: 100%;
     font-size: 100%;
+
+}
+body{
+    padding-top: 72px;
 }
 
 /* Saat halaman siap ditampilkan */
@@ -26,7 +30,6 @@ main.fade-in {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-top: 72px;
 }
 
 .hero-light {
