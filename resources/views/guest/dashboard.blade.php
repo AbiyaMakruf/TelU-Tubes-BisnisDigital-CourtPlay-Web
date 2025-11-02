@@ -131,7 +131,7 @@
         From raw match video to actionable performance analytics — all in under 5 minutes.
         </p>
 
-        <div class="demo-video-wrapper mx-auto shadow-lg rounded-4 overflow-hidden border border-primary-500">
+        <div class="demo-video-wrapper mx-auto shadow-lg rounded-4 overflow-hidden border border-primary-500 mb-5">
         <video autoplay muted loop playsinline>
             <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
         </video>
@@ -195,7 +195,10 @@
                         <div class="card-body">
                             <p class="card-text fs-6 fst-italic text-white-400">
                                 <i class="fas fa-quote-left text-primary-300 me-2"></i>
-                                "CourtPlay has revolutionized my coaching. I now have **objective data** to show my athletes, cutting correction time from weeks to just minutes. The heatmap analysis is a game-changer."
+                                "CourtPlay has revolutionized my coaching. I now have
+                                <strong>objective data</strong>
+                                to show my athletes, cutting correction time from weeks to just minutes.
+                                The heatmap analysis is a <strong>game-changer</strong>."
                                 <i class="fas fa-quote-right text-primary-300 ms-2"></i>
                             </p>
                         </div>
@@ -214,7 +217,9 @@
                         <div class="card-body">
                             <p class="card-text fs-6 fst-italic text-white-400">
                                 <i class="fas fa-quote-left text-primary-300 me-2"></i>
-                                "I always thought my forehand was my strength, but CourtPlay instantly showed me where I was making **unforced errors under pressure**. The personalized AI advice helped me fix it fast!"
+                                "I always thought my forehand was my strength, but CourtPlay instantly showed me where I was making
+                                <strong>unforced errors under pressure</strong>.
+                                The personalized AI advice helped me fix it fast!"
                                 <i class="fas fa-quote-right text-primary-300 ms-2"></i>
                             </p>
                         </div>
@@ -233,7 +238,9 @@
                         <div class="card-body">
                             <p class="card-text fs-6 fst-italic text-white-400">
                                 <i class="fas fa-quote-left text-primary-300 me-2"></i>
-                                "The ability to track player movement and fatigue over multiple matches is invaluable. It’s like having an **entire analytics team** for a fraction of the cost. Highly recommended for any club."
+                                "The ability to track player movement and fatigue over multiple matches is invaluable. It’s like having an
+                                <strong>entire analytics team</strong>
+                                for a fraction of the cost. Highly recommended for any club."
                                 <i class="fas fa-quote-right text-primary-300 ms-2"></i>
                             </p>
                         </div>
