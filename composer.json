@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "dedoc/scramble": "^0.13.2",
         "google/cloud-core": "^1.67",
         "google/cloud-monitoring": "^2.2",
         "google/cloud-pubsub": "^2.15",

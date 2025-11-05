@@ -24,61 +24,83 @@
   @stack('styles')
 </head>
 <body data-bs-theme="dark" class="admin-body">
-  <div class="admin-shell">
-    {{-- Sidebar --}}
-    <aside class="sidebar" id="adminSidebar">
+    <div class="main flex-grow-1 d-flex flex-column">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark d-lg-none">
+        <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+            <img src="{{ asset('assets/Logo.svg') }}" alt="CourtPlay" height="28">
+            <span>Admin</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav" aria-controls="adminNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="adminNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li><a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+            <li><a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">Users</a></li>
+            <li><a class="nav-link {{ request()->routeIs('admin.projects.*') ? 'active' : '' }}" href="{{ route('admin.projects.index') }}">Projects</a></li>
+            <li><a class="nav-link {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}" href="{{ route('admin.posts.index') }}">News</a></li>
+            <li><a class="nav-link" href="{{ route('analytics') }}">Site</a></li>
+            <li><hr class="dropdown-divider bg-secondary"></li>
+            <li>
+                <a class="nav-link text-danger" href="{{ route('logout') }}"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Logout
+                </a>
+            </li>
+            </ul>
+        </div>
+        </div>
+    </nav>
+    </div>
+
+  <div class="admin-shell d-flex">
+    {{-- ✅ Sidebar (Desktop Only) --}}
+    <aside class="sidebar d-none d-lg-flex flex-column" id="adminSidebar">
       <div class="brand">
         <img src="{{ asset('assets/Logo.svg') }}" alt="CourtPlay">
-        <div class="title hide-on-mini">Admin</div>
+        <div class="title">Admin</div>
       </div>
 
-      <button type="button" class="collapse-btn mb-3" id="sbToggle">
-        <span class="hide-on-mini">Collapse</span>
-        <i class="bi bi-chevron-left hide-on-mini"></i>
-        <i class="bi bi-list mini-only"></i>
-      </button>
-
-      <div class="nav-sec hide-on-mini">MAIN</div>
+      <div class="nav-sec">MAIN</div>
       <a href="{{ route('admin.dashboard') }}" class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-        <i class="bi bi-speedometer2"></i><span class="hide-on-mini">Dashboard</span>
+        <i class="bi bi-speedometer2"></i><span>Dashboard</span>
       </a>
 
-      <div class="nav-sec hide-on-mini">MANAGE</div>
+      <div class="nav-sec">MANAGE</div>
       <a href="{{ route('admin.users.index') }}" class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-        <i class="bi bi-people"></i><span class="hide-on-mini">Users</span>
+        <i class="bi bi-people"></i><span>Users</span>
       </a>
       <a href="{{ route('admin.projects.index') }}" class="nav-item {{ request()->routeIs('admin.projects.*') ? 'active' : '' }}">
-        <i class="bi bi-collection"></i><span class="hide-on-mini">Projects</span>
+        <i class="bi bi-collection"></i><span>Projects</span>
       </a>
       <a href="{{ route('admin.posts.index') }}" class="nav-item {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}">
-        <i class="bi bi-newspaper"></i><span class="hide-on-mini">News</span>
+        <i class="bi bi-newspaper"></i><span>News</span>
       </a>
-      <a href="{{ route('logout') }}" class="nav-item"
-        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-            <i class="bi bi-box-arrow-right"></i>
-            <span class="hide-on-mini">Logout</span>
+      <a href="{{ route('analytics') }}" class="nav-item">
+        <i class="bi bi-house"></i><span>Site</span>
       </a>
 
-        {{-- Hidden logout form --}}
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-            @csrf
-        </form>
-
-      <div class="nav-footer">
-        <div class="nav-sec hide-on-mini">SITE</div>
-        <a href="{{ route('analytics') }}" class="nav-item">
-          <i class="bi bi-house"></i><span class="hide-on-mini">Site</span>
+      <a href="{{ url('/docs/api') }}" target="_blank" class="nav-item">
+        <i class="bi bi-journal-code"></i>
+        <span class="hide-on-mini">API Docs</span>
+    </a>
+        <a href="{{ route('logout') }}" class="nav-item text-danger mt-1"
+            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="bi bi-box-arrow-right"></i><span class="hide-on-mini">Logout</span>
         </a>
 
-      </div>
+      <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
     </aside>
 
-    {{-- Right pane --}}
+    {{-- ✅ Main Content --}}
     <div class="main flex-grow-1 d-flex flex-column">
       <header class="topbar">
         <div class="page-title">@yield('page_title','Dashboard')</div>
         <div class="d-flex align-items-center gap-2">
-          <span class="text-white-300 d-none d-md-inline">Hello, {{ auth()->user()->first_name ?? 'Admin' }}</span>
+          <span class="text-white-300 d-none d-md-inline">
+            Hello, {{ optional(auth()->user())->first_name ?? 'Admin' }}
+          </span>
           <i class="bi bi-person-circle fs-5"></i>
         </div>
       </header>
@@ -126,6 +148,7 @@
   document.querySelector('main')?.classList.add('fade-in');
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   @stack('scripts')
 </body>

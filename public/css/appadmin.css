@@ -8,7 +8,6 @@ body.admin-body {
     height: 100%;
 }
 
-
 /* fade-in main */
 main {
     opacity: 0;
@@ -80,7 +79,7 @@ main.fade-in {
     overflow-y: auto;
 }
 .sidebar::-webkit-scrollbar {
-    width: 8px;
+    width: 2rem;
 }
 .sidebar::-webkit-scrollbar-thumb {
     background: #2a2a2a;
@@ -103,26 +102,13 @@ main.fade-in {
     color: var(--primary-500);
 }
 
-.collapse-btn {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    width: 100%;
-    padding: 10px 12px;
-    color: var(--sb-item);
-    border: 1px solid var(--sb-border);
-    background: #151515;
-    border-radius: 10px;
-    cursor: pointer;
-    user-select: none;
-}
 .nav-sec {
     margin: 16px 10px 6px;
     font-size: 12px;
     letter-spacing: 0.04em;
     color: var(--primary-500);
 }
+
 .nav-item {
     display: flex;
     align-items: center;
@@ -134,42 +120,56 @@ main.fade-in {
     margin: 4px 4px;
     transition: background 0.15s ease, color 0.15s ease;
 }
+
 .nav-item i {
     font-size: 18px;
     color: var(--primary-500);
 }
+
 .nav-item:hover {
     background: var(--sb-item-hover-bg);
     color: var(--primary-500);
 }
+
 .nav-item.active {
     background: var(--sb-item-active-bg);
     color: var(--primary-500);
     box-shadow: inset 0 0 0 1px rgba(163, 206, 20, 0.18);
 }
+
 .nav-item.active i {
     color: var(--primary-300);
 }
+
 .nav-footer {
     margin-top: auto;
     padding-top: 10px;
     border-top: 1px solid var(--sb-border);
 }
 
+/* ✅ Sidebar normal (tanpa mini state) */
+.sidebar {
+    width: 240px;
+    transition: width 0.3s ease;
+}
+
 .sidebar.mini {
-    width: var(--sb-w-mini);
+    width: 240px !important;
 }
-.hide-on-mini {
-    display: inline;
-}
+.hide-on-mini,
 .sidebar.mini .hide-on-mini {
+    display: inline !important;
+}
+.mini-only,
+.sidebar.mini .mini-only {
     display: none !important;
 }
-.mini-only {
-    display: none;
-}
-.sidebar.mini .mini-only {
-    display: inline-block;
+
+/* ✅ Responsif: sembunyikan sidebar di layar kecil */
+@media (max-width: 991px) {
+    .sidebar {
+        display: none !important;
+    }
 }
 
 .topbar {
@@ -481,4 +481,19 @@ main.fade-in {
     --bs-table-hover-color: var(--white-500);
 }
 
+@media (max-width: 991px) {
+    .admin-shell {
+        flex-direction: column;
+    }
+    .sidebar {
+        display: none !important;
+    }
+    .main {
+        width: 100%;
+    }
+}
 
+.navbar {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+    z-index: 100;
+}
