@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PJRVZT7CVP"></script>
     <script>
@@ -28,7 +29,8 @@
     .btn.btn-custom { background: var(--primary-500, #a3ce14); color:#111; border:0; }
     .btn.btn-custom:hover { filter:brightness(1.05); }
   </style>
-
+  @livewireStyles
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
   @stack('styles')
 </head>
 <body>
@@ -192,6 +194,33 @@
   {{-- Scripts --}}
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{ asset('js/app.js') }}"></script>
+  @livewireScripts
+  <script>
+    Livewire.on('notify', (type, message) => {
+        if (typeof toastr[type] === 'function') toastr[type](message);
+    });
+  </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log("📡 Listening for Project updates...");
+
+        if (window.Echo && window.Livewire) {
+            window.Echo.channel('project-updates')
+                .listen('.VideoProcessed', (e) => {
+                    console.log('🔥 Project update received:', e.projectId);
+                    Livewire.dispatch('project-updated', { id: e.projectId });
+
+                    if (window.toastr) {
+                        toastr.success('Project updated: ' + e.projectId);
+                    }
+                });
+        } else {
+            console.error('❌ Echo or Livewire not initialized!');
+        }
+    });
+    </script>
+
   @stack('scripts')
 </body>
 </html>

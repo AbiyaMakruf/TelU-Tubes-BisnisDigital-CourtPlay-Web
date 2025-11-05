@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Api\ProjectUpdateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,8 +17,12 @@ use App\Http\Controllers\PaymentController;
 */
 
 Route::post('/payment-complete', [PaymentController::class, 'handleCallbackSuccess'])->name('payment.callback');
+Route::post('/project/update', [ProjectUpdateController::class, 'callback'])->name('api.project.update');
 
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+

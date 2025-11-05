@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\VideoProcessedController;
 
 
 
@@ -79,6 +80,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/picture', [ProfileController::class, 'updateProfilePicture'])->name('profile.picture');
         Route::delete('/picture', [ProfileController::class, 'deleteProfilePicture'])->name('profile.picture.delete');
     });
+
+    
 
     // === di bawah semua route ===
     Route::post('/payment/create', [PaymentController::class, 'createTransaction'])->name('payment.create');

@@ -1,9 +1,3 @@
-@extends('layouts.app')
-
-@section('title', 'Analytics Detail')
-@section('fullbleed', true)
-
-@section('content')
 <div class="container py-5 text-white ">
     <h1 class="fw-bold text-primary-500 mb-2">{{ $project->project_name }}</h1>
     <p class="mb-1">Date: <span class="text-primary-300">{{ \Carbon\Carbon::parse($project->upload_date)->format('d-m-Y') }}</span></p>
@@ -139,27 +133,3 @@
         </div>
     </div>
 </div>
-@endsection
-
-@push('scripts')
-<script>
-(function () {
-    @if(session('toastr'))
-        var n = @json(session('toastr'));
-        if (Array.isArray(n)) {
-            n.forEach(function(item){
-                if (item && item.type && item.message && typeof toastr[item.type] === 'function') {
-                    toastr[item.type](item.message, item.title || '', item.options || {});
-                }
-            });
-        } else if (n && n.type && n.message && typeof toastr[n.type] === 'function') {
-            toastr[n.type](n.message, n.title || '', n.options || {});
-        }
-    @endif
-
-    @if(session('success')) toastr.success(@json(session('success'))); @endif
-    @if(session('error'))   toastr.error(@json(session('error')));   @endif
-    @if($errors->any())     toastr.error(@json($errors->first()));   @endif
-})();
-</script>
-@endpush

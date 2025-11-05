@@ -99,7 +99,7 @@ class AnalyticsController extends Controller
                 1
             ]);
 
-            return view('analytics_details', [
+            return view('analyticsDetails', [
                 'project' => $project,
                 'video_object_detection_Url' => $detail->link_video_object_detections ?? null,
                 'video_player_keypoints_Url' => $detail->link_video_player_keypoints ?? null,

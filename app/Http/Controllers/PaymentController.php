@@ -94,29 +94,30 @@ class PaymentController extends Controller
     public function handleCallbackSuccess(Request $request)
     {
         try {
-            $payload = $request->all();
-            Log::info('📩 Xendit Callback received', $payload);
+            // ✅ Validate only the key fields you need
+            $validated = $request->validate([
+                'status'          => ['required', 'string'],
+                'payer_email'     => ['required', 'email'],
+                'external_id'     => ['required', 'string'],
+                'payment_method'  => ['nullable', 'string'],
+                'payment_channel' => ['nullable', 'string'],
+            ]);
 
-            // Ambil field penting dari payload
-            $status          = strtoupper($payload['status'] ?? '');
-            $payerEmail      = $payload['payer_email'] ?? null;
-            $externalId      = $payload['external_id'] ?? null;
-            $paymentMethod   = $payload['payment_method'] ?? null;
-            $paymentChannel  = $payload['payment_channel'] ?? null;
+            Log::info('📩 Xendit Callback received', $validated);
 
-            // Validasi status sukses dan external_id ada
+            // Use validated data safely
+            $status         = strtoupper($validated['status']);
+            $payerEmail     = $validated['payer_email'];
+            $externalId     = $validated['external_id'];
+            $paymentMethod  = $validated['payment_method'] ?? null;
+            $paymentChannel = $validated['payment_channel'] ?? null;
+
+            // ---- your existing logic remains unchanged ----
             if ($status === 'PAID' && !empty($externalId)) {
 
-                // Contoh external_id: PLAN-PLUS-68fe2f0344037 → ambil "PLUS"
                 $parts = explode('-', $externalId);
                 $plan  = strtolower($parts[1] ?? 'free');
 
-                if (empty($payerEmail)) {
-                    Log::warning("⚠️ Missing payer_email for external_id: {$externalId}");
-                    return response()->json(['error' => 'Missing payer email'], 400);
-                }
-
-                // Temukan user berdasarkan email
                 $user = User::where('email', $payerEmail)->first();
 
                 if (!$user) {
@@ -124,16 +125,13 @@ class PaymentController extends Controller
                     return response()->json(['error' => 'User not found'], 404);
                 }
 
-                // Hindari double-update kalau user sudah di-plan yang sama
                 if ($user->role === $plan) {
                     Log::info("ℹ️ Callback ignored — User {$user->email} already on {$plan} plan.");
                     return response()->json(['success' => true, 'message' => 'User already on this plan']);
                 }
 
-                // Simpan plan lama untuk email
                 $oldPlan = $user->role;
 
-                // Kirim email notifikasi sebelum update role
                 try {
                     Mail::to($user->email)->send(new PlanChangedMail($user, $oldPlan, $plan));
                     Log::info("📧 Plan change email sent to {$user->email} ({$oldPlan} → {$plan})");
@@ -141,9 +139,7 @@ class PaymentController extends Controller
                     Log::error("❌ Failed to send plan change email to {$user->email}: {$mailError->getMessage()}");
                 }
 
-                // Update role user
-                $user->role = $plan;
-                $user->save();
+                $user->update(['role' => $plan]);
 
                 Log::info("✅ User {$user->email} upgraded to {$plan} plan (via Xendit {$paymentMethod}-{$paymentChannel})");
                 return response()->json(['success' => true]);
@@ -152,11 +148,15 @@ class PaymentController extends Controller
             Log::warning("⚠️ Ignored callback with status={$status}, external_id={$externalId}");
             return response()->json(['success' => true, 'message' => 'No action taken']);
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::warning('⚠️ Invalid Xendit callback payload', $e->errors());
+            return response()->json([
+                'error' => 'Invalid payload',
+                'details' => $e->errors(),
+            ], 422);
         } catch (\Throwable $e) {
             Log::error('❌ Xendit callback error: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
-
 }

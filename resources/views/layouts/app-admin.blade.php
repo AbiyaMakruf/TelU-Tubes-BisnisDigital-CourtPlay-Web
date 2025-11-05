@@ -21,6 +21,8 @@
   {{-- Admin CSS only (jangan load app.css di layout ini) --}}
   <link rel="stylesheet" href="{{ asset('css/appadmin.css') }}">
   <link rel="icon" href="{{ asset('assets/Logo.svg') }}">
+
+  @livewireStyles
   @stack('styles')
 </head>
 <body data-bs-theme="dark" class="admin-body">
@@ -149,7 +151,24 @@
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+  @livewireScripts
+  <script>
+    window.addEventListener('showToastr', event => {
+        switch (event.detail.type) {
+            case 'info':
+                toastr.info(event.detail.message);
+                break;
+            case 'warning':
+                toastr.warning(event.detail.message);
+                break;
+            case 'error':
+                toastr.error(event.detail.message);
+                break;
+            default:
+                toastr.success(event.detail.message);
+        }
+    });
+</script>
   @stack('scripts')
 </body>
 </html>
