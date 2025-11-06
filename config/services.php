@@ -30,5 +30,8 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    'project_update' => [
+        'api_key' => env('PROJECT_UPDATE_API_KEY'),
+    ],
 
 ];

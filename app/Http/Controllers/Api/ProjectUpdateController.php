@@ -17,6 +17,12 @@ class ProjectUpdateController extends Controller
             $validated = $request->validate([
                 'project_id' => ['required', 'uuid'],
                 'status'     => ['required', 'string', 'in:done,processing,failed'],
+                'x-api-key'  => ['required', function ($attribute, $value, $fail) {
+                    $expectedKey = config('services.project_update.api_key', env('PROJECT_UPDATE_API_KEY'));
+                    if ($value !== $expectedKey) {
+                        $fail('Invalid API key.');
+                    }
+                }],
             ]);
 
             Log::info('📩 Pub/Sub callback received', ['payload' => $validated]);

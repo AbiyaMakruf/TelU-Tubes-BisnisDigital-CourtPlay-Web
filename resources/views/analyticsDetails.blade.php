@@ -8,16 +8,4 @@
 @endsection
 
 @push('scripts')
-<script>
-document.addEventListener('livewire:load', () => {
-    Livewire.on('showToastr', ({ type, message }) => {
-        toastr.options = {
-            "progressBar": true,
-            "positionClass": "toast-bottom-right",
-            "timeOut": 4000
-        };
-        toastr[type](message);
-    });
-});
-</script>
 @endpush
