@@ -14,6 +14,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 🔑 Ekstrak VITE_PUSHER_APP_KEY untuk Docker Build Arg
+      # Langkah ini penting agar kunci Pusher tersedia saat 'npm run build' di Dockerfile
+      - name: Extract VITE_PUSHER_APP_KEY for Docker Build
+        id: pusher_key
+        run: |
+          # Buat file sementara dari secret ENV_PRODUCTION_FILE
+          echo "${{ secrets.ENV_PRODUCTION_FILE }}" > .env.temp
+          # Cari dan bersihkan nilai VITE_PUSHER_APP_KEY
+          # (Menggunakan grep, cut, dan tr untuk menghilangkan quotes dan whitespace)
+          PUSHER_KEY=$(grep 'VITE_PUSHER_APP_KEY' .env.temp | cut -d '=' -f 2 | tr -d '"\r\n' | tr -d ' ')
+          # Simpan sebagai output untuk digunakan di langkah build
+          echo "VITE_PUSHER_KEY=${PUSHER_KEY}" >> $GITHUB_OUTPUT
+          rm .env.temp
+          echo "Pusher Key Extracted Successfully."
+          
       # 🛠️ Set up Key for Laravel GCS
       - name: Create Laravel GCS Key File from Secret
         run: |
@@ -23,6 +38,7 @@ jobs:
       # 🧩 Create GCP credentials file
       - name: Create GCP credentials file
         run: |
+          # File ini digunakan untuk otentikasi gcloud dan docker login
           echo '${{ secrets.GCP_SA_KEY }}' > $HOME/gcp-key.json
           echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json" >> $GITHUB_ENV
 
@@ -36,7 +52,7 @@ jobs:
 
       # --- Konfigurasi Docker Buildx untuk Caching ---
       
-      # 1. Setup QEMU (Disarankan, walau opsional untuk arsitektur tunggal)
+      # 1. Setup QEMU (Opsional, tapi disarankan)
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -44,10 +60,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         
-      # 3. Konfigurasi Docker untuk Artifact Registry (sebelum login)
+      # 3. Konfigurasi Docker untuk Artifact Registry
       - name: Configure Docker for Artifact Registry
         run: |
-          gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
           # Login Docker ke Artifact Registry
           gcloud auth configure-docker asia-southeast1-docker.pkg.dev --quiet
 
@@ -63,12 +78,17 @@ jobs:
           context: .
           push: true
           tags: ${{ steps.image.outputs.TAG }}
+          # SUNTIKKAN BUILD-ARG YANG SUDAH DIEKSTRAK DI SINI:
+          build-args: |
+            VITE_PUSHER_APP_KEY=${{ steps.pusher_key.outputs.VITE_PUSHER_KEY }}
           # Ambil cache dari GitHub Actions Cache
           cache-from: type=gha
           # Simpan cache ke GitHub Actions Cache (mode=max memastikan semua layer disimpan)
           cache-to: type=gha,mode=max
 
       # 🔐 Create .env.production file from GitHub Secret
+      # Langkah ini WAJIB dipertahankan, karena isinya akan dilewatkan
+      # ke Cloud Run sebagai variabel lingkungan server.
       - name: Create .env.production file
         run: |
           echo "${{ secrets.ENV_PRODUCTION_FILE }}" > .env.production
@@ -77,6 +97,8 @@ jobs:
       - name: Deploy to Cloud Run (CPU)
         run: |
           # Convert .env.production (KEY=VALUE) → gcloud format KEY=VALUE,KEY2=VALUE2
+          # Pastikan semua kunci yang dibutuhkan (termasuk PUSHER_APP_SECRET, dll.)
+          # ada di ENV_PRODUCTION_FILE dan diparse dengan benar.
           ENV_VARS=$(grep -v '^#' .env.production | grep '=' | sed '/^$/d' | tr '\n' ',' | sed 's/,$//')
           gcloud run deploy courtplay-web \
             --image=${{ steps.image.outputs.TAG }} \
@@ -92,7 +114,7 @@ jobs:
             --cpu-boost \
             --set-env-vars="$ENV_VARS"
 
-      # 🚦Update Lalu Lintas ke Revisi Terbaru
+      # 🚦 Update Lalu Lintas ke Revisi Terbaru
       - name: Route Traffic to Latest Revision
         run: |
           gcloud run services update-traffic courtplay-web \
