@@ -46,6 +46,7 @@ class AnalyticsDashboard extends Component
         $this->planLabel = ucfirst($this->role);
         $this->maxLimit = $user->max_projects ?? 10;
         $this->maxUploadMb = $user->max_upload_mb ?? 50;
+        
         $this->loadProjects();
     }
 
@@ -66,40 +67,52 @@ class AnalyticsDashboard extends Component
 
     private function loadProjects()
     {
-        $query = Project::where('user_id', Auth::id());
+        $user   = Auth::user();
+        $sort   = $this->sort ?: 'newest';
+        $search = $this->search;
 
-        if ($this->search) {
-            $query->where('project_name', 'like', '%' . $this->search . '%');
-        }
+        $projects = Project::where('user_id', $user->id)
+            ->when($search, function ($query, $search) {
+                $query->where('project_name', 'ILIKE', "%{$search}%");
+            })
+            ->when($sort, function ($query, $sort) {
+                switch ($sort) {
+                    case 'oldest':
+                        $query->orderBy('upload_date', 'asc');
+                        break;
+                    case 'done':
+                        $query->orderBy('is_mailed', 'desc');
+                        break;
+                    case 'inprocess':
+                        $query->orderBy('is_mailed', 'asc');
+                        break;
+                    default:
+                        $query->orderBy('upload_date', 'desc');
+                        break;
+                }
+            })
+            ->get();
 
-        switch ($this->sort) {
-            case 'oldest':
-                $query->orderBy('created_at', 'asc');
-                break;
-            case 'done':
-                $query->where('is_mailed', true)->orderBy('created_at', 'desc');
-                break;
-            case 'inprocess':
-                $query->where('is_mailed', false)->orderBy('created_at', 'desc');
-                break;
-            default:
-                $query->orderBy('created_at', 'desc');
-        }
+        $this->projects = $projects;
 
-        $this->projects = $query->get();
-        $this->projectCount = Project::where('user_id', Auth::id())->count();
-        $this->videoInProcessCount = Project::where('user_id', Auth::id())->where('is_mailed', false)->count();
-        $this->videoDoneCount = Project::where('user_id', Auth::id())->where('is_mailed', true)->count();
+        $role         = strtolower((string) ($user->role ?? 'free'));
+        $uploadConfig = config("files.upload.plans.{$role}", config('files.upload.plans.free'));
+
+        $this->maxLimit    = (int) ($uploadConfig['limit'] ?? 10);
+        $this->maxUploadMb = (int) ($uploadConfig['max_file_mb'] ?? 50);
+
+        $this->projectCount        = $projects->count();
+        $this->videoInProcessCount = Project::where('user_id', $user->id)->where('is_mailed', false)->count();
+        $this->videoDoneCount      = Project::where('user_id', $user->id)->where('is_mailed', true)->count();
+
         $this->percentageUsed = $this->maxLimit > 0
-            ? round(($this->projectCount / $this->maxLimit) * 100, 1)
+            ? min(100, ($this->projectCount / $this->maxLimit) * 50)
             : 0;
+
     }
 
     public function render()
     {
-        $remaining = max(0, $this->maxLimit - $this->projectCount);
-        return view('livewire.analytics-dashboard', [
-            'remaining' => $remaining,
-        ]);
+        return view('livewire.analytics-dashboard');
     }
 }

@@ -4,8 +4,9 @@
     <div class="d-flex flex-wrap justify-content-center align-items-center gap-3 mb-4">
         <span class="badge bg-primary-300 text-black px-3 py-2 fw-semibold">Plan: {{ $planLabel }}</span>
         <span class="badge bg-black-300 border border-primary-300 px-3 py-2">
+            @php $remaining = max(0, (int)$maxLimit - (int)$projectCount); @endphp
             Quota: {{ $projectCount }} / {{ $maxLimit }}
-            @if($remaining===0)
+            @if ($remaining <= 0)
                 • <span class="text-danger fw-semibold">Limit reached</span>
             @else
                 • Remaining: {{ $remaining }}

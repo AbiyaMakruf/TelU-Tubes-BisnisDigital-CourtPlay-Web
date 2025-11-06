@@ -13,9 +13,10 @@
                     <img src="{{ asset('assets/Logo.svg') }}" alt="CourtPlay Logo" class="mb-4" width="300">
                     <h3 class="fw-bold mb-3 text-primary-500">Create your free basic account</h3>
                     <ul class="list-unstyled text-start d-inline-block text-white-400">
-                        <li class="mb-2 text-primary-500 fs-5">✔ Free 1 video analytics</li>
-                        <li class="mb-2 text-primary-500 fs-5">✔ Dashboard metrics</li>
-                        <li class="mb-2 text-primary-500 fs-5">✔ AI mapping</li>
+                        <li class="mb-2 text-primary-500 fs-5">✔ 5 Analysis Video</li>
+                        <li class="mb-2 text-primary-500 fs-5">✔ 10 Minutes per Video</li>
+                        <li class="mb-2 text-primary-500 fs-5">✔ Standard Match Analysis</li>
+                        <li class="mb-2 text-primary-500 fs-5">✔ 2GB of Storages</li>
                     </ul>
                 </div>
             </div>
