@@ -201,14 +201,14 @@
     });
   </script>
 
-    <script>
+    <script type="module">
     document.addEventListener('DOMContentLoaded', () => {
-        console.log("📡 Listening for Project updates...");
+        console.log("Listening for Project updates...");
 
         if (window.Echo && window.Livewire) {
             window.Echo.channel('project-updates')
                 .listen('.VideoProcessed', (e) => {
-                    console.log('🔥 Project update received:', e.projectId);
+                    console.log('Project update received:', e.projectId);
                     Livewire.dispatch('project-updated', { id: e.projectId });
 
                     if (window.toastr) {
@@ -216,7 +216,7 @@
                     }
                 });
         } else {
-            console.error('❌ Echo or Livewire not initialized!');
+            console.error('Echo or Livewire not initialized!');
         }
     });
     </script>
