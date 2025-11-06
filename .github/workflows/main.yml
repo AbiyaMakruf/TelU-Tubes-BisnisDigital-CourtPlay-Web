@@ -63,6 +63,7 @@ jobs:
       # 3. Konfigurasi Docker untuk Artifact Registry
       - name: Configure Docker for Artifact Registry
         run: |
+          gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
           # Login Docker ke Artifact Registry
           gcloud auth configure-docker asia-southeast1-docker.pkg.dev --quiet
 
