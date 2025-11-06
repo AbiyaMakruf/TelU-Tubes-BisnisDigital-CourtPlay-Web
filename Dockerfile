@@ -11,7 +11,7 @@ ARG VITE_PUSHER_APP_KEY
 WORKDIR /app
 
 # Copy package files dan install dependencies
-COPY package*.json vite.config.* .npmrc ./
+COPY package*.json vite.config.* ./
 # Gunakan 'npm install' tanpa 'ci' jika Anda ingin cache lebih baik
 RUN npm install
 
