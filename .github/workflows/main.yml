@@ -14,11 +14,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 🛠️ Set up PHP
+      # 🛠️ Set up Key for Laravel GCS
       - name: Create Laravel GCS Key File from Secret
         run: |
           mkdir -p storage/app/keys
-
           echo '${{ secrets.GCP_SA_KEY_WEB }}' > storage/app/keys/courtplay-gcs-key.json
 
       # 🧩 Create GCP credentials file
@@ -35,21 +34,39 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
-      # 🐳 Configure Docker for Artifact Registry
+      # --- Konfigurasi Docker Buildx untuk Caching ---
+      
+      # 1. Setup QEMU (Disarankan, walau opsional untuk arsitektur tunggal)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # 2. Setup Buildx (Wajib untuk Caching dan build modern)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      # 3. Konfigurasi Docker untuk Artifact Registry (sebelum login)
       - name: Configure Docker for Artifact Registry
         run: |
           gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+          # Login Docker ke Artifact Registry
           gcloud auth configure-docker asia-southeast1-docker.pkg.dev --quiet
 
-      # 🧱 Build Docker image
-      - name: Build Docker image
-        run: |
-          docker build -t asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/courtplay-repo/courtplay-web:latest .
+      # Variabel untuk tag image (agar tidak berulang)
+      - name: Set image tag
+        id: image
+        run: echo "TAG=asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/courtplay-repo/courtplay-web:latest" >> $GITHUB_OUTPUT
 
-      # 📦 Push Docker image
-      - name: Push Docker image
-        run: |
-          docker push asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/courtplay-repo/courtplay-web:latest
+      # --- 4. Build dan Push dengan Caching ---
+      - name: Build and push Docker image with GHA Cache
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.image.outputs.TAG }}
+          # Ambil cache dari GitHub Actions Cache
+          cache-from: type=gha
+          # Simpan cache ke GitHub Actions Cache (mode=max memastikan semua layer disimpan)
+          cache-to: type=gha,mode=max
 
       # 🔐 Create .env.production file from GitHub Secret
       - name: Create .env.production file
@@ -62,7 +79,7 @@ jobs:
           # Convert .env.production (KEY=VALUE) → gcloud format KEY=VALUE,KEY2=VALUE2
           ENV_VARS=$(grep -v '^#' .env.production | grep '=' | sed '/^$/d' | tr '\n' ',' | sed 's/,$//')
           gcloud run deploy courtplay-web \
-            --image=asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/courtplay-repo/courtplay-web:latest \
+            --image=${{ steps.image.outputs.TAG }} \
             --region=asia-southeast1 \
             --platform=managed \
             --service-account=github-runner-sa@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com \
