@@ -48,7 +48,7 @@ class ProjectUpdateController extends Controller
             }
 
             // Kirim event ke frontend
-            event(new VideoProcessed($project->id));
+            event(new VideoProcessed($project->id, $project->user_id));
 
             Log::info('✅ Broadcasted VideoProcessed event', [
                 'project_id' => $project->id,

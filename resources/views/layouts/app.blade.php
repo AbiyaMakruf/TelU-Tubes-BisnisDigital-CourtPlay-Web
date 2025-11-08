@@ -13,6 +13,7 @@
     </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="user-id" content="{{ auth()->check() ? auth()->user()->id : '' }}">
   <title>@yield('title','CourtPlay')</title>
 
   <!-- Vendor -->
@@ -201,22 +202,19 @@
     });
   </script>
 
-    <script type="module">
+    <script>
     document.addEventListener('DOMContentLoaded', () => {
-        console.log("Listening for Project updates...");
+        const meta = document.querySelector('meta[name="user-id"]');
+        if (!meta) return;
 
-        if (window.Echo && window.Livewire) {
-            window.Echo.channel('project-updates')
+        const userId = meta.content;
+        if (window.Echo) {
+            window.Echo.channel(`user-updates.${userId}`)
                 .listen('.VideoProcessed', (e) => {
                     console.log('Project update received:', e.projectId);
                     Livewire.dispatch('project-updated', { id: e.projectId });
-
-                    if (window.toastr) {
-                        toastr.success('Project updated: ' + e.projectId);
-                    }
+                    if (window.toastr) toastr.success('Project updated: ' + e.projectId);
                 });
-        } else {
-            console.error('Echo or Livewire not initialized!');
         }
     });
     </script>
