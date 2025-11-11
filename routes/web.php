@@ -11,12 +11,16 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\VideoProcessedController;
+use App\Http\Controllers\PublicProfileController;
 
 
 
 Route::get('/news',        [PostController::class, 'index'])->name('news.index');
 Route::get('/news/{slug}', [PostController::class, 'show'])->name('news.show');
+Route::prefix('athletes')->group(function () {
+    Route::get('/{username}', [PublicProfileController::class, 'show'])->name('public.profile');
+});
+// Route::get('/{username}', [PublicProfileController::class, 'show'])->name('public.profile');
 // Route::post('/payment-complete', [PaymentController::class, 'handleCallbackSuccess'])->name('payment.callback');
 
 /*

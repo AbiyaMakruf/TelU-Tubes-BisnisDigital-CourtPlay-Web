@@ -53,30 +53,41 @@
             @endif
             </div>
 
-            {{-- Change picture --}}
-           <form id="avatarForm" action="{{ route('profile.picture') }}" method="POST" enctype="multipart/form-data" class="w-100">
+           <div class="d-flex justify-content-center align-items-center gap-2">
+    {{-- === Form Ubah Gambar === --}}
+    <form id="avatarForm"
+          action="{{ route('profile.picture') }}"
+          method="POST"
+          enctype="multipart/form-data"
+          class="m-0 p-0 d-inline">
+        @csrf
+        <input type="file" id="avatarInput" name="avatar" class="d-none" accept="image/*">
+
+        <button type="button" class="btn btn-custom2 px-4" id="changeAvatarBtn">
+            Change Profile Picture
+        </button>
+    </form>
+
+    {{-- === Form Hapus Gambar (terpisah total) === --}}
+    @if(!empty($photoUrl))
+        <form action="{{ route('profile.picture.delete') }}"
+              method="POST"
+              onsubmit="return confirm('Remove current profile picture?');"
+              class="m-0 p-0 d-inline">
             @csrf
-            <input type="file" id="avatarInput" name="avatar" class="d-none" accept="image/*">
-
-            <div class="d-flex flex-wrap gap-2 justify-content-center">
-            <button type="button" class="btn btn-custom2 px-4" id="changeAvatarBtn">
-                Change Profile Picture
+            @method('DELETE')
+            <button type="submit"
+                    class="btn btn-danger d-flex align-items-center justify-content-center"
+                    style="width:42px;height:42px;">
+                <i class="bi bi-trash"></i>
             </button>
+        </form>
+    @endif
+</div>
 
-            @if(!empty($photoUrl))
-                <form action="{{ route('profile.picture.delete') }}" method="POST" onsubmit="return confirm('Remove current profile picture?');">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-2">
-                    <i class="bi bi-trash"></i>
-                </button>
-                </form>
-            @endif
-            </div>
-
-            @error('avatar') <div class="text-danger small mt-2 text-center">{{ $message }}</div> @enderror
-            </form>
-
+@error('avatar')
+    <div class="text-danger small mt-2 text-center">{{ $message }}</div>
+@enderror
 
             {{-- Public link + copy --}}
             <div class="w-100 mt-3 text-start">

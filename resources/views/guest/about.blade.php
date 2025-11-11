@@ -16,14 +16,8 @@
             <div class="col-md-6">
                 <h2 class="fw-bold mb-4">About Us</h2>
                 <p class="text-primary-500">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    CourtPlay is revolutionizing the tennis and padel experience by merging cutting-edge AI technology with a vibrant social community, empowering players with real-time performance analysis, from shot breakdowns to court positioning. Our platform simplifies match analysis and social interaction, enabling players to track their progress, connect with peers, and challenge others at their skill level, all in one single app. We are committed to fostering meaningful connections within the sports community while driving the future of racquet sports. At CourtPlay, our mission is to enhance every player's experience both on and off the court, combining advanced analytics with community-driven features.
                 </p>
-                <p class="text-primary-500">
-                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                </p>
-                {{-- <a href="#" class="btn btn-custom2 mt-3">Learn More</a> --}}
             </div>
         </div>
     </div>
