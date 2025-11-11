@@ -54,4 +54,32 @@ class User extends Authenticatable
     {
         return trim("{$this->first_name} {$this->last_name}");
     }
+
+     public function followers()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'user_id', 'follower_id');
+    }
+
+    // Menentukan relasi pengguna yang diikuti
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'user_id');
+    }
+
+    /**
+     * Mengecek apakah pengguna ini mengikuti pengguna lain
+     *
+     * @param User $userToCheck
+     * @return bool
+     */
+   // app/Models/User.php
+
+    public static function isFollowing($userId, $followerId)
+    {
+        // Query untuk mengecek apakah pengguna $userId mengikuti $followerId
+        return Follow::where('user_id', $userId)
+                   ->whereRaw('CAST(following AS text) LIKE ?', ['%' . $followerId . '%'])
+                   ->exists();
+    }
+
 }

@@ -12,13 +12,15 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\PublicProfileController;
+use App\Http\Controllers\SocialController;
+
 
 
 
 Route::get('/news',        [PostController::class, 'index'])->name('news.index');
 Route::get('/news/{slug}', [PostController::class, 'show'])->name('news.show');
-Route::prefix('athletes')->group(function () {
-    Route::get('/{username}', [PublicProfileController::class, 'show'])->name('public.profile');
+Route::prefix('user')->group(function () {
+    Route::get('/{username}', [PublicProfileController::class, 'show'])->name('user.profile');
 });
 // Route::get('/{username}', [PublicProfileController::class, 'show'])->name('public.profile');
 // Route::post('/payment-complete', [PaymentController::class, 'handleCallbackSuccess'])->name('payment.callback');
@@ -84,6 +86,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/picture', [ProfileController::class, 'updateProfilePicture'])->name('profile.picture');
         Route::delete('/picture', [ProfileController::class, 'deleteProfilePicture'])->name('profile.picture.delete');
     });
+
+    // Social Controller
+    Route::get('/social', [SocialController::class, 'index'])->name('social');
+    Route::post('/user/{username}/toggleFollow', [SocialController::class, 'toggleFollow'])->name('user.toggleFollow');
+    Route::post('/user/{username}/follow', [SocialController::class, 'follow'])->name('user.follow');
 
 
 

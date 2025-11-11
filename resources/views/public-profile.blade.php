@@ -1,14 +1,14 @@
 @extends('layouts.app')
+
 @section('title', $user->first_name ?? 'Player Profile')
 
 @section('content')
 <div class="container py-5 text-white">
   <div class="row justify-content-center">
-    <div class="col-lg-10">
-
-      {{-- ===== Avatar Header ===== --}}
-      <div class="text-center mb-4">
-        <div class="avatar-square mx-auto mb-3" style="--avatar-size:180px;">
+    <!-- Left Column: Profile Info -->
+    <div class="col-lg-3 mb-4">
+      <div class=" card text-center bg-black-200 shadow rounded-lg p-4 mb-4">
+        <div class="avatar-square  mx-auto mb-3" style="--avatar-size:180px;">
           @if($photoUrl)
             <img src="{{ $photoUrl }}" class="avatar-img" alt="Profile">
           @else
@@ -18,166 +18,213 @@
           @endif
         </div>
         <h3 class="fw-bold text-primary-500">{{ $user->first_name }} {{ $user->last_name }}</h3>
-        <p class="text-muted">@{{ $user->username }}</p>
+
+        <p class="text-primary-500">@ {{ $user->username }}</p>
       </div>
 
-    {{-- ===== Grafik 0: Yearly Trend ===== --}}
-    <div class="card bg-black-200 shadow rounded-lg p-4 mb-4">
-        <h6 class="text-primary-500 fw-semibold text-center mb-3">Yearly Match Activity ({{ now()->year }})</h6>
-        <canvas id="chartYearly" height="150"></canvas>
+      <!-- Followers and Following -->
+      <div class="d-flex justify-content-center mb-3">
+        <div class="me-4"><strong>{{ $followersCount ?? 0 }}</strong> Followers</div>
+        <div><strong>{{ $followingCount ?? 0 }}</strong> Following</div>
+      </div>
+
+      <!-- Follow/Unfollow Button -->
+      @if(auth()->check())
+        @if(auth()->user()->id !== $user->id)
+          <div class="d-flex justify-content-center">
+            <form action="{{ route('user.follow', $user->username) }}" method="POST">
+              @csrf
+              @if($isFollowing)
+                <button type="submit" class="btn btn-custom2">Unfollow</button>
+              @else
+                <button type="submit" class="btn btn-custom">Follow</button>
+              @endif
+            </form>
+          </div>
+        @endif
+      @else
+        <div class="d-flex justify-content-center">
+          <a href="{{ route('login') }}" class="btn btn-custom">Follow</a>
+        </div>
+      @endif
     </div>
 
+    <!-- Center Column: Projects -->
+    <div class="col-lg-6 mb-4">
 
-      {{-- ===== Grafik 1: Weekly Matches ===== --}}
-      <div class="card bg-black-200 shadow rounded-lg p-4 mb-4">
-        <h6 class="text-primary-500 fw-semibold text-center mb-3">Matches Played (Last 7 Days)</h6>
-        <canvas id="chartMatches" height="130"></canvas>
-      </div>
+      @foreach($projects->take(3) as $project)
+        <div class="card mb-3 bg-black-200 shadow rounded-lg p-4">
+          <div class="text-primary-500 small">
+            {{ \Carbon\Carbon::parse($project->upload_date)->format('M d, Y') }}
+          </div>
+          <div class="text-white-400 mb-2">
+                <!-- Project Name -->
+                <h3 class="fw-semibold text-primary-300">{{ $project->project_name }}</h3>
 
-      {{-- ===== Grafik 2: Stroke Trend (4 Lines) ===== --}}
-      <div class="card bg-black-200 shadow rounded-lg p-4 mb-4">
-        <h6 class="text-primary-500 fw-semibold text-center mb-3">Stroke Trend (Last 3 Months)</h6>
-        <canvas id="chartStroke" height="180"></canvas>
+                <!-- Time and Major Movement (with separator) -->
+               <div class="d-flex justify-content-start">
 
-        <div class="text-center mt-4">
-          <h6 class="text-white-400 mb-1">Total Playtime</h6>
-          <p class="fw-semibold text-primary-500">{{ $playtime }}</p>
+                <div class="d-flex flex-column pe-3 "> <span class=" small text-primary-500 ">Time</span>
+                    <span class="fw-semibold fs-5 text-primary-500">
+                        {{ gmdate('H:i:s', $project->projectDetails->video_duration ?? 0) }}
+                    </span>
+                </div>
+
+                <div class="d-flex flex-column border-start ps-3 "> <span class=" small text-primary-500">Major Movement</span>
+                    <span class="fw-semibold fs-5 text-primary-500">
+                        {{ $project->major_movement ?? '-' }}
+                    </span>
+                </div>
+
+            </div>
+            </div>
+          <div class="d-flex mt-3">
+            <!-- Spider Chart -->
+            <div class="col-6 pe-2">
+              <canvas id="spiderChart{{ $project->id }}" height="200"></canvas>
+            </div>
+            <!-- Right: Thumbnail + Player Heatmap -->
+            <div class="col-6 ps-2">
+              <div class="row">
+                <div class="col-12 mb-2">
+                  <img src="{{ $project->link_image_thumbnail }}" class="img-fluid rounded" alt="Thumbnail">
+                </div>
+                <div class="col-12">
+                  <img src="{{ $project->link_image_heatmap_player }}" class="img-fluid rounded" alt="Heatmap">
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      @endforeach
+
+      <!-- Stroke Trend Chart -->
+
+    </div>
+
+    <!-- Right Column: Stats -->
+    <div class="col-lg-3 mb-4">
+        <div class="card bg-black-200 shadow rounded-lg p-4 mb-4 text-center">
+            <h3 class="text-primary-500 fw-semibold mb-3">Project Stats</h3>
+
+            <div class="row">
+                <!-- Left Column: Total Projects -->
+                <div class="col-6">
+                    <h5 class="fw-semibold text-primary-300">{{ $totalProjects }}</h5>
+                    <p class="text-primary-500 fw-semibold mb-3">Total Projects</p>
+                </div>
+
+                <!-- Right Column: Playing Time -->
+                <div class="col-6">
+                    <h5 class="fw-semibold text-primary-300">{{ $playtime }}</h5>
+                    <p class="text-primary-500 fw-semibold mb-3">Playing Time</p>
+                </div>
+            </div>
+        </div>
+      <div class="card bg-black-200 shadow rounded-lg p-4 mb-4">
+        <h6 class="text-primary-500 fw-semibold text-center mb-3">Project History (Last 6 Months)</h6>
+        <canvas id="projectHistoryChart" height="180"></canvas>
       </div>
 
-      <div class="text-center mt-3">
-        <small class="text-white-400">
-          Member since {{ $user->created_at?->format('F Y') ?? '2024' }} • CourtPlay
-        </small>
+      <div class="card bg-black-200 shadow rounded-lg p-4 mt-4">
+        <h6 class="text-primary-500 fw-semibold text-center mb-3">Stroke Trend (Last 3 Months)</h6>
+        <canvas id="strokeTrendChart" height="200"></canvas>
       </div>
     </div>
   </div>
 </div>
 
-{{-- ===== ChartJS ===== --}}
+{{-- Chart.js --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-  // === Grafik 1: Weekly Matches ===
-  const ctx1 = document.getElementById('chartMatches');
-  new Chart(ctx1, {
-    type: 'line',
-    data: {
-      labels: @json($weeklyMatches->keys()),
-      datasets: [{
-        label: 'Matches',
-        data: @json($weeklyMatches->values()),
-        borderColor: '#a3ce14',
-        backgroundColor: 'rgba(163,206,20,0.15)',
-        borderWidth: 3,
-        tension: 0.3,
-        fill: true,
-        pointRadius: 3,
-        pointBackgroundColor: '#a3ce14'
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, ticks: { color: '#999' }, grid: { color: '#333' } },
-        x: { ticks: { color: '#999' }, grid: { color: '#222' } }
-      }
-    }
-  });
+  // Spider charts for each project
+  @foreach($projects->take(3) as $project)
+    new Chart(document.getElementById('spiderChart{{ $project->id }}'), {
+        type: 'radar',
+        data: {
+            labels: ['Forehand', 'Backhand', 'Serve', 'Ready'],
+            datasets: [{
+            label: '{{ $project->name }}',
+            data: [
+                {{ $project->projectDetails->forehand_count ?? 0 }},
+                {{ $project->projectDetails->backhand_count ?? 0 }},
+                {{ $project->projectDetails->serve_count ?? 0 }},
+                {{ $project->projectDetails->ready_position_count ?? 0 }}
+            ],
+            borderColor: '#a3ce14',
+            backgroundColor: 'rgba(163,206,20,0.2)',
+            borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+            r: {
+                angleLines: { color: '#333' },
+                grid: { color: '#444' },
+                pointLabels: { color: '#ccc' },
+                ticks: {
+                display: false, // Hide scale ticks
+                color: '#888',
+                beginAtZero: true
+                }
+            }
+            },
+            plugins: {
+            legend: {
+                display: false, // This removes the entire legend, including the label boxes
+            }
+            }
+        }
+        });
+  @endforeach
 
-  // === Grafik 2: Stroke Trend ===
-  const ctx2 = document.getElementById('chartStroke');
-  new Chart(ctx2, {
+  // Stroke Trend (3 months)
+  new Chart(document.getElementById('strokeTrendChart'), {
     type: 'line',
     data: {
       labels: @json($labels),
       datasets: [
-        { label: 'Forehand', data: @json($forehandData), borderColor: '#a3ce14', borderWidth: 3, tension: 0.3, fill: false },
-        { label: 'Backhand', data: @json($backhandData), borderColor: '#d9ff6f', borderWidth: 3, tension: 0.3, fill: false },
-        { label: 'Serve', data: @json($serveData), borderColor: '#77ffb3', borderWidth: 3, tension: 0.3, fill: false },
-        { label: 'Ready', data: @json($readyData), borderColor: '#66ccff', borderWidth: 3, tension: 0.3, fill: false },
+        { label: 'Forehand', data: @json($forehandData), borderColor: '#a3ce14', borderWidth: 2, tension: 0.3 },
+        { label: 'Backhand', data: @json($backhandData), borderColor: '#d9ff6f', borderWidth: 2, tension: 0.3 },
+        { label: 'Serve', data: @json($serveData), borderColor: '#77ffb3', borderWidth: 2, tension: 0.3 },
+        { label: 'Ready', data: @json($readyData), borderColor: '#66ccff', borderWidth: 2, tension: 0.3 },
       ]
     },
     options: {
       responsive: true,
-      plugins: {
-        legend: {
-          labels: { color: '#ccc', boxWidth: 12, usePointStyle: true },
-          position: 'top',
-          align: 'end'
-        },
-        tooltip: { enabled: true }
-      },
+      plugins: { legend: { labels: { color: '#ccc' } } },
       scales: {
-        y: { beginAtZero: true, ticks: { color: '#ccc' }, grid: { color: '#444' } },
-        x: { ticks: { color: '#ccc' }, grid: { color: '#333' } }
+        x: { ticks: { color: '#aaa' }, grid: { color: '#333' } },
+        y: { beginAtZero: true, ticks: { color: '#aaa' }, grid: { color: '#333' } }
       }
     }
   });
 
-    // === Grafik 0: Yearly Match Activity ===
-const ctx0 = document.getElementById('chartYearly');
-const ctx0Ctx = ctx0.getContext('2d');
 
-// Buat gradient warna hijau muda → lime
-const gradient = ctx0Ctx.createLinearGradient(0, 0, 0, 180);
-gradient.addColorStop(0, '#a3ce14');
-gradient.addColorStop(1, '#77ffb3');
-
-// Batasi tinggi agar tidak terlalu panjang
-ctx0.style.maxHeight = '180px';
-ctx0.style.height = '180px';
-
-Chart.defaults.animation.duration = 1000;
-Chart.defaults.animation.easing = 'easeOutQuart';
-
-const chartYearly = new Chart(ctx0Ctx, {
-  type: 'bar',
-  data: {
-    labels: @json($monthLabels),
-    datasets: [{
-      label: 'Matches per Month',
-      data: @json($monthlyMatches),
-      backgroundColor: gradient,
-      borderColor: '#a3ce14',
-      borderWidth: 1,
-      borderRadius: 4,
-      borderSkipped: false,
-      barPercentage: 0.45,
-      categoryPercentage: 0.8
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: true, // ✅ tetap proporsional
-    aspectRatio: 3.5,          // ✅ kontrol perbandingan lebar vs tinggi
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: (ctx) => `Matches: ${ctx.formattedValue}`
-        }
-      }
+  // Project History (6 months)
+  new Chart(document.getElementById('projectHistoryChart'), {
+    type: 'bar',
+    data: {
+      labels: @json($monthlyProjectCounts->keys() ?? []),
+      datasets: [{
+        label: 'Projects',
+        data: @json($monthlyProjectCounts->values() ?? []),
+        backgroundColor: '#a3ce14',
+        borderRadius: 4
+      }]
     },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: { color: '#aaa', stepSize: 5 },
-        grid: { color: '#333' }
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true, ticks: { color: '#aaa' }, grid: { color: '#333' } },
+        x: { ticks: { color: '#aaa' }, grid: { display: false } }
       },
-      x: {
-        ticks: { color: '#aaa' },
-        grid: { display: false }
-      }
+      plugins: { legend: { display: false } }
     }
-  }
-});
-
-
-
-
+  });
 
 });
 </script>

@@ -1714,3 +1714,17 @@ span a:hover {
     width: 90%;
   }
 }
+.project-info {
+    display: flex;
+    flex-direction: column;
+    font-size: 18px; /* Adjust font size */
+}
+
+.project-info h5 {
+    font-weight: 600;
+    color: #a3ce14; /* Set the project name color */
+}
+
+.project-info .separator {
+    padding: 0 8px; /* Adjust space around the separator */
+}

@@ -69,6 +69,10 @@
               <a class="nav-link {{ request()->routeIs('plan') ? 'active' : '' }}"
                  href="{{ route('plan') }}">Plan</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link {{ request()->routeIs('social') ? 'active' : '' }}"
+                 href="{{ route('social') }}">Social</a>
+            </li>
           @endauth
 
           {{-- GUEST menu --}}
