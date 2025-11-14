@@ -8,7 +8,7 @@
     <!-- Left Column: Profile Info -->
     <div class="col-lg-3 mb-4">
       <div class=" card text-center bg-black-200 shadow rounded-lg p-4 mb-4">
-        <div class="avatar-square  mx-auto mb-3" style="--avatar-size:180px;">
+        <div class="avatar-square position-relative mx-auto overflow-hidden mb-3" style="--avatar-size:180px;">
           @if($photoUrl)
             <img src="{{ $photoUrl }}" class="avatar-img" alt="Profile">
           @else
@@ -32,15 +32,13 @@
       @if(auth()->check())
         @if(auth()->user()->id !== $user->id)
           <div class="d-flex justify-content-center">
-            <form action="{{ route('user.follow', $user->username) }}" method="POST">
-              @csrf
-              @if($isFollowing)
-                <button type="submit" class="btn btn-custom2">Unfollow</button>
-              @else
-                <button type="submit" class="btn btn-custom">Follow</button>
-              @endif
+            <form id="followForm" action="{{ route('user.follow', $user->username) }}" method="POST" data-action="{{ route('user.follow', $user->username) }}">
+                @csrf
+                <button type="submit" id="followBtn" class="btn {{ $isFollowing ? 'btn-custom2' : 'btn-custom' }}">
+                    {{ $isFollowing ? 'Unfollow' : 'Follow' }}
+                </button>
             </form>
-          </div>
+        </div>
         @endif
       @else
         <div class="d-flex justify-content-center">
@@ -54,51 +52,60 @@
 
       @foreach($projects->take(3) as $project)
         <div class="card mb-3 bg-black-200 shadow rounded-lg p-4">
+
+      <!-- Project Header (Two Columns) -->
+      <div class="row">
+        <!-- Left Column: Project Name and Date -->
+        <div class="col-6">
           <div class="text-primary-500 small">
             {{ \Carbon\Carbon::parse($project->upload_date)->format('M d, Y') }}
           </div>
-          <div class="text-white-400 mb-2">
-                <!-- Project Name -->
-                <h3 class="fw-semibold text-primary-300">{{ $project->project_name }}</h3>
+          <h3 class="fw-semibold text-primary-300">{{ $project->project_name }}</h3>
 
-                <!-- Time and Major Movement (with separator) -->
-               <div class="d-flex justify-content-start">
+        </div>
 
-                <div class="d-flex flex-column pe-3 "> <span class=" small text-primary-500 ">Time</span>
-                    <span class="fw-semibold fs-5 text-primary-500">
-                        {{ gmdate('H:i:s', $project->projectDetails->video_duration ?? 0) }}
-                    </span>
-                </div>
-
-                <div class="d-flex flex-column border-start ps-3 "> <span class=" small text-primary-500">Major Movement</span>
-                    <span class="fw-semibold fs-5 text-primary-500">
-                        {{ $project->major_movement ?? '-' }}
-                    </span>
-                </div>
-
+        <!-- Right Column: Time and Major Movement -->
+        <div class="col-6 text-end">
+          <div class="d-flex justify-content-end">
+            <div class="d-flex flex-column pe-3">
+              <span class="small text-primary-500">Time</span>
+              <span class="fw-semibold fs-5 text-primary-500">
+                {{ gmdate('H:i:s', $project->projectDetails->video_duration ?? 0) }}
+              </span>
             </div>
-            </div>
-          <div class="d-flex mt-3">
-            <!-- Spider Chart -->
-            <div class="col-6 pe-2">
-              <canvas id="spiderChart{{ $project->id }}" height="200"></canvas>
-            </div>
-            <!-- Right: Thumbnail + Player Heatmap -->
-            <div class="col-6 ps-2">
-              <div class="row">
-                <div class="col-12 mb-2">
-                  <img src="{{ $project->link_image_thumbnail }}" class="img-fluid rounded" alt="Thumbnail">
-                </div>
-                <div class="col-12">
-                  <img src="{{ $project->link_image_heatmap_player }}" class="img-fluid rounded" alt="Heatmap">
-                </div>
-              </div>
+
+            <div class="d-flex flex-column border-start ps-3">
+              <span class="small text-primary-500">Major Movement</span>
+              <span class="fw-semibold fs-5 text-primary-500">
+                {{ $project->major_movement ?? 'Balanced' }}
+              </span>
             </div>
           </div>
         </div>
-      @endforeach
+      </div>
 
-      <!-- Stroke Trend Chart -->
+
+      <!-- Project Details (Spider Chart, Thumbnail, Heatmap) -->
+      <div class="d-flex mt-3">
+        <!-- Spider Chart -->
+        <div class="col-6 pe-2">
+          <canvas id="spiderChart{{ $project->id }}" height="200"></canvas>
+        </div>
+
+        <!-- Right: Thumbnail + Player Heatmap -->
+        <div class="col-6 ps-2">
+          <div class="row">
+            <div class="col-12 mb-2">
+              <img src="{{ $project->link_image_thumbnail }}" class="img-fluid rounded" alt="Thumbnail">
+            </div>
+            <div class="col-12">
+              <img src="{{ $project->link_image_heatmap_player }}" class="img-fluid rounded" alt="Heatmap">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+      @endforeach
 
     </div>
 
@@ -226,6 +233,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const followForm = document.getElementById('followForm');
+    const followBtn = document.getElementById('followBtn');
+
+    followForm.addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        const url = followForm.getAttribute('data-action');
+        const method = followForm.method;
+        const formData = new FormData(followForm);
+
+        // Make an Ajax request
+        fetch(url, {
+            method: method,
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update the button text based on the follow status
+                followBtn.textContent = data.isFollowing ? 'Unfollow' : 'Follow';
+                followBtn.classList.toggle('btn-custom', !data.isFollowing);
+                followBtn.classList.toggle('btn-custom2', data.isFollowing);
+            } else {
+                alert('An error occurred. Please try again.');
+            }
+        })
+        .catch(error => {
+            alert('An error occurred. Please try again.');
+        });
+    });
 });
 </script>
 @endsection

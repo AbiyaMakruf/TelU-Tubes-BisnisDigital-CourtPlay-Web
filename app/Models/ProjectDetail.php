@@ -18,13 +18,21 @@ class ProjectDetail extends Model
 
     protected $fillable = [
         'description',
+
         'link_video_original',
-        'link_video_object_detection',
+        'link_video_object_detections',
         'link_video_player_keypoints',
-        'link_video_court_keypoints',
-        'link_images_ball_droppings',
-        'link_video_keypoints',
+
+        'link_video_minimap_player',
+        'link_video_heatmap_player',
         'link_image_heatmap_player',
+        'genai_heatmap_player_understanding',
+
+        'link_video_ball_droppings',
+        'link_image_ball_droppings',
+        'link_image_heatmap_ball_droppings',
+        'genai_ball_droppings_understanding',
+
         'forehand_count',
         'backhand_count',
         'serve_count',
@@ -32,7 +40,6 @@ class ProjectDetail extends Model
 
         'video_duration',
         'video_processing_time',
-
     ];
 
     /**

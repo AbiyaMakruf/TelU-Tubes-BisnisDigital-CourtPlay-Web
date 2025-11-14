@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Follow;
 use Illuminate\Support\Facades\DB;
+use App\Models\Project;
 
 class SocialController extends Controller
 {
@@ -21,15 +22,15 @@ class SocialController extends Controller
         // Mendapatkan query pencarian dari form
         $searchTerm = $request->input('search', '');
 
-       $userId = auth()->user()->id;
+        // Mendapatkan ID user yang sedang login
+        $userId = auth()->check() ? auth()->user()->id : null;
 
         // Query untuk mendapatkan 5 user dengan followers terbanyak
-        $topFollowers = User::select('users.*', 'follows.followers_count', 'follows.following_count')  // Ambil followers_count dan following_count dari tabel follows
-                    ->leftJoin('follows', 'follows.user_id', '=', 'users.id')  // Join dengan tabel follows untuk mendapatkan followers_count dan following_count
-                    ->orderByDesc('follows.followers_count')  // Urutkan berdasarkan followers_count yang ada di follows
-                    ->limit(5)  // Ambil 5 pengguna teratas
-                    ->get();
-
+        $topFollowers = User::select('users.*', 'follows.followers_count', 'follows.following_count')
+            ->leftJoin('follows', 'follows.user_id', '=', 'users.id')
+            ->orderByDesc('follows.followers_count')  // Urutkan berdasarkan followers_count
+            ->limit(5)  // Ambil 5 pengguna teratas
+            ->get();
 
         // Query untuk mendapatkan 5 pengguna terbaru
         $latestUsers = User::orderByDesc('created_at')  // Urutkan berdasarkan waktu pembuatan
@@ -42,11 +43,61 @@ class SocialController extends Controller
             ->orWhere('last_name', 'like', "%$searchTerm%")
             ->get();
 
+        // Query untuk mendapatkan 10 project terbaru dengan pemilik username
+        $latestProjects = Project::join('project_details', 'projects.project_details_id', '=', 'project_details.id')  // Join project_details
+            ->with('user')  // Load user (pemilik project)
+            ->select('projects.*', 'project_details.*')  // Select all columns from both projects and project_details
+            ->orderByDesc('projects.created_at')  // Urutkan berdasarkan waktu pembuatan
+            ->limit(10)  // Ambil 10 project terbaru
+            ->get();
 
-        // dd($topFollowers);
-        // Menampilkan halaman dengan data yang sudah diambil, termasuk user_id
-        return view('social', compact('topFollowers', 'latestUsers', 'users', 'searchTerm', 'userId'));
+
+        $totals = [
+            'forehand' => 0,
+            'backhand' => 0,
+            'serve'    => 0,
+            'ready'    => 0,
+            'duration' => 0,
+        ];
+
+        foreach ($latestProjects as $p) {
+            $d = $p; // Karena kita sudah join, data project dan project_details sudah ada di objek $p
+            if ($d) {
+                $totals['forehand'] += $d->forehand_count ?? 0;
+                $totals['backhand'] += $d->backhand_count ?? 0;
+                $totals['serve']    += $d->serve_count ?? 0;
+                $totals['ready']    += $d->ready_position_count ?? 0;
+                $totals['duration'] += $d->video_duration ?? 0;
+
+                if ($d->forehand_count > $d->backhand_count) {
+                    $d->major_movement = 'Forehand';  // Major movement adalah Forehand jika forehand lebih banyak
+                } elseif ($d->backhand_count > $d->forehand_count) {
+                    $d->major_movement = 'Backhand';  // Major movement adalah Backhand jika backhand lebih banyak
+                } else {
+                    $d->major_movement = 'Balanced';  // Jika keduanya sama, set Balanced
+                }
+            }
+        }
+
+        // Menampilkan halaman dengan data yang sudah diambil
+        if ($request->ajax()) {
+            // Mengembalikan hasil pencarian sebagai response JSON
+            $userListHtml = view('partials.user-list', compact('users'))->render();
+            return response()->json([
+                'userListHtml' => $userListHtml,
+            ]);
+        }
+
+        return view('social', [
+            'topFollowers' => $topFollowers,
+            'latestUsers' => $latestUsers,
+            'users' => $users,
+            'searchTerm' => $searchTerm,
+            'userId' => $userId,
+            'latestProjects' => $latestProjects
+        ]);
     }
+
 
     /**
      * Menambahkan atau menghapus following pada pengguna yang di-follow
@@ -138,6 +189,12 @@ class SocialController extends Controller
         // Mendapatkan pengguna yang sedang login
         $user = auth()->user();
 
+        if ($user->id === $userToFollow->id) {
+            return response()->json(['success' => false, 'message' => 'You cannot follow yourself.']);
+        }
+
+        $isFollowing = false;  // Default follow status
+
         // Cek apakah pengguna yang sedang login sudah mengikuti pengguna ini menggunakan method isFollowing dari model Follow
         if (Follow::isFollowing($user->id, $userToFollow->id)) {
             // Jika sudah follow, lakukan unfollow
@@ -148,8 +205,8 @@ class SocialController extends Controller
             $followedUser = Follow::where('user_id', $userToFollow->id)->first();
             $followedUser->removeFollower($user->id);
 
-            $userFollow->updateFollowersCount( $user->id);
-            $followedUser->updateFollowersCount( $userToFollow->id);
+            $userFollow->updateFollowersCount($user->id);
+            $followedUser->updateFollowersCount($userToFollow->id);
         } else {
             // Jika belum follow, lakukan follow
             $userFollow = Follow::where('user_id', $user->id)->first();
@@ -178,12 +235,18 @@ class SocialController extends Controller
             }
 
             // Menghitung ulang jumlah followers dan following
-            $userFollow->updateFollowersCount( $user->id);
-            $followedUser->updateFollowersCount( $userToFollow->id);
+            $userFollow->updateFollowersCount($user->id);
+            $followedUser->updateFollowersCount($userToFollow->id);
+
+            // Set follow status to true after successful follow
+            $isFollowing = true;
         }
 
-        // Mengarahkan kembali ke halaman sebelumnya setelah follow/unfollow
-        return back();
+        // Return the follow status and success as a JSON response
+        return response()->json([
+            'success' => true,
+            'isFollowing' => $isFollowing,
+        ]);
     }
 
 

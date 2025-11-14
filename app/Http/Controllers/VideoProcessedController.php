@@ -21,7 +21,6 @@ class VideoProcessed implements ShouldBroadcastNow
 
     public function broadcastOn()
     {
-        // 🔊 public channel
         return new Channel('project-updates');
     }
 

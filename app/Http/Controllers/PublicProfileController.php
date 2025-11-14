@@ -74,13 +74,16 @@ class PublicProfileController extends Controller
 
 
         // ===== Grafik 1: Project History (6 Bulan Terakhir) =====
-        $sixMonthsAgo = Carbon::now()->subMonths(6);
-        $monthlyProjectCounts = collect(range(0, 5))->mapWithKeys(function ($i) use ($user, $sixMonthsAgo) {
+       $sixMonthsAgo = Carbon::now()->subMonths(6);
+
+        $monthlyProjectCounts = collect(range(0, 6))->mapWithKeys(function ($i) use ($user, $sixMonthsAgo) {
             $month = $sixMonthsAgo->copy()->addMonths($i);
+
             $count = Project::where('user_id', $user->id)
                 ->whereYear('upload_date', $month->year)
                 ->whereMonth('upload_date', $month->month)
                 ->count();
+
             return [$month->format('M') => $count];
         });
 

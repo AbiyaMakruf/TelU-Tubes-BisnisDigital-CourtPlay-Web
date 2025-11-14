@@ -103,10 +103,21 @@ class AnalyticsController extends Controller
                 'project' => $project,
                 'video_object_detection_Url' => $detail->link_video_object_detections ?? null,
                 'video_player_keypoints_Url' => $detail->link_video_player_keypoints ?? null,
-                'heatmapUrl' => $detail->link_image_heatmap_player ?? null,
-                'balldropUrl' => $detail->link_image_ball_droppings ?? null,
+
+
+                //heatmap
+                'minimapUrl' => $detail->link_video_minimap_player ?? null,
+                'videoHeatmapUrl' => $detail->link_video_heatmap_player ?? null,
+                'imageHeatmapUrl' => $detail->link_image_heatmap_player ?? null,
                 'text_heatmap' => $detail->genai_heatmap_player_understanding ?? null,
+
+                //balldroppings
+                'videoBalldroppingsUrl' => $detail->link_video_ball_droppings ?? null,
+                'balldropUrl' => $detail->link_image_ball_droppings ?? null,
+                'imageHeatmapBalldroppingsUrl' => $detail->link_image_heatmap_ball_droppings ?? null,
                 'text_balldrop' => $detail->genai_ball_droppings_understanding ?? null,
+
+
                 'forehand' => $detail->forehand_count ?? 0,
                 'backhand' => $detail->backhand_count ?? 0,
                 'serve' => $detail->serve_count ?? 0,

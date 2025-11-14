@@ -67,69 +67,231 @@
         </div>
     </div>
 
-    <div class="row g-4 align-items-start mb-4">
-        <div class="col-md-6">
-            <h6 class="fw-semibold text-primary-300 mb-3 text-center">Heatmap Player</h6>
-            @if ($heatmapUrl != "IN DEVELOPMENT" && $heatmapUrl != null)
-                <img src="{{ $heatmapUrl }}" alt="Heatmap" class="img-fluid rounded-4 shadow placeholder-wrapper">
-            @else
-                <div class="placeholder-wrapper  rounded-4 bg-black-300 d-flex align-items-center justify-content-center" style="height: 300px;">
-                    <div class="text-center">
-                        <i class="bi bi-bar-chart text-primary-300 mb-3 d-block" style="font-size: 4rem;"></i>
-                        <p class="fw-semibold text-white-400">Image is being process...</p>
-                    </div>
-                </div>
-            @endif
+{{-- ===================== HEATMAP PLAYER ===================== --}}
+<div class="row g-4 align-items-start mb-4">
+
+
+
+    {{-- === VIDEO WRAPPER COLUMN === --}}
+    <div class="col-md-3">
+        <div class="d-flex justify-content-between mb-2">
+
+            <!-- Label kiri -->
+            <div class="ms-2 d-flex align-items-center ">
+                <h6 class="fw-semibold text-primary-300 mb-0">Video</h6>
+            </div>
+
+            <!-- Toggle + text kanan -->
+            <div class="d-flex align-items-center">
+
+                <!-- Minimap text -->
+                <span style="font-size: 12px; margin-right: 8px;">Minimap</span>
+
+                <!-- Toggle switch -->
+                <label class="toggle-switch" style="cursor:pointer;">
+                    <input type="checkbox"
+                        wire:model.live="isHeatmap"
+                        @checked($videoTab === 'heatmapvideo')>
+                    <span class="slider"></span>
+                </label>
+
+                <!-- Heatmap text -->
+                <span style="font-size: 12px; margin-left: 8px;">Heatmap</span>
+
+            </div>
+
         </div>
 
-        <div class="col-md-6">
-            <div class="p-3 bg-black-200 rounded-4 shadow-sm" style="margin-top: 2.1rem;  margin-bottom: 2rem;">
-                @if ($text_heatmap != "IN DEVELOPMENT" && $text_heatmap != null)
-                <h6 class="text-primary-300 fw-bold mb-2">
-                    <i class="bi bi-stars me-2"></i>AI Generated Insight
-                </h6>
-                <p class="text-white-400 mb-0">
-                    {{ $text_heatmap }}
-                </p>
+
+
+
+        <div class="video-wrapper position-relative ">
+
+            @if($videoTab === 'minimap')
+                @if ($minimapUrl)
+                    <video controls autoplay loop muted playsinline
+                        class="w-100 rounded-4 shadow placeholder-wrapper"
+                        style="height:520px; object-fit:cover;">
+                        <source src="{{ $minimapUrl }}" type="video/mp4">
+                    </video>
                 @else
-                    <div class="text-center ">
-                        <p class="fw-semibold text-white-400 mt-3">Image is being process...</p>
+                    <div class="placeholder-wrapper rounded-4 bg-black-300
+                        d-flex align-items-center justify-content-center"
+                        style="height:520px;">
+                        <p class="fw-semibold text-white-400">Minimap in process...</p>
                     </div>
                 @endif
-            </div>
+            @endif
+
+            @if($videoTab === 'heatmapvideo')
+                @if ($videoHeatmapUrl)
+                    <video controls autoplay loop muted playsinline
+                        class="w-100 rounded-4 shadow placeholder-wrapper"
+                        style="height:520px; object-fit:cover;">
+                        <source src="{{ $videoHeatmapUrl }}" type="video/mp4">
+                    </video>
+                @else
+                    <div class="placeholder-wrapper rounded-4 bg-black-300
+                        d-flex align-items-center justify-content-center"
+                        style="height:520px;">
+                        <p class="fw-semibold text-white-400">Heatmap in process...</p>
+                    </div>
+                @endif
+            @endif
+
         </div>
     </div>
 
-    <div class="row g-4 align-items-start">
-        <div class="col-md-6">
-            <h6 class="fw-semibold text-primary-300 mb-3 text-center ">Ball Drop Heatmap</h6>
-            @if ($balldropUrl != "IN DEVELOPMENT" && $balldropUrl != null)
-                <img src="{{ $balldropUrl }}" alt="Ball Drop" class="img-fluid rounded-4 shadow placeholder-wrapper">
-            @else
-                <div class="placeholder-wrapper  rounded-4 bg-black-300 d-flex align-items-center justify-content-center" style="height: 300px;">
-                    <div class="text-center">
-                        <i class="bi bi-bar-chart text-primary-300 mb-3 d-block" style="font-size: 4rem;"></i>
-                        <p class="fw-semibold text-white-400">Ball Drop in process...</p>
-                    </div>
-                </div>
-            @endif
+    {{-- === IMAGE WRAPPER COLUMN === --}}
+    <div class="col-md-3">
+        <div class=" component-custom">
+            <h6 class="fw-semibold text-primary-300 text-center">Image</h6>
         </div>
 
-        <div class="col-md-6 mt-6">
-            <div class="p-3 bg-black-200 rounded-4 shadow-sm" style="margin-top: 2.1rem; margin-bottom: 2rem;">
-                @if ($text_balldrop != "IN DEVELOPMENT" && $text_balldrop != null)
-                <h6 class="text-primary-300 fw-bold mb-2">
-                    <i class="bi bi-stars me-2"></i>AI Generated Insight
-                </h6>
-                <p class="text-white-400 mb-0">
-                    {{ $text_balldrop }}
-                </p>
-                @else
-                    <div class="text-center ">
-                        <p class="fw-semibold text-white-400 mt-3">Insight in process...</p>
-                    </div>
-                @endif
-            </div>
+
+        <div class="image-wrapper position-relative w-100">
+
+            @if ($imageHeatmapUrl)
+                <img src="{{ $imageHeatmapUrl }}"
+                    class="w-100 rounded-4 shadow placeholder-wrapper"
+                    style="height:520px; object-fit:cover;">
+            @else
+                <div class="placeholder-wrapper rounded-4 bg-black-300
+                    d-flex align-items-center justify-content-center w-100"
+                    style="height:520px;">
+                    <p class="fw-semibold text-white-400">Image in process...</p>
+                </div>
+            @endif
+
         </div>
     </div>
+
+
+
+    {{-- === AI TEXT === --}}
+    <div class="col-md-6">
+        <h6 class="fw-semibold text-primary-300 fw-bold mb-2 text-center">
+            <i class="bi bi-stars me-2"></i>Insight
+        </h6>
+
+        <div class="p-3 bg-black-200 rounded-4 shadow-sm ai-box  @if(strlen($text_heatmap ?? '') < 600) auto-fit @endif">
+            @if ($text_heatmap)
+                <p class="text-white-400 mb-0">{{ $text_heatmap }}</p>
+            @else
+                <p class="text-white-400 text-center mt-5">Insight in process...</p>
+            @endif
+        </div>
+    </div>
+
+</div>
+
+
+
+{{-- ===================== BALL DROP ===================== --}}
+<div class="row g-4 align-items-start mb-4">
+
+    {{-- === VIDEO STATIC WRAPPER === --}}
+    <div class="col-md-3">
+        <h6 class="fw-semibold text-primary-300 component-custom text-center">Video</h6>
+
+        <div class="video-wrapper position-relative">
+
+            @if ($videoBalldroppingsUrl)
+                <video controls autoplay loop muted playsinline
+                    class="w-100 rounded-4 shadow placeholder-wrapper"
+                    style="height:520px; object-fit:cover;">
+                    <source src="{{ $videoBalldroppingsUrl }}" type="video/mp4">
+                </video>
+            @else
+                <div class="placeholder-wrapper rounded-4 bg-black-300
+                    d-flex align-items-center justify-content-center"
+                    style="height:520px;">
+                    <p class="fw-semibold text-white-400">Video in process...</p>
+                </div>
+            @endif
+
+        </div>
+    </div>
+
+    {{-- === SWITCH IMAGE WRAPPER === --}}
+    <div class="col-md-3">
+
+        <!-- TITLE + TOGGLE -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-semibold text-primary-300 mb-0 ms-2">Image</h6>
+
+            <div class="d-flex align-items-center">
+                <span style="font-size: 12px; margin-right: 8px;">Minimap</span>
+
+                <!-- TOGGLE SWITCH -->
+                <label class="toggle-switch" style="cursor:pointer;">
+                    <input type="checkbox"
+                        wire:model.live="isBallHeatmap"
+                        @checked($ballTab === 'heatmap')>
+                    <span class="slider"></span>
+                </label>
+
+                <span style="font-size: 12px; margin-left: 8px;">Heatmap</span>
+            </div>
+        </div>
+
+        <!-- IMAGE CONTENT -->
+        <div class="image-wrapper position-relative">
+
+            @if($ballTab==='minimap')
+                @if ($balldropUrl)
+                    <img src="{{ $balldropUrl }}"
+                        class="w-100 rounded-4 shadow placeholder-wrapper"
+                        style="height:520px; object-fit:cover;">
+                @else
+                    <div class="placeholder-wrapper rounded-4 bg-black-300
+                        d-flex align-items-center justify-content-center w-100"
+                        style="height:520px;">
+                        <p class="fw-semibold text-white-400">Image in process...</p>
+                    </div>
+                @endif
+            @endif
+
+            @if($ballTab==='heatmap')
+                @if ($imageHeatmapBalldroppingsUrl)
+                    <img src="{{ $imageHeatmapBalldroppingsUrl }}"
+                        class="w-100 rounded-4 shadow placeholder-wrapper"
+                        style="height:520px; object-fit:cover;">
+                @else
+                    <div class="placeholder-wrapper rounded-4 bg-black-300
+                        d-flex align-items-center justify-content-center w-100"
+                        style="height:520px;">
+                        <p class="fw-semibold text-white-400">Heatmap in process...</p>
+                    </div>
+                @endif
+            @endif
+
+        </div>
+
+    </div>
+
+
+
+
+    {{-- === AI TEXT === --}}
+    <div class="col-md-6">
+        <h6 class="fw-semibold text-primary-300 fw-bold mb-2 text-center">
+            <i class="bi bi-stars me-2"></i>Insight
+        </h6>
+
+        <div class="p-3 bg-black-200 rounded-4 shadow-sm ai-box @if(strlen($text_balldrop ?? '') < 600) auto-fit @endif">
+            @if ($text_balldrop)
+                <p class="text-white-400 mb-0">{{ $text_balldrop }}</p>
+            @else
+                <p class="text-white-400 text-center mt-5">Insight in process...</p>
+            @endif
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
 </div>
