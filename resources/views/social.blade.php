@@ -60,7 +60,7 @@
                         <ul class="list-unstyled">
                             @foreach ($topFollowers as $user)
                                 <li class="mb-3 d-flex justify-content-start">
-                                    <a href="{{ route('user.profile', $user->username) }}" class="d-flex align-items-center">
+                                    <a href="{{ route('user.profile', $user->username) }}" class="d-flex align-items-center avatar-link">
                                         <div class="avatar-circle">
                                             @if($user->profile_picture_url)
                                                 <img src="{{ $user->profile_picture_url }}" class="avatar-img2">
@@ -76,7 +76,7 @@
                                         <a href="{{ route('user.profile', $user->username) }}" class="text-primary-500 fw-semibold d-flex">
                                             {{ $user->username }}
                                         </a>
-                                        <div class="small text-primary-300">{{ $user->followers_count }} Followers</div>
+                                        <div class="small text-primary-300">{{ $user->followers_count_formatted }} Followers</div>
                                     </div>
                                 </li>
                             @endforeach
@@ -90,7 +90,7 @@
                         <ul class="list-unstyled">
                             @foreach ($latestUsers as $user)
                                 <li class="mb-3 d-flex justify-content-start">
-                                    <a href="{{ route('user.profile', $user->username) }}" class="d-flex align-items-center">
+                                    <a href="{{ route('user.profile', $user->username) }}" class="d-flex align-items-center avatar-link">
                                         <div class="avatar-circle">
                                             @if($user->profile_picture_url)
                                                 <img src="{{ $user->profile_picture_url }}" class="avatar-img2">
@@ -134,12 +134,23 @@
                                 {{ \Carbon\Carbon::parse($project->upload_date)->format('M d, Y') }}
                             </div>
                             <h3 class="fw-semibold text-primary-300 mb-0">{{ $project->project_name }}</h3>
-                            <p class="text-white-400">
-                                <a href="{{ route('user.profile', $project->user->username) }}"
-                                   class="text-primary-500">
+                            <div class="d-flex align-items-center mt-1">
+                                <a href="{{ route('user.profile', $project->user->username) }}" class="d-flex align-items-center me-2 avatar-link" >
+                                    <div class="avatar-circle-sm">
+                                        @if($project->user->profile_picture_url)
+                                            <img src="{{ $project->user->profile_picture_url }}" class="avatar-img-sm">
+                                        @else
+                                            <span class="avatar-initials-text-sm">
+                                                {{ strtoupper($project->user->first_name[0] . $project->user->last_name[0]) }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </a>
+
+                                <a href="{{ route('user.profile', $project->user->username) }}" class="text-primary-500 ">
                                     {{ $project->user->username }}
                                 </a>
-                            </p>
+                            </div>
                         </div>
 
                         <div class="col-6 text-end">
@@ -147,7 +158,7 @@
                                 <div class="d-flex flex-column pe-3">
                                     <span class="small text-primary-500">Time</span>
                                     <span class="fw-semibold fs-5 text-primary-500">
-                                        {{ gmdate('H:i:s', $project->projectDetails->video_duration ?? 0) }}
+                                        {{ gmdate('i:s', $project->projectDetails->video_duration ?? 0) }}
                                     </span>
                                 </div>
 
@@ -164,47 +175,37 @@
                     <!-- Details -->
                     <div class="row mt-4">
 
-                    <!-- LEFT SPIDER CHART -->
-                    <div class="col-md-6 d-flex align-items-stretch">
-                        <div class="w-100 p-3 rounded bg-black-200 d-flex justify-content-center align-items-center"
-                            style="height:260px; min-height:260px;">
-                            <canvas id="spiderChart{{ $project->id }}"></canvas>
+                        <!-- LEFT SPIDER CHART -->
+                        <div class="col-md-6 d-flex align-items-stretch">
+                            <div class="w-100 p-3 rounded bg-black-200 d-flex justify-content-center align-items-center"
+                                style="height:260px; min-height:260px;">
+                                <canvas id="spiderChart{{ $project->id }}"></canvas>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- RIGHT THUMBNAIL -->
-                    <div class="col-md-6 d-flex align-items-stretch">
-                        <div class="w-100 p-3 rounded bg-black-200 d-flex justify-content-center align-items-center"
-                            style="height:260px; min-height:260px;">
-                            <img src="{{ $project->link_image_thumbnail }}"
-                                class="img-fluid rounded"
-                                style="max-height:100%; object-fit:contain;">
+                        <!-- RIGHT THUMBNAIL -->
+                        @if($project->link_image_thumbnail)
+                        <div class="col-md-6 d-flex align-items-stretch">
+                            <div class="w-100 p-3 rounded bg-black-200 d-flex justify-content-center align-items-center"
+                                style="height:260px; min-height:260px;">
+                                <img src="{{ $project->link_image_thumbnail }}"
+                                    class="img-fluid rounded"
+                                    style="max-height:100%; object-fit:contain;">
+                            </div>
                         </div>
+                        @endif
+
+                        <!-- HEATMAP BLOCK -->
+                        @if($project->link_image_heatmap_player_horizontal)
+                        <div class="col-12 mt-4 d-flex justify-content-center">
+                            <div class="heatmap-horizontal-wrapper">
+                                <img src="{{ $project->link_image_heatmap_player_horizontal }}"
+                                    class="heatmap-horizontal-img rounded">
+                            </div>
+                        </div>
+                        @endif
+
                     </div>
-
-                    <!-- HEATMAP BLOCK -->
-                   <div class="col-12 mt-4 d-flex justify-content-center">
-    <div style="
-        width: 100%;
-        max-width: 700px;
-        aspect-ratio: 16 / 9;     /* setelah rotate */
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    ">
-        <img src="{{ $project->link_image_heatmap_player }}"
-            style="
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-                transform: rotate(90deg);
-            "
-            class="rounded">
-    </div>
-</div>
-
-                </div>
 
 
                 </div>

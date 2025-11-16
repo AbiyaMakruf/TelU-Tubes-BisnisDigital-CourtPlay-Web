@@ -30,6 +30,21 @@ class SocialController extends Controller
             ->limit(5)
             ->get();
 
+        function formatCount($num) {
+            if ($num >= 1000000) {
+                return round($num / 1000000, 1) . 'M';
+            } elseif ($num >= 10000) {
+                return round($num / 1000, 1) . 'K';
+            } elseif ($num >= 1000) {
+                return number_format($num);
+            }
+            return $num;
+        }
+
+        foreach ($topFollowers as $u) {
+            $u->followers_count_formatted = formatCount($u->followers_count ?? 0);
+        }
+
         // --- Latest Users (EXCLUDE ADMIN) ---
         $latestUsers = User::where('role', '!=', 'admin')
             ->orderByDesc('created_at')
@@ -96,81 +111,7 @@ class SocialController extends Controller
      * @param string $username
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function toggleFollow($username)
-    {
-        // Mendapatkan pengguna yang di-follow berdasarkan username
-        $userToFollow = User::where('username', $username)->firstOrFail();
-
-        // Mendapatkan pengguna yang sedang login
-        $user = auth()->user();
-
-        // Cek apakah pengguna yang sedang login sudah mengikuti pengguna ini menggunakan method isFollowing dari model Follow
-        if (Follow::isFollowing($user->id, $userToFollow->id)) {
-            // Jika sudah follow, lakukan unfollow
-            $userFollow = Follow::where('user_id', $user->id)->first();
-            $userFollow->removeFollowing($userToFollow->id);
-
-            // Hapus follower dari pengguna yang di-follow
-            $followedUser = Follow::where('user_id', $userToFollow->id)->first();
-            $followedUser->removeFollower($user->id);
-
-            $followedUser->updateFollowersCount($userToFollow->id);
-            $userFollow->updateFollowersCount($user->id);
-        } else {
-            // Jika belum follow, lakukan follow
-            $userFollow = Follow::where('user_id', $user->id)->first();
-            if (!$userFollow) {
-                // Jika pengguna belum memiliki entri di tabel follows, buat entri baru
-                $userFollow = Follow::create([
-                    'user_id' => $user->id,
-                    'following' => json_encode([$userToFollow->id]),
-                    'followers' => json_encode([]),
-                ]);
-            } else {
-                $userFollow->addFollowing($userToFollow->id); // Menambahkan following
-            }
-
-            // Menambahkan follower ke dalam data user yang di-follow
-            $followedUser = Follow::where('user_id', $userToFollow->id)->first();
-            if (!$followedUser) {
-                // Jika pengguna yang di-follow belum memiliki entri di tabel follows, buat entri baru
-                $followedUser = Follow::create([
-                    'user_id' => $userToFollow->id,
-                    'followers' => json_encode([$user->id]),
-                    'following' => json_encode([]),
-                ]);
-            } else {
-                $followedUser->addFollower($user->id); // Menambahkan follower
-            }
-
-            // Menghitung ulang jumlah followers dan following
-            $userFollow->updateFollowersCount( $user->id);
-            $followedUser->updateFollowersCount( $userToFollow->id);
-        }
-
-        $userId = auth()->user()->id;
-        // Mendapatkan data untuk halaman social
-        $topFollowers = User::select('users.*', 'follows.followers_count', 'follows.following_count')  // Ambil followers_count dan following_count dari tabel follows
-                    ->leftJoin('follows', 'follows.user_id', '=', 'users.id')  // Join dengan tabel follows untuk mendapatkan followers_count dan following_count
-                    ->orderByDesc('follows.followers_count')  // Urutkan berdasarkan followers_count yang ada di follows
-                    ->limit(5)  // Ambil 5 pengguna teratas
-                    ->get();
-
-        $latestUsers = User::orderByDesc('created_at')  // Urutkan berdasarkan waktu pembuatan
-            ->limit(5)  // Ambil 5 pengguna terbaru
-            ->get();
-
-        // Query pencarian berdasarkan username, first_name, atau last_name
-        $searchTerm = request()->get('search', '');
-        $users = User::where('username', 'like', "%$searchTerm%")
-            ->orWhere('first_name', 'like', "%$searchTerm%")
-            ->orWhere('last_name', 'like', "%$searchTerm%")
-            ->get();
-
-
-        // Mengarahkan kembali ke halaman social dengan data yang diperlukan
-        return view('social', compact('topFollowers', 'latestUsers', 'users', 'searchTerm', 'userId'));
-    }
+    // 
 
     public function follow($username)
     {

@@ -102,7 +102,7 @@
       {{-- Menu kanan (desktop) --}}
       <ul class="navbar-nav ms-auto align-items-center d-none d-lg-flex">
         @auth
-          <li class="nav-item me-2">
+          <li class="nav-item">
             <span class="nav-link fw-semibold text-primary-500">
               Hello, {{ \Illuminate\Support\Str::limit(auth()->user()->first_name ?? 'User', 18) }}
             </span>

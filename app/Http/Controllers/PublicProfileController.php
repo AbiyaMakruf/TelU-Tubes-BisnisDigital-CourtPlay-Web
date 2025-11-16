@@ -147,9 +147,26 @@ class PublicProfileController extends Controller
         $photoUrl = $user->profile_picture_url;
         $initials = strtoupper(substr($user->first_name ?? '', 0, 1) . substr($user->last_name ?? '', 0, 1));
 
+        function formatCount($num) {
+            if ($num >= 1000000) {
+                return round($num / 1000000, 1) . 'M';
+            } elseif ($num >= 10000) {
+                return round($num / 1000, 1) . 'K';
+            } elseif ($num >= 1000) {
+                return number_format($num);
+            }
+            return $num;
+        }
+
+
         // ===== Get followers and following counts =====
-        $followersCount = Follow::where('user_id', $user->id)->first()?->followers_count ?? 0;
-        $followingCount = Follow::where('user_id', $user->id)->first()?->following_count ?? 0;
+        $followData = Follow::where('user_id', $user->id)->first();
+
+        $followersCountRaw = $followData->followers_count ?? 0;
+        $followingCountRaw = $followData->following_count ?? 0;
+
+        $followersCount = formatCount($followersCountRaw);
+        $followingCount = formatCount($followingCountRaw);
 
         // dd($projects);
 

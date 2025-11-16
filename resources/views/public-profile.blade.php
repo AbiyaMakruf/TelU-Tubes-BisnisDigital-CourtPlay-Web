@@ -39,6 +39,10 @@
                 </button>
             </form>
         </div>
+        @else
+          <div class="d-flex justify-content-center">
+            <a href="{{ route('profile') }}" class="btn btn-custom">Edit Profile</a>
+          </div>
         @endif
       @else
         <div class="d-flex justify-content-center">
@@ -70,7 +74,7 @@
             <div class="d-flex flex-column pe-3">
               <span class="small text-primary-500">Time</span>
               <span class="fw-semibold fs-5 text-primary-500">
-                {{ gmdate('H:i:s', $project->projectDetails->video_duration ?? 0) }}
+                {{ gmdate('i:s', $project->projectDetails->video_duration ?? 0) }}
               </span>
             </div>
 
@@ -85,25 +89,40 @@
       </div>
 
 
-      <!-- Project Details (Spider Chart, Thumbnail, Heatmap) -->
-      <div class="d-flex mt-3">
-        <!-- Spider Chart -->
-        <div class="col-6 pe-2">
-          <canvas id="spiderChart{{ $project->id }}" height="200"></canvas>
-        </div>
+        <!-- Project Details (Spider Chart, Thumbnail, Heatmap) -->
+        <div class="row mt-4">
 
-        <!-- Right: Thumbnail + Player Heatmap -->
-        <div class="col-6 ps-2">
-          <div class="row">
-            <div class="col-12 mb-2">
-              <img src="{{ $project->link_image_thumbnail }}" class="img-fluid rounded" alt="Thumbnail">
+            <!-- LEFT SPIDER CHART -->
+            <div class="col-md-6 d-flex align-items-stretch">
+                <div class="w-100 p-3 rounded bg-black-200 d-flex justify-content-center align-items-center"
+                    style="height:260px; min-height:260px;">
+                    <canvas id="spiderChart{{ $project->id }}"></canvas>
+                </div>
             </div>
-            <div class="col-12">
-              <img src="{{ $project->link_image_heatmap_player }}" class="img-fluid rounded" alt="Heatmap">
+
+            <!-- RIGHT THUMBNAIL -->
+            @if($project->link_image_thumbnail)
+            <div class="col-md-6 d-flex align-items-stretch">
+                <div class="w-100 p-3 rounded bg-black-200 d-flex justify-content-center align-items-center"
+                    style="height:260px; min-height:260px;">
+                    <img src="{{ $project->link_image_thumbnail }}"
+                        class="img-fluid rounded"
+                        style="max-height:100%; object-fit:contain;">
+                </div>
             </div>
-          </div>
+            @endif
+
+            <!-- HEATMAP HORIZONTAL -->
+            @if($project->link_image_heatmap_player_horizontal)
+            <div class="col-12 mt-4 d-flex justify-content-center">
+                <div class="heatmap-horizontal-wrapper">
+                    <img src="{{ $project->link_image_heatmap_player_horizontal }}"
+                        class="heatmap-horizontal-img rounded">
+                </div>
+            </div>
+            @endif
+
         </div>
-      </div>
     </div>
       @endforeach
 
@@ -112,13 +131,13 @@
     <!-- Right Column: Stats -->
     <div class="col-lg-3 mb-4">
         <div class="card bg-black-200 shadow rounded-lg p-4 mb-4 text-center">
-            <h3 class="text-primary-500 fw-semibold mb-3">Project Stats</h3>
+            <h3 class="text-primary-500 fw-semibold mb-3">Player Stats</h3>
 
             <div class="row">
                 <!-- Left Column: Total Projects -->
                 <div class="col-6">
                     <h5 class="fw-semibold text-primary-300">{{ $totalProjects }}</h5>
-                    <p class="text-primary-500 fw-semibold mb-3">Total Projects</p>
+                    <p class="text-primary-500 fw-semibold mb-3">Total Match</p>
                 </div>
 
                 <!-- Right Column: Playing Time -->
@@ -129,12 +148,12 @@
             </div>
         </div>
       <div class="card bg-black-200 shadow rounded-lg p-4 mb-4">
-        <h6 class="text-primary-500 fw-semibold text-center mb-3">Project History (Last 6 Months)</h6>
+        <h6 class="text-primary-500 fw-semibold text-center mb-3">Activity History</h6>
         <canvas id="projectHistoryChart" height="180"></canvas>
       </div>
 
       <div class="card bg-black-200 shadow rounded-lg p-4 mt-4">
-        <h6 class="text-primary-500 fw-semibold text-center mb-3">Stroke Trend (Last 3 Months)</h6>
+        <h6 class="text-primary-500 fw-semibold text-center mb-3">Stroke Trend</h6>
         <canvas id="strokeTrendChart" height="200"></canvas>
       </div>
     </div>

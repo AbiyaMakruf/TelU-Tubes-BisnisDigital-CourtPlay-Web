@@ -78,7 +78,7 @@
 
             <!-- Label kiri -->
             <div class="ms-2 d-flex align-items-center ">
-                <h6 class="fw-semibold text-primary-300 mb-0">Video</h6>
+                <h6 class="fw-semibold text-primary-300 mb-0">Video </h6>
             </div>
 
             <!-- Toggle + text kanan -->
@@ -111,13 +111,13 @@
                 @if ($minimapUrl)
                     <video controls autoplay loop muted playsinline
                         class="w-100 rounded-4 shadow placeholder-wrapper"
-                        style="height:520px; object-fit:cover;">
+                        style="height:610px; object-fit:cover;">
                         <source src="{{ $minimapUrl }}" type="video/mp4">
                     </video>
                 @else
                     <div class="placeholder-wrapper rounded-4 bg-black-300
                         d-flex align-items-center justify-content-center"
-                        style="height:520px;">
+                        style="height:610px;">
                         <p class="fw-semibold text-white-400">Minimap in process...</p>
                     </div>
                 @endif
@@ -127,13 +127,13 @@
                 @if ($videoHeatmapUrl)
                     <video controls autoplay loop muted playsinline
                         class="w-100 rounded-4 shadow placeholder-wrapper"
-                        style="height:520px; object-fit:cover;">
+                        style="height:610px; object-fit:cover;">
                         <source src="{{ $videoHeatmapUrl }}" type="video/mp4">
                     </video>
                 @else
                     <div class="placeholder-wrapper rounded-4 bg-black-300
                         d-flex align-items-center justify-content-center"
-                        style="height:520px;">
+                        style="height:610px;">
                         <p class="fw-semibold text-white-400">Heatmap in process...</p>
                     </div>
                 @endif
@@ -154,11 +154,11 @@
             @if ($imageHeatmapUrl)
                 <img src="{{ $imageHeatmapUrl }}"
                     class="w-100 rounded-4 shadow placeholder-wrapper"
-                    style="height:520px; object-fit:cover;">
+                    style="height:610px; object-fit:cover;">
             @else
                 <div class="placeholder-wrapper rounded-4 bg-black-300
                     d-flex align-items-center justify-content-center w-100"
-                    style="height:520px;">
+                    style="height:610px;">
                     <p class="fw-semibold text-white-400">Image in process...</p>
                 </div>
             @endif
@@ -171,7 +171,7 @@
     {{-- === AI TEXT === --}}
     <div class="col-md-6">
         <h6 class="fw-semibold text-primary-300 fw-bold mb-2 text-center">
-            <i class="bi bi-stars me-2"></i>Insight
+            <i class="bi bi-stars me-2"></i>AI Movement Insight
         </h6>
 
         <div class="p-3 bg-black-200 rounded-4 shadow-sm ai-box  @if(strlen($text_heatmap ?? '') < 600) auto-fit @endif">
@@ -199,13 +199,13 @@
             @if ($videoBalldroppingsUrl)
                 <video controls autoplay loop muted playsinline
                     class="w-100 rounded-4 shadow placeholder-wrapper"
-                    style="height:520px; object-fit:cover;">
+                    style="height:610px; object-fit:cover;">
                     <source src="{{ $videoBalldroppingsUrl }}" type="video/mp4">
                 </video>
             @else
                 <div class="placeholder-wrapper rounded-4 bg-black-300
                     d-flex align-items-center justify-content-center"
-                    style="height:520px;">
+                    style="height:610px;">
                     <p class="fw-semibold text-white-400">Video in process...</p>
                 </div>
             @endif
@@ -242,11 +242,11 @@
                 @if ($balldropUrl)
                     <img src="{{ $balldropUrl }}"
                         class="w-100 rounded-4 shadow placeholder-wrapper"
-                        style="height:520px; object-fit:cover;">
+                        style="height:610px; object-fit:cover;">
                 @else
                     <div class="placeholder-wrapper rounded-4 bg-black-300
                         d-flex align-items-center justify-content-center w-100"
-                        style="height:520px;">
+                        style="height:610px;">
                         <p class="fw-semibold text-white-400">Image in process...</p>
                     </div>
                 @endif
@@ -256,11 +256,11 @@
                 @if ($imageHeatmapBalldroppingsUrl)
                     <img src="{{ $imageHeatmapBalldroppingsUrl }}"
                         class="w-100 rounded-4 shadow placeholder-wrapper"
-                        style="height:520px; object-fit:cover;">
+                        style="height:610px; object-fit:cover;">
                 @else
                     <div class="placeholder-wrapper rounded-4 bg-black-300
                         d-flex align-items-center justify-content-center w-100"
-                        style="height:520px;">
+                        style="height:610px;">
                         <p class="fw-semibold text-white-400">Heatmap in process...</p>
                     </div>
                 @endif
@@ -276,7 +276,7 @@
     {{-- === AI TEXT === --}}
     <div class="col-md-6">
         <h6 class="fw-semibold text-primary-300 fw-bold mb-2 text-center">
-            <i class="bi bi-stars me-2"></i>Insight
+            <i class="bi bi-stars me-2"></i>AI Ball Drop Insight
         </h6>
 
         <div class="p-3 bg-black-200 rounded-4 shadow-sm ai-box @if(strlen($text_balldrop ?? '') < 600) auto-fit @endif">
