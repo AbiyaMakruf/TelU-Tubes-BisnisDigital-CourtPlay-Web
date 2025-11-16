@@ -50,6 +50,36 @@ class AnalyticsController extends Controller
             $videoInProcessCount = Project::where('user_id', $user->id)->where('is_mailed', false)->count();
             $videoDoneCount = Project::where('user_id', $user->id)->where('is_mailed', true)->count();
 
+            if ($request->ajax()) {
+            $html = '';
+
+            foreach ($projects as $project) {
+                $html .= '
+                <div class="col">
+                    <a href="'.route('analytics.show', $project->id).'" class="card-link text-decoration-none">
+                        <div class="project-item d-flex flex-row align-items-center p-3 rounded-4">
+                            <div class="project-thumbnail me-3">
+                                '.(
+                                    $project->link_image_thumbnail
+                                    ? '<img src="'.$project->link_image_thumbnail.'" class="img-fluid rounded">'
+                                    : '<i class="bi bi-camera-video fs-1 text-primary-300"></i>'
+                                ).'
+                            </div>
+
+                            <div class="flex-grow-1 text-start">
+                                <h5 class="fw-bold text-primary-500 mb-1">'.$project->project_name.'</h5>
+                                <p class="text-white-300 small mb-1">Uploaded: '.$project->upload_date->timezone("Asia/Jakarta")->format("d M Y, H:i").' WIB</p>
+                                <span class="badge '.($project->is_mailed ? 'bg-primary-300 text-black' : 'bg-warning text-black').'">
+                                    '.($project->is_mailed ? "Analysis Done" : "Processing...").'
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </div>';
+            }
+
+            return $html; // <-- HTML dikirim balik ke JavaScript
+        }
             return view('analytics', compact(
                 'projects',
                 'projectCount',

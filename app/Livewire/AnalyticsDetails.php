@@ -140,7 +140,6 @@ class AnalyticsDetails extends Component
     }
 
 
-
     public function updatedIsHeatmap($value)
     {
         $this->videoTab = $value ? 'heatmapvideo' : 'minimap';
@@ -151,4 +150,5 @@ class AnalyticsDetails extends Component
     {
         $this->ballTab = $value ? 'heatmap' : 'minimap';
     }
-    }
+    
+}

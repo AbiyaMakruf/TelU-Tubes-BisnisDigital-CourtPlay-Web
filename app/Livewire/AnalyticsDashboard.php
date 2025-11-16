@@ -25,6 +25,7 @@ class AnalyticsDashboard extends Component
     public function getListeners()
     {
         return [
+            'project-updated' => 'refreshProjects',
             "echo:project-updates,VideoProcessed" => 'onVideoProcessed',
         ];
     }
@@ -46,7 +47,7 @@ class AnalyticsDashboard extends Component
         $this->planLabel = ucfirst($this->role);
         $this->maxLimit = $user->max_projects ?? 10;
         $this->maxUploadMb = $user->max_upload_mb ?? 50;
-        
+
         $this->loadProjects();
     }
 
@@ -73,7 +74,7 @@ class AnalyticsDashboard extends Component
 
         $projects = Project::where('user_id', $user->id)
             ->when($search, function ($query, $search) {
-                $query->where('project_name', 'ILIKE', "%{$search}%");
+                $query->whereRaw('LOWER(project_name) LIKE ?', ['%' . strtolower($search) . '%']);
             })
             ->when($sort, function ($query, $sort) {
                 switch ($sort) {

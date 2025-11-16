@@ -222,6 +222,31 @@
         }
     });
     </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const projectsContainer = document.getElementById('projectsContainer');
+        const searchInput = document.getElementById('searchInput');
+        const sortSelect = document.getElementById('sortSelect');
+
+        function loadProjects() {
+            const search = searchInput.value;
+            const sort = sortSelect.value;
+
+            fetch(`?search=${encodeURIComponent(search)}&sort=${encodeURIComponent(sort)}`, {
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            })
+            .then(res => res.text())
+            .then(html => {
+                projectsContainer.innerHTML = html;
+            });
+        }
+
+        searchInput.addEventListener("input", loadProjects);
+        sortSelect.addEventListener("change", loadProjects);
+    });
+    </script>
+
+
 
   @stack('scripts')
 </body>

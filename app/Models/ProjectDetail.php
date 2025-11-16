@@ -26,7 +26,9 @@ class ProjectDetail extends Model
         'link_video_minimap_player',
         'link_video_heatmap_player',
         'link_image_heatmap_player',
+        'link_image_heatmap_player_horizontal',
         'genai_heatmap_player_understanding',
+
 
         'link_video_ball_droppings',
         'link_image_ball_droppings',

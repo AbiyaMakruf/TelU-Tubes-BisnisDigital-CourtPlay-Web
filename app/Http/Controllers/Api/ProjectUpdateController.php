@@ -42,11 +42,6 @@ class ProjectUpdateController extends Controller
                 ], 404);
             }
 
-            // --- (3) Update status project ---
-            if ($status === 'done') {
-                $project->update(['is_mailed' => true]);
-            }
-
             // Kirim event ke frontend
             event(new VideoProcessed($project->id, $project->user_id));
 

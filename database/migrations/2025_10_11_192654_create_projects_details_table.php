@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string('link_video_minimap_player', 2048)->nullable();
             $table->string('link_video_heatmap_player', 2048)->nullable();
             $table->string('link_image_heatmap_player', 2048)->nullable();
+            $table->string('link_image_heatmap_player_horizontal', 2048)->nullable();
             $table->string('genai_heatmap_player_understanding', 4096)->nullable();
 
             $table->string('link_video_ball_droppings', 2048)->nullable();

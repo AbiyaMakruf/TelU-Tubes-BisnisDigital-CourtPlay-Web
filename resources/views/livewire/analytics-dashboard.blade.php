@@ -56,13 +56,14 @@
         <h3 class="fw-bold text-primary-500 mb-0">Your Projects</h3>
 
         <div class="d-flex align-items-center gap-3 flex-wrap justify-content-end">
-            <input type="text" wire:model.debounce.500ms="search" class="form-control w-auto" placeholder="Search...">
-            <select wire:model="sort" class="form-select rounded-pill w-auto">
-                <option value="newest">Newest</option>
-                <option value="oldest">Oldest</option>
-                <option value="done">Done</option>
-                <option value="inprocess">In Process</option>
+           <input type="text" id="searchInput" class="form-control w-auto" placeholder="Search..." value="{{ $search }}">
+            <select id="sortSelect" class="form-select rounded-pill w-auto">
+                <option value="newest" {{ $sort == 'newest' ? 'selected' : '' }}>Newest</option>
+                <option value="oldest" {{ $sort == 'oldest' ? 'selected' : '' }}>Oldest</option>
+                <option value="done" {{ $sort == 'done' ? 'selected' : '' }}>Done</option>
+                <option value="inprocess" {{ $sort == 'inprocess' ? 'selected' : '' }}>In Process</option>
             </select>
+
         </div>
     </div>
 
@@ -70,34 +71,9 @@
         <div class="spinner-border text-primary" role="status"></div>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-2 g-4" wire:loading.remove>
-        @forelse ($projects as $project)
-            <div class="col">
-                <a href="{{ route('analytics.show', $project->id) }}" class="card-link text-decoration-none">
-                    <div class="project-item d-flex flex-row align-items-center p-3 rounded-4">
-                        <div class="project-thumbnail me-3">
-                            @if ($project->link_image_thumbnail)
-                                <img src="{{ $project->link_image_thumbnail }}" alt="Thumbnail" class="img-fluid rounded">
-                            @else
-                                <i class="bi bi-camera-video fs-1 text-primary-300"></i>
-                            @endif
-                        </div>
-                        <div class="flex-grow-1 text-start">
-                            <h5 class="fw-bold text-primary-500 mb-1">{{ $project->project_name }}</h5>
-                            <p class="text-white-300 small mb-1">
-                                Uploaded: {{ \Carbon\Carbon::parse($project->upload_date)->timezone('Asia/Jakarta')->format('d M Y, H:i') }} WIB
-                            </p>
-                            <span class="badge {{ $project->is_mailed ? 'bg-primary-300 text-black' : 'bg-warning text-black' }} fw-semibold">
-                                {{ $project->is_mailed ? 'Analysis Done' : 'Processing...' }}
-                            </span>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        @empty
-            <div class="col-12 text-center text-white-400 py-5">
-                <p>Let’s upload a video!</p>
-            </div>
-        @endforelse
+   <div id="projectsContainer" class="row row-cols-1 row-cols-md-2 g-4">
+        @foreach($projects as $project)
+            @include('partials.project-card', ['project' => $project])
+        @endforeach
     </div>
 </div>

@@ -1828,5 +1828,26 @@ span a:hover {
 }
 
 .component-custom{
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.8rem;
+}
+
+
+.social-project-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.spider-wrapper,
+.thumbnail-wrapper {
+    height: 240px; /* samakan tinggi */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rotated-heatmap {
+    transform: rotate(90deg);
+    width: 100%;
+    border-radius: 10px;
 }

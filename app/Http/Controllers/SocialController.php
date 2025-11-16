@@ -19,75 +19,66 @@ class SocialController extends Controller
      */
     public function index(Request $request)
     {
-        // Mendapatkan query pencarian dari form
         $searchTerm = $request->input('search', '');
+        $userId = auth()->id();
 
-        // Mendapatkan ID user yang sedang login
-        $userId = auth()->check() ? auth()->user()->id : null;
-
-        // Query untuk mendapatkan 5 user dengan followers terbanyak
-        $topFollowers = User::select('users.*', 'follows.followers_count', 'follows.following_count')
+        // --- Popular Users (EXCLUDE ADMIN) ---
+        $topFollowers = User::select('users.*', 'follows.followers_count')
             ->leftJoin('follows', 'follows.user_id', '=', 'users.id')
-            ->orderByDesc('follows.followers_count')  // Urutkan berdasarkan followers_count
-            ->limit(5)  // Ambil 5 pengguna teratas
+            ->where('users.role', '!=', 'admin')
+            ->orderByDesc('follows.followers_count')
+            ->limit(5)
             ->get();
 
-        // Query untuk mendapatkan 5 pengguna terbaru
-        $latestUsers = User::orderByDesc('created_at')  // Urutkan berdasarkan waktu pembuatan
-            ->limit(5)  // Ambil 5 pengguna terbaru
+        // --- Latest Users (EXCLUDE ADMIN) ---
+        $latestUsers = User::where('role', '!=', 'admin')
+            ->orderByDesc('created_at')
+            ->limit(5)
             ->get();
 
-        // Query pencarian berdasarkan username, first_name, atau last_name
-        $users = User::where('username', 'like', "%$searchTerm%")
-            ->orWhere('first_name', 'like', "%$searchTerm%")
-            ->orWhere('last_name', 'like', "%$searchTerm%")
+        // --- Search Users (EXCLUDE ADMIN) ---
+        $users = User::where('role', '!=', 'admin')
+            ->where(function ($q) use ($searchTerm) {
+                $q->where('username', 'like', "%$searchTerm%")
+                ->orWhere('first_name', 'like', "%$searchTerm%")
+                ->orWhere('last_name', 'like', "%$searchTerm%");
+            })
+            ->take(20)
             ->get();
 
-        // Query untuk mendapatkan 10 project terbaru dengan pemilik username
-        $latestProjects = Project::join('project_details', 'projects.project_details_id', '=', 'project_details.id')  // Join project_details
-            ->with('user')  // Load user (pemilik project)
-            ->select('projects.*', 'project_details.*')  // Select all columns from both projects and project_details
-            ->orderByDesc('projects.created_at')  // Urutkan berdasarkan waktu pembuatan
-            ->limit(10)  // Ambil 10 project terbaru
+        // --- Latest Projects ---
+        $latestProjects = Project::join(
+                'project_details',
+                'projects.project_details_id',
+                '=',
+                'project_details.id'
+            )
+            ->with('user')
+            ->select('projects.*', 'project_details.*')
+            ->orderByDesc('projects.created_at')
+            ->limit(10)
             ->get();
 
-
-        $totals = [
-            'forehand' => 0,
-            'backhand' => 0,
-            'serve'    => 0,
-            'ready'    => 0,
-            'duration' => 0,
-        ];
-
+        // Hitung major movement
         foreach ($latestProjects as $p) {
-            $d = $p; // Karena kita sudah join, data project dan project_details sudah ada di objek $p
-            if ($d) {
-                $totals['forehand'] += $d->forehand_count ?? 0;
-                $totals['backhand'] += $d->backhand_count ?? 0;
-                $totals['serve']    += $d->serve_count ?? 0;
-                $totals['ready']    += $d->ready_position_count ?? 0;
-                $totals['duration'] += $d->video_duration ?? 0;
+            $fore = $p->forehand_count ?? 0;
+            $back = $p->backhand_count ?? 0;
 
-                if ($d->forehand_count > $d->backhand_count) {
-                    $d->major_movement = 'Forehand';  // Major movement adalah Forehand jika forehand lebih banyak
-                } elseif ($d->backhand_count > $d->forehand_count) {
-                    $d->major_movement = 'Backhand';  // Major movement adalah Backhand jika backhand lebih banyak
-                } else {
-                    $d->major_movement = 'Balanced';  // Jika keduanya sama, set Balanced
-                }
-            }
+            $p->major_movement = $fore > $back ? 'Forehand'
+                                : ($back > $fore ? 'Backhand' : 'Balanced');
         }
 
-        // Menampilkan halaman dengan data yang sudah diambil
+        // --- AJAX untuk live search ---
         if ($request->ajax()) {
-            // Mengembalikan hasil pencarian sebagai response JSON
-            $userListHtml = view('partials.user-list', compact('users'))->render();
-            return response()->json([
-                'userListHtml' => $userListHtml,
-            ]);
+            $html = view('partials.user-list', [
+                'users' => $users,
+                'userId' => $userId
+            ])->render();
+
+            return response()->json(['html' => $html]);
         }
 
+        // --- Normal page load ---
         return view('social', [
             'topFollowers' => $topFollowers,
             'latestUsers' => $latestUsers,
