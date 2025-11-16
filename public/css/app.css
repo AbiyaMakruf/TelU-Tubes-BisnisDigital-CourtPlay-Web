@@ -1915,25 +1915,9 @@ span a:hover {
     width: 100%;
     overflow: hidden;
     padding: 10px 0;
-
-    /* ✨ Fade kiri & kanan */
-    -webkit-mask-image: linear-gradient(
-        to right,
-        rgba(0,0,0,0) 0%,
-        rgba(0,0,0,1) 10%,
-        rgba(0,0,0,1) 90%,
-        rgba(0,0,0,0) 100%
-    );
-            mask-image: linear-gradient(
-        to right,
-        rgba(0,0,0,0) 0%,
-        rgba(0,0,0,1) 10%,
-        rgba(0,0,0,1) 90%,
-        rgba(0,0,0,0) 100%
-    );
 }
 
-.marquee-track {
+.marquee-track-video {
     display: flex;
     width: max-content;
     gap: 20px;
@@ -1960,7 +1944,16 @@ span a:hover {
 
 /* INFINITE LOOP ANIMATION */
 @keyframes marqueeInfinite {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); } /* bergerak setengah track → seamless */
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
 }
 
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); } /* bergerak ke kiri tanpa henti */
+}
+.navbar-expand-lg.sticky-top {
+    /* Ini akan memastikan navbar berada di atas konten lain (modal menggunakan 1050) */
+    z-index: 1030;
+}

@@ -128,62 +128,91 @@
     <div class="container text-center">
         <h2 class="section-title mb-3 text-primary-300">See CourtPlay in Action</h2>
         <p class="text-primary-500 mb-5">
-        From raw match video to actionable performance analytics — all in under 5 minutes.
+        From raw match video to actionable performance analytics.
         </p>
 
         <div class="infinite-marquee">
-            <div class="marquee-track">
+            <div class="marquee-track-video">
 
                 <!-- SET 1 -->
+
+
                 <div class="video-box">
                     <video autoplay muted loop playsinline>
-                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing_detection.mp4" type="video/mp4">
                     </video>
                 </div>
 
                 <div class="video-box">
                     <video autoplay muted loop playsinline>
-                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing_heatmap.mp4" type="video/mp4">
                     </video>
                 </div>
 
                 <div class="video-box">
                     <video autoplay muted loop playsinline>
-                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing_minimap_ball_drop.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+
+                <div class="video-box">
+                    <video autoplay muted loop playsinline>
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing_detection_2.mp4" type="video/mp4">
                     </video>
                 </div>
 
                 <div class="video-box">
                     <video autoplay muted loop playsinline>
-                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing_heatmap_2.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="video-box">
+                    <video autoplay muted loop playsinline>
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing_minimap_ball_drop_2.mp4" type="video/mp4">
                     </video>
                 </div>
 
                 <!-- SET 2 (DUPLICATE FOR PERFECT INFINITY) -->
+
+
                 <div class="video-box">
                     <video autoplay muted loop playsinline>
-                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing_detection.mp4" type="video/mp4">
                     </video>
                 </div>
 
                 <div class="video-box">
                     <video autoplay muted loop playsinline>
-                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing_heatmap.mp4" type="video/mp4">
                     </video>
                 </div>
 
                 <div class="video-box">
                     <video autoplay muted loop playsinline>
-                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing_minimap_ball_drop.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+
+                <div class="video-box">
+                    <video autoplay muted loop playsinline>
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing_detection_2.mp4" type="video/mp4">
                     </video>
                 </div>
 
                 <div class="video-box">
                     <video autoplay muted loop playsinline>
-                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing_heatmap_2.mp4" type="video/mp4">
                     </video>
                 </div>
 
+                <div class="video-box">
+                    <video autoplay muted loop playsinline>
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing_minimap_ball_drop_2.mp4" type="video/mp4">
+                    </video>
+                </div>
             </div>
         </div>
     </div>
@@ -455,16 +484,7 @@
 @endsection
 
 @push('styles')
-<style>
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); } /* bergerak ke kiri tanpa henti */
-}
-.navbar-expand-lg.sticky-top {
-    /* Ini akan memastikan navbar berada di atas konten lain (modal menggunakan 1050) */
-    z-index: 1030;
-}
-</style>
+
 @endpush
 @push('scripts')
 <script>
