@@ -131,10 +131,60 @@
         From raw match video to actionable performance analytics — all in under 5 minutes.
         </p>
 
-        <div class="demo-video-wrapper mx-auto shadow-lg rounded-4 overflow-hidden border border-primary-500 mb-5">
-        <video autoplay muted loop playsinline>
-            <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
-        </video>
+        <div class="infinite-marquee">
+            <div class="marquee-track">
+
+                <!-- SET 1 -->
+                <div class="video-box">
+                    <video autoplay muted loop playsinline>
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="video-box">
+                    <video autoplay muted loop playsinline>
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="video-box">
+                    <video autoplay muted loop playsinline>
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="video-box">
+                    <video autoplay muted loop playsinline>
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <!-- SET 2 (DUPLICATE FOR PERFECT INFINITY) -->
+                <div class="video-box">
+                    <video autoplay muted loop playsinline>
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="video-box">
+                    <video autoplay muted loop playsinline>
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="video-box">
+                    <video autoplay muted loop playsinline>
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="video-box">
+                    <video autoplay muted loop playsinline>
+                        <source src="https://storage.googleapis.com/courtplay-storage/assets/Web/landing-page%20vid.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+            </div>
         </div>
     </div>
     </section>
@@ -205,7 +255,7 @@
                         <div class="d-flex align-items-center mt-3">
                             <i class="bi bi-person-circle fs-2 text-primary-300 me-3"></i>
                             <div>
-                                <h5 class="mb-0 text-primary-300">Coach David R.</h5>
+                                <h5 class="mb-0 text-primary-300">Arjasubrata R. </h5>
                                 <p class="text-primary-500  small">Certified Tennis Instructor</p>
                             </div>
                         </div>
@@ -226,7 +276,7 @@
                         <div class="d-flex align-items-center mt-3">
                             <i class="bi bi-person-circle fs-2 text-primary-300 me-3"></i>
                             <div>
-                                <h5 class="mb-0 text-primary-300">Sarah K.</h5>
+                                <h5 class="mb-0 text-primary-300">Makruf A.</h5>
                                 <p class="text-primary-500  small">Competitive Padel Player</p>
                             </div>
                         </div>
@@ -247,7 +297,7 @@
                         <div class="d-flex align-items-center mt-3">
                             <i class="bi bi-person-circle fs-2 text-primary-300 me-3"></i>
                             <div>
-                                <h5 class="mb-0 text-primary-300">Michael L.</h5>
+                                <h5 class="mb-0 text-primary-300">Rahmanto N.</h5>
                                 <p class="text-primary-500 small">Sports Club Manager</p>
                             </div>
                         </div>
