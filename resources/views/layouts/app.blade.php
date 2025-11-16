@@ -154,7 +154,7 @@
           <li class="nav-item"><a class="nav-link" href="{{ route('analytics') }}">Analytics</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ route('videos.index') }}">Uploads</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ route('plan') }}">Plan</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('profile') }}">Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('social') }}">Social</a></li>
         @endauth
 
         {{-- GUEST --}}
