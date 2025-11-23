@@ -73,6 +73,9 @@
               <a class="nav-link {{ request()->routeIs('social') ? 'active' : '' }}"
                  href="{{ route('social') }}">Social</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link {{ request()->routeIs('matchmaking.*') ? 'active' : '' }}"
+                 href="{{ route('matchmaking.index') }}">Matchmaking</a>
           @endauth
 
           {{-- GUEST menu --}}
@@ -89,6 +92,7 @@
               <a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}"
                  href="{{ route('about') }}">About Us</a>
             </li>
+
           @endguest
 
           {{-- Umum untuk semua --}}
@@ -155,6 +159,7 @@
           <li class="nav-item"><a class="nav-link" href="{{ route('videos.index') }}">Uploads</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ route('plan') }}">Plan</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ route('social') }}">Social</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('matchmaking.index') }}">Matchmaking</a></li>
         @endauth
 
         {{-- GUEST --}}

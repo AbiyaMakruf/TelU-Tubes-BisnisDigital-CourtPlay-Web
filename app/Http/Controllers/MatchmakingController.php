@@ -77,7 +77,7 @@ class MatchmakingController extends Controller
         ]);
 
         $search = \App\Models\MatchmakingSearch::create([
-            'id'              => \Str::uuid(),
+            'id'              => Str::uuid(),
             'user_id'         => auth()->id(),
             'court_id'        => $request->court_id,
             'play_mode'       => $request->play_mode,
@@ -120,14 +120,14 @@ class MatchmakingController extends Controller
 
         // Jika ketemu kandidat → buat match
         $match = \App\Models\MatchmakingMatch::create([
-            'id'    => \Str::uuid(),
+            'id'    => Str::uuid(),
             'mode'  => $newSearch->play_mode,
             'status'=> 'matched',
         ]);
 
         // Tambah player A (yang baru)
         \App\Models\MatchmakingMatchPlayer::create([
-            'id'                   => \Str::uuid(),
+            'id'                   => Str::uuid(),
             'matchmaking_match_id' => $match->id,
             'user_id'              => $newSearch->user_id,
             'team'                 => 1,
@@ -136,7 +136,7 @@ class MatchmakingController extends Controller
 
         // Tambah player B (kandidat)
         \App\Models\MatchmakingMatchPlayer::create([
-            'id'                   => \Str::uuid(),
+            'id'                   => Str::uuid(),
             'matchmaking_match_id' => $match->id,
             'user_id'              => $candidate->user_id,
             'team'                 => 2,
