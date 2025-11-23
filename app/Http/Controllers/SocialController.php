@@ -7,6 +7,11 @@ use App\Models\User;
 use App\Models\Follow;
 use Illuminate\Support\Facades\DB;
 use App\Models\Project;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class SocialController extends Controller
 {
@@ -19,89 +24,96 @@ class SocialController extends Controller
      */
     public function index(Request $request)
     {
-        $searchTerm = $request->input('search', '');
-        $userId = auth()->id();
+        try {
+            $searchTerm = $request->input('search', '');
+            $userId = auth()->id();
 
-        // --- Popular Users (EXCLUDE ADMIN) ---
-        $topFollowers = User::select('users.*', 'follows.followers_count')
-            ->leftJoin('follows', 'follows.user_id', '=', 'users.id')
-            ->where('users.role', '!=', 'admin')
-            ->orderByDesc('follows.followers_count')
-            ->limit(5)
-            ->get();
+            $topFollowers = User::select('users.*', 'follows.followers_count')
+                ->leftJoin('follows', 'follows.user_id', '=', 'users.id')
+                ->where('users.role', '!=', 'admin')
+                ->orderByDesc('follows.followers_count')
+                ->limit(5)
+                ->get();
 
-        function formatCount($num) {
-            if ($num >= 1000000) {
-                return round($num / 1000000, 1) . 'M';
-            } elseif ($num >= 10000) {
-                return round($num / 1000, 1) . 'K';
-            } elseif ($num >= 1000) {
-                return number_format($num);
+            function formatCount($num) {
+                if ($num >= 1000000) {
+                    return round($num / 1000000, 1) . 'M';
+                } elseif ($num >= 10000) {
+                    return round($num / 1000, 1) . 'K';
+                } elseif ($num >= 1000) {
+                    return number_format($num);
+                }
+                return $num;
             }
-            return $num;
-        }
 
-        foreach ($topFollowers as $u) {
-            $u->followers_count_formatted = formatCount($u->followers_count ?? 0);
-        }
+            foreach ($topFollowers as $u) {
+                $u->followers_count_formatted = formatCount($u->followers_count ?? 0);
+            }
 
-        // --- Latest Users (EXCLUDE ADMIN) ---
-        $latestUsers = User::where('role', '!=', 'admin')
-            ->orderByDesc('created_at')
-            ->limit(5)
-            ->get();
+            $latestUsers = User::where('role', '!=', 'admin')
+                ->orderByDesc('created_at')
+                ->limit(5)
+                ->get();
 
-        // --- Search Users (EXCLUDE ADMIN) ---
-        $users = User::where('role', '!=', 'admin')
-            ->where(function ($q) use ($searchTerm) {
-                $q->where('username', 'like', "%$searchTerm%")
-                ->orWhere('first_name', 'like', "%$searchTerm%")
-                ->orWhere('last_name', 'like', "%$searchTerm%");
-            })
-            ->take(20)
-            ->get();
+            $users = User::where('role', '!=', 'admin')
+                ->where(function ($q) use ($searchTerm) {
+                    $q->where('username', 'like', "%$searchTerm%")
+                    ->orWhere('first_name', 'like', "%$searchTerm%")
+                    ->orWhere('last_name', 'like', "%$searchTerm%");
+                })
+                ->take(20)
+                ->get();
 
-        // --- Latest Projects ---
-        $latestProjects = Project::join(
-                'project_details',
-                'projects.project_details_id',
-                '=',
-                'project_details.id'
-            )
-            ->with('user')
-            ->select('projects.*', 'project_details.*')
-            ->orderByDesc('projects.created_at')
-            ->limit(10)
-            ->get();
+            $latestProjects = Project::join(
+                    'project_details',
+                    'projects.project_details_id',
+                    '=',
+                    'project_details.id'
+                )
+                ->with('user')
+                ->select('projects.*', 'project_details.*')
+                ->orderByDesc('projects.created_at')
+                ->limit(10)
+                ->get();
 
-        // Hitung major movement
-        foreach ($latestProjects as $p) {
-            $fore = $p->forehand_count ?? 0;
-            $back = $p->backhand_count ?? 0;
+            foreach ($latestProjects as $p) {
+                $fore = $p->forehand_count ?? 0;
+                $back = $p->backhand_count ?? 0;
 
-            $p->major_movement = $fore > $back ? 'Forehand'
-                                : ($back > $fore ? 'Backhand' : 'Balanced');
-        }
+                $p->major_movement = $fore > $back ? 'Forehand'
+                                    : ($back > $fore ? 'Backhand' : 'Balanced');
+            }
 
-        // --- AJAX untuk live search ---
-        if ($request->ajax()) {
-            $html = view('partials.user-list', [
+            if ($request->ajax()) {
+                $html = view('partials.user-list', [
+                    'users' => $users,
+                    'userId' => $userId
+                ])->render();
+
+                return response()->json(['html' => $html]);
+            }
+
+            return view('social', [
+                'topFollowers' => $topFollowers,
+                'latestUsers' => $latestUsers,
                 'users' => $users,
-                'userId' => $userId
-            ])->render();
+                'searchTerm' => $searchTerm,
+                'userId' => $userId,
+                'latestProjects' => $latestProjects
+            ]);
+        } catch (Throwable $e) {
+            Log::error('Failed to load social page', [
+                'user_id' => auth()->id(),
+                'error' => $e->getMessage(),
+            ]);
+            toastr()->error('Unable to load the social feed right now. Please try again.');
 
-            return response()->json(['html' => $html]);
+            if ($request->ajax()) {
+                return response()->json(['error' => 'Unable to load users right now.'], 500);
+            }
+
+            return redirect()->back();
         }
-
-        // --- Normal page load ---
-        return view('social', [
-            'topFollowers' => $topFollowers,
-            'latestUsers' => $latestUsers,
-            'users' => $users,
-            'searchTerm' => $searchTerm,
-            'userId' => $userId,
-            'latestProjects' => $latestProjects
-        ]);
     }
 
 
@@ -111,12 +123,119 @@ class SocialController extends Controller
      * @param string $username
      * @return \Illuminate\Http\RedirectResponse
      */
-    // 
+    //
 
     public function follow($username)
     {
-        // Mendapatkan pengguna yang di-follow berdasarkan username
-        $userToFollow = User::where('username', $username)->firstOrFail();
+        try {
+            $user = auth()->user();
+
+            if (!$user) {
+                throw ValidationException::withMessages([
+                    'user' => 'Please sign in to follow players.',
+                ]);
+            }
+
+            $userToFollow = User::where('username', $username)->firstOrFail();
+
+            if ($user->id === $userToFollow->id) {
+                throw ValidationException::withMessages([
+                    'user' => 'You cannot follow yourself.',
+                ]);
+            }
+
+            $isCurrentlyFollowing = Follow::isFollowing($user->id, $userToFollow->id);
+
+            $isFollowing = DB::transaction(function () use ($user, $userToFollow, $isCurrentlyFollowing) {
+                if ($isCurrentlyFollowing) {
+                    $userFollow = Follow::where('user_id', $user->id)->first();
+                    $followedUser = Follow::where('user_id', $userToFollow->id)->first();
+
+                    if ($userFollow) {
+                        $userFollow->removeFollowing($userToFollow->id);
+                        $userFollow->updateFollowersCount($user->id);
+                    }
+
+                    if ($followedUser) {
+                        $followedUser->removeFollower($user->id);
+                        $followedUser->updateFollowersCount($userToFollow->id);
+                    }
+
+                    return false;
+                }
+
+                $userFollow = Follow::firstOrCreate(
+                    ['user_id' => $user->id],
+                    ['following' => json_encode([]), 'followers' => json_encode([])]
+                );
+                $userFollow->addFollowing($userToFollow->id);
+                $userFollow->updateFollowersCount($user->id);
+
+                $followedUser = Follow::firstOrCreate(
+                    ['user_id' => $userToFollow->id],
+                    ['followers' => json_encode([]), 'following' => json_encode([])]
+                );
+                $followedUser->addFollower($user->id);
+                $followedUser->updateFollowersCount($userToFollow->id);
+
+                return true;
+            });
+
+            Log::info('User toggled follow status', [
+                'actor_id' => $user->id,
+                'target_id' => $userToFollow->id,
+                'is_following' => $isFollowing,
+            ]);
+
+            if (!request()->ajax()) {
+                toastr()->success($isFollowing ? 'You are now following this player.' : 'You unfollowed this player.');
+                return back();
+            }
+
+            return response()->json([
+                'success' => true,
+                'isFollowing' => $isFollowing,
+            ]);
+        } catch (ValidationException $e) {
+            if (!request()->ajax()) {
+                toastr()->warning(collect($e->errors())->flatten()->first());
+                return back();
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => collect($e->errors())->flatten()->first(),
+            ], 422);
+        } catch (ModelNotFoundException $e) {
+            Log::warning('Follow target not found', [
+                'actor_id' => optional(auth()->user())->id,
+                'username' => $username,
+            ]);
+            toastr()->error('We could not find that player.');
+            return request()->ajax()
+                ? response()->json(['success' => false, 'message' => 'Player not found.'], 404)
+                : back();
+        } catch (QueryException $e) {
+            Log::error('Database error while toggling follow', [
+                'actor_id' => optional(auth()->user())->id,
+                'username' => $username,
+                'error' => $e->getMessage(),
+            ]);
+            toastr()->error('Unable to update follow status right now.');
+            return request()->ajax()
+                ? response()->json(['success' => false, 'message' => 'Unable to update follow status.'], 500)
+                : back();
+        } catch (Throwable $e) {
+            Log::error('Unexpected error while toggling follow', [
+                'actor_id' => optional(auth()->user())->id,
+                'username' => $username,
+                'error' => $e->getMessage(),
+            ]);
+            toastr()->error('Something went wrong. Please try again.');
+            return request()->ajax()
+                ? response()->json(['success' => false, 'message' => 'Something went wrong.'], 500)
+                : back();
+        }
 
         // Mendapatkan pengguna yang sedang login
         $user = auth()->user();
