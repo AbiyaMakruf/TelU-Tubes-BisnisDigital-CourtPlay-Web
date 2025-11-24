@@ -1,297 +1,304 @@
-<div class="container py-5 text-white ">
-    <h1 class="fw-bold text-primary-500 mb-2">{{ $project->project_name }}</h1>
-    <p class="mb-1">Date: <span class="text-primary-300">{{ \Carbon\Carbon::parse($project->upload_date)->format('d-m-Y') }}</span></p>
-    <p class="mb-1">Video duration: <span class="text-primary-300">{{ $videoDuration }}</span></p>
-    <p>Video processing time: <span class="text-primary-300">{{ $processingTime }}</span></p>
-
-    <div class="video-wrapper mb-4 position-relative">
-        <h6 class="fw-semibold text-primary-300 mb-3 text-center">Player & Ball Position</h6>
-        @if ($video_object_detection_Url != "IN DEVELOPMENT" && $video_object_detection_Url != null)
-            <video controls autoplay loop muted playsinline class="w-100 rounded-4 shadow " style="max-height: 480px;">
-                <source src="{{ $video_object_detection_Url }}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        @else
-            <div class="placeholder-wrapper rounded-4 bg-black-300 d-flex align-items-center justify-content-center " style="height: 480px;">
-                <div class="text-center">
-                    <i class="bi bi-camera-video-off text-primary-300 mb-3 d-block" style="font-size: 5rem;"></i>
-                    <p class="fw-semibold text-white-400">Video is being processed...</p>
-                </div>
+<div class="container py-5 text-white">
+    <!-- Header Section -->
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-white mb-3">{{ $project->project_name }}</h1>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <div class="meta-badge">
+                <i class="bi bi-calendar3"></i>
+                {{ \Carbon\Carbon::parse($project->upload_date)->format('d M Y') }}
             </div>
-        @endif
+            <div class="meta-badge">
+                <i class="bi bi-clock"></i>
+                Duration: {{ $videoDuration }}
+            </div>
+            <div class="meta-badge">
+                <i class="bi bi-cpu"></i>
+                Processed in: {{ $processingTime }}
+            </div>
+        </div>
     </div>
 
+    <!-- Main Video Section -->
+    <div class="row g-4 mb-5">
+        <!-- Object Detection Video -->
+        <div class="col-12">
+            <div class="glass-card h-100">
+                <div class="glass-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-white"><i class="bi bi-crosshair me-2 text-primary-300"></i>Player & Ball Tracking</h5>
+                </div>
+                <div class="p-3">
+                    @if ($video_object_detection_Url != "IN DEVELOPMENT" && $video_object_detection_Url != null)
+                        <div class="video-container">
+                            <video controls autoplay loop muted playsinline class="w-100 d-block" style="max-height: 500px; object-fit: contain;">
+                                <source src="{{ $video_object_detection_Url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    @else
+                        <div class="placeholder-modern d-flex align-items-center justify-content-center" style="height: 400px;">
+                            <div class="text-center">
+                                <div class="spinner-border text-primary-300 mb-3" role="status"></div>
+                                <p class="fw-semibold text-white-400 mb-0">Processing video analysis...</p>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <div class="row g-4 align-items-start mb-4 ">
-        <div class="col-md-6">
-            <div class="video-wrapper position-relative">
-                <h6 class="fw-semibold text-primary-300 mb-3 text-center">Player Keypoint</h6>
-                @if ($video_player_keypoints_Url != "IN DEVELOPMENT" && $video_player_keypoints_Url != null)
-                    <video controls autoplay loop muted playsinline playsinline  class="w-100 rounded-4 shadow " style="max-height: 480px;">
-                        <source src="{{ $video_player_keypoints_Url }}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                @else
-                    <div class="placeholder-wrapper rounded-4 bg-black-300 d-flex align-items-center justify-content-center " style="height: 480px;">
-                        <div class="text-center">
-                            <i class="bi bi-camera-video-off text-primary-300 mb-3 d-block" style="font-size: 5rem;"></i>
-                            <p class="fw-semibold text-white-400">Video is being processed...</p>
+    <!-- Skeletal & Stats Section -->
+    <div class="row g-4 mb-5">
+        <!-- Skeletal Analysis -->
+        <div class="col-lg-8">
+            <div class="glass-card h-100">
+                <div class="glass-header">
+                    <h5 class="mb-0 fw-bold text-white"><i class="bi bi-person-lines-fill me-2 text-primary-300"></i>Skeletal Analysis</h5>
+                </div>
+                <div class="p-3">
+                    @if ($video_player_keypoints_Url != "IN DEVELOPMENT" && $video_player_keypoints_Url != null)
+                        <div class="video-container">
+                            <video controls autoplay loop muted playsinline class="w-100 d-block" style="max-height: 500px; object-fit: contain;">
+                                <source src="{{ $video_player_keypoints_Url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    @else
+                        <div class="placeholder-modern d-flex align-items-center justify-content-center" style="height: 400px;">
+                            <div class="text-center">
+                                <div class="spinner-border text-primary-300 mb-3" role="status"></div>
+                                <p class="fw-semibold text-white-400 mb-0">Generating skeletal data...</p>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Panel -->
+        <div class="col-lg-4">
+            <div class="glass-card h-100">
+                <div class="glass-header">
+                    <h5 class="mb-0 fw-bold text-white"><i class="bi bi-bar-chart-fill me-2 text-primary-300"></i>Shot Statistics</h5>
+                </div>
+                <div class="p-4 d-flex flex-column justify-content-center h-100">
+                    <div class="stat-row">
+                        <div class="d-flex justify-content-between align-items-end mb-1">
+                            <span class="text-white-400 fw-medium">Forehand</span>
+                            <span class="text-primary-300 fw-bold fs-5">{{ $forehand }}</span>
+                        </div>
+                        <div class="progress-modern">
+                            <div class="progress-bar-modern" style="width: {{ ($forehand / $maxValue) * 100 }}%;"></div>
                         </div>
                     </div>
-                @endif
-            </div>
-        </div>
 
-        <div class="col-md-6">
-            <div class="stat-bars" style="margin-top: 2.1rem; margin-bottom: 2rem;">
-                <p class="fw-semibold text-white-400 mb-4 d-flex justify-content-between">
-                    <span>Forehand</span><span class="text-primary-300">{{ $forehand }}</span>
-                </p>
-                <div class="bar-bg"><div class="bar-fill" style="width: {{ ($forehand / $maxValue) * 100 }}%;"></div></div>
-
-                <p class="fw-semibold text-white-400 mt-3 mb-1 d-flex justify-content-between">
-                    <span>Backhand</span><span class="text-primary-300">{{ $backhand }}</span>
-                </p>
-                <div class="bar-bg"><div class="bar-fill" style="width: {{ ($backhand / $maxValue) * 100 }}%;"></div></div>
-
-                <p class="fw-semibold text-white-400 mt-3 mb-1 d-flex justify-content-between">
-                    <span>Serve</span><span class="text-primary-300">{{ $serve }}</span>
-                </p>
-                <div class="bar-bg"><div class="bar-fill" style="width: {{ ($serve / $maxValue) * 100 }}%;"></div></div>
-
-                <p class="fw-semibold text-white-400 mt-3 mb-1 d-flex justify-content-between">
-                    <span>Ready Position</span><span class="text-primary-300">{{ $ready }}</span>
-                </p>
-                <div class="bar-bg"><div class="bar-fill" style="width: {{ ($ready / $maxValue) * 100 }}%;"></div></div>
-            </div>
-        </div>
-    </div>
-
-{{-- ===================== HEATMAP PLAYER ===================== --}}
-<div class="row g-4 align-items-start mb-4">
-
-
-
-    {{-- === VIDEO WRAPPER COLUMN === --}}
-    <div class="col-md-3">
-        <div class="d-flex justify-content-between mb-2">
-
-            <!-- Label kiri -->
-            <div class="ms-2 d-flex align-items-center ">
-                <h6 class="fw-semibold text-primary-300 mb-0">Video </h6>
-            </div>
-
-            <!-- Toggle + text kanan -->
-            <div class="d-flex align-items-center">
-
-                <!-- Minimap text -->
-                <span style="font-size: 12px; margin-right: 8px;">Minimap</span>
-
-                <!-- Toggle switch -->
-                <label class="toggle-switch" style="cursor:pointer;">
-                    <input type="checkbox"
-                        wire:model.live="isHeatmap"
-                        @checked($videoTab === 'heatmapvideo')>
-                    <span class="slider"></span>
-                </label>
-
-                <!-- Heatmap text -->
-                <span style="font-size: 12px; margin-left: 8px;">Heatmap</span>
-
-            </div>
-
-        </div>
-
-
-
-
-        <div class="video-wrapper position-relative ">
-
-            @if($videoTab === 'minimap')
-                @if ($minimapUrl)
-                    <video controls autoplay loop muted playsinline
-                        class="w-100 rounded-4 shadow placeholder-wrapper"
-                        style="height:610px; object-fit:cover;">
-                        <source src="{{ $minimapUrl }}" type="video/mp4">
-                    </video>
-                @else
-                    <div class="placeholder-wrapper rounded-4 bg-black-300
-                        d-flex align-items-center justify-content-center"
-                        style="height:610px;">
-                        <p class="fw-semibold text-white-400">Minimap in process...</p>
+                    <div class="stat-row">
+                        <div class="d-flex justify-content-between align-items-end mb-1">
+                            <span class="text-white-400 fw-medium">Backhand</span>
+                            <span class="text-primary-300 fw-bold fs-5">{{ $backhand }}</span>
+                        </div>
+                        <div class="progress-modern">
+                            <div class="progress-bar-modern" style="width: {{ ($backhand / $maxValue) * 100 }}%;"></div>
+                        </div>
                     </div>
-                @endif
-            @endif
 
-            @if($videoTab === 'heatmapvideo')
-                @if ($videoHeatmapUrl)
-                    <video controls autoplay loop muted playsinline
-                        class="w-100 rounded-4 shadow placeholder-wrapper"
-                        style="height:610px; object-fit:cover;">
-                        <source src="{{ $videoHeatmapUrl }}" type="video/mp4">
-                    </video>
-                @else
-                    <div class="placeholder-wrapper rounded-4 bg-black-300
-                        d-flex align-items-center justify-content-center"
-                        style="height:610px;">
-                        <p class="fw-semibold text-white-400">Heatmap in process...</p>
+                    <div class="stat-row">
+                        <div class="d-flex justify-content-between align-items-end mb-1">
+                            <span class="text-white-400 fw-medium">Serve</span>
+                            <span class="text-primary-300 fw-bold fs-5">{{ $serve }}</span>
+                        </div>
+                        <div class="progress-modern">
+                            <div class="progress-bar-modern" style="width: {{ ($serve / $maxValue) * 100 }}%;"></div>
+                        </div>
                     </div>
-                @endif
-            @endif
 
-        </div>
-    </div>
-
-    {{-- === IMAGE WRAPPER COLUMN === --}}
-    <div class="col-md-3">
-        <div class=" component-custom">
-            <h6 class="fw-semibold text-primary-300 text-center">Image</h6>
-        </div>
-
-
-        <div class="image-wrapper position-relative w-100">
-
-            @if ($imageHeatmapUrl)
-                <img src="{{ $imageHeatmapUrl }}"
-                    class="w-100 rounded-4 shadow placeholder-wrapper"
-                    style="height:610px; object-fit:cover;">
-            @else
-                <div class="placeholder-wrapper rounded-4 bg-black-300
-                    d-flex align-items-center justify-content-center w-100"
-                    style="height:610px;">
-                    <p class="fw-semibold text-white-400">Image in process...</p>
+                    <div class="stat-row mb-0">
+                        <div class="d-flex justify-content-between align-items-end mb-1">
+                            <span class="text-white-400 fw-medium">Ready Position</span>
+                            <span class="text-primary-300 fw-bold fs-5">{{ $ready }}</span>
+                        </div>
+                        <div class="progress-modern">
+                            <div class="progress-bar-modern" style="width: {{ ($ready / $maxValue) * 100 }}%;"></div>
+                        </div>
+                    </div>
                 </div>
-            @endif
-
+            </div>
         </div>
     </div>
 
-
-
-    {{-- === AI TEXT === --}}
-    <div class="col-md-6">
-        <h6 class="fw-semibold text-primary-300 fw-bold mb-2 text-center">
-            <i class="bi bi-stars me-2"></i>AI Movement Insight
-        </h6>
-
-        <div class="p-3 bg-black-200 rounded-4 shadow-sm ai-box  @if(strlen($text_heatmap ?? '') < 600) auto-fit @endif">
-            @if ($text_heatmap)
-                <p class="text-white-400 mb-0">{{ $text_heatmap }}</p>
-            @else
-                <p class="text-white-400 text-center mt-5">Insight in process...</p>
-            @endif
+    <!-- Heatmap Section -->
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <h3 class="fw-bold text-white mb-4 ps-2 border-start border-4 border-primary-300">Movement Analysis</h3>
         </div>
-    </div>
-
-</div>
-
-
-
-{{-- ===================== BALL DROP ===================== --}}
-<div class="row g-4 align-items-start mb-4">
-
-    {{-- === VIDEO STATIC WRAPPER === --}}
-    <div class="col-md-3">
-        <h6 class="fw-semibold text-primary-300 component-custom text-center">Video</h6>
-
-        <div class="video-wrapper position-relative">
-
-            @if ($videoBalldroppingsUrl)
-                <video controls autoplay loop muted playsinline
-                    class="w-100 rounded-4 shadow placeholder-wrapper"
-                    style="height:610px; object-fit:cover;">
-                    <source src="{{ $videoBalldroppingsUrl }}" type="video/mp4">
-                </video>
-            @else
-                <div class="placeholder-wrapper rounded-4 bg-black-300
-                    d-flex align-items-center justify-content-center"
-                    style="height:610px;">
-                    <p class="fw-semibold text-white-400">Video in process...</p>
+        
+        <!-- Video/Minimap Column -->
+        <div class="col-lg-3">
+            <div class="glass-card h-100 d-flex flex-column">
+                <div class="glass-header d-flex justify-content-between align-items-center py-2">
+                    <span class="fw-bold text-white small">Visual</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="small text-white-50">Map</span>
+                        <label class="toggle-switch scale-75">
+                            <input type="checkbox" wire:model.live="isHeatmap" @checked($videoTab === 'heatmapvideo')>
+                            <span class="slider"></span>
+                        </label>
+                        <span class="small text-white-50">Heat</span>
+                    </div>
                 </div>
-            @endif
-
-        </div>
-    </div>
-
-    {{-- === SWITCH IMAGE WRAPPER === --}}
-    <div class="col-md-3">
-
-        <!-- TITLE + TOGGLE -->
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h6 class="fw-semibold text-primary-300 mb-0 ms-2">Image</h6>
-
-            <div class="d-flex align-items-center">
-                <span style="font-size: 12px; margin-right: 8px;">Minimap</span>
-
-                <!-- TOGGLE SWITCH -->
-                <label class="toggle-switch" style="cursor:pointer;">
-                    <input type="checkbox"
-                        wire:model.live="isBallHeatmap"
-                        @checked($ballTab === 'heatmap')>
-                    <span class="slider"></span>
-                </label>
-
-                <span style="font-size: 12px; margin-left: 8px;">Heatmap</span>
+                <div class="p-2 flex-grow-1 d-flex flex-column">
+                    <div class="video-container bg-black flex-grow-1 position-relative rounded-3 overflow-hidden" style="min-height: 300px;">
+                        @if($videoTab === 'minimap')
+                            @if ($minimapUrl)
+                                <video wire:key="minimap-{{ $minimapUrl }}" controls autoplay loop muted playsinline class="w-100 h-100 position-absolute top-0 start-0" style="object-fit: contain;">
+                                    <source src="{{ $minimapUrl }}" type="video/mp4">
+                                </video>
+                            @else
+                                <div class="d-flex align-items-center justify-content-center h-100 w-100 position-absolute top-0 start-0">
+                                    <span class="text-white-50 small">Processing...</span>
+                                </div>
+                            @endif
+                        @else
+                            @if ($videoHeatmapUrl)
+                                <video wire:key="heatmap-{{ $videoHeatmapUrl }}" controls autoplay loop muted playsinline class="w-100 h-100 position-absolute top-0 start-0" style="object-fit: contain;">
+                                    <source src="{{ $videoHeatmapUrl }}" type="video/mp4">
+                                </video>
+                            @else
+                                <div class="d-flex align-items-center justify-content-center h-100 w-100 position-absolute top-0 start-0">
+                                    <span class="text-white-50 small">Processing...</span>
+                                </div>
+                            @endif
+                        @endif
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- IMAGE CONTENT -->
-        <div class="image-wrapper position-relative">
-
-            @if($ballTab==='minimap')
-                @if ($balldropUrl)
-                    <img src="{{ $balldropUrl }}"
-                        class="w-100 rounded-4 shadow placeholder-wrapper"
-                        style="height:610px; object-fit:cover;">
-                @else
-                    <div class="placeholder-wrapper rounded-4 bg-black-300
-                        d-flex align-items-center justify-content-center w-100"
-                        style="height:610px;">
-                        <p class="fw-semibold text-white-400">Image in process...</p>
+        <!-- Image Column -->
+        <div class="col-lg-3">
+            <div class="glass-card h-100 d-flex flex-column">
+                <div class="glass-header py-2 text-center">
+                    <span class="fw-bold text-white small">Heatmap Image</span>
+                </div>
+                <div class="p-2 flex-grow-1 d-flex flex-column">
+                    <div class="video-container bg-black flex-grow-1 position-relative rounded-3 overflow-hidden" style="min-height: 300px;">
+                        @if ($imageHeatmapUrl)
+                            <img src="{{ $imageHeatmapUrl }}" class="w-100 h-100 position-absolute top-0 start-0" style="object-fit: contain;">
+                        @else
+                            <div class="d-flex align-items-center justify-content-center h-100 w-100 position-absolute top-0 start-0">
+                                <span class="text-white-50 small">Processing...</span>
+                            </div>
+                        @endif
                     </div>
-                @endif
-            @endif
-
-            @if($ballTab==='heatmap')
-                @if ($imageHeatmapBalldroppingsUrl)
-                    <img src="{{ $imageHeatmapBalldroppingsUrl }}"
-                        class="w-100 rounded-4 shadow placeholder-wrapper"
-                        style="height:610px; object-fit:cover;">
-                @else
-                    <div class="placeholder-wrapper rounded-4 bg-black-300
-                        d-flex align-items-center justify-content-center w-100"
-                        style="height:610px;">
-                        <p class="fw-semibold text-white-400">Heatmap in process...</p>
-                    </div>
-                @endif
-            @endif
-
+                </div>
+            </div>
         </div>
 
-    </div>
-
-
-
-
-    {{-- === AI TEXT === --}}
-    <div class="col-md-6">
-        <h6 class="fw-semibold text-primary-300 fw-bold mb-2 text-center">
-            <i class="bi bi-stars me-2"></i>AI Ball Drop Insight
-        </h6>
-
-        <div class="p-3 bg-black-200 rounded-4 shadow-sm ai-box @if(strlen($text_balldrop ?? '') < 600) auto-fit @endif">
-            @if ($text_balldrop)
-                <p class="text-white-400 mb-0">{{ $text_balldrop }}</p>
-            @else
-                <p class="text-white-400 text-center mt-5">Insight in process...</p>
-            @endif
+        <!-- AI Insight Column -->
+        <div class="col-lg-6">
+            <div class="ai-insight-box h-100 p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-stars me-2 text-primary-300 fs-4"></i>
+                    <h5 class="fw-bold text-white mb-0">AI Movement Insight</h5>
+                </div>
+                <div class="text-white-400 lh-lg">
+                    @if ($text_heatmap)
+                        {{ $text_heatmap }}
+                    @else
+                        <div class="d-flex flex-column align-items-center justify-content-center py-5 opacity-50">
+                            <div class="spinner-grow text-primary-300 mb-3" role="status"></div>
+                            <span>Analyzing player movement patterns...</span>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 
-</div>
+    <!-- Ball Drop Section -->
+    <div class="row g-4">
+        <div class="col-12">
+            <h3 class="fw-bold text-white mb-4 ps-2 border-start border-4 border-primary-300">Ball Placement Analysis</h3>
+        </div>
 
+        <!-- Video Column -->
+        <div class="col-lg-3">
+            <div class="glass-card h-100 d-flex flex-column">
+                <div class="glass-header py-2 text-center">
+                    <span class="fw-bold text-white small">Ball Tracking</span>
+                </div>
+                <div class="p-2 flex-grow-1 d-flex flex-column">
+                    <div class="video-container bg-black flex-grow-1 position-relative rounded-3 overflow-hidden" style="min-height: 300px;">
+                        @if ($videoBalldroppingsUrl)
+                            <video controls autoplay loop muted playsinline class="w-100 h-100 position-absolute top-0 start-0" style="object-fit: contain;">
+                                <source src="{{ $videoBalldroppingsUrl }}" type="video/mp4">
+                            </video>
+                        @else
+                            <div class="d-flex align-items-center justify-content-center h-100 w-100 position-absolute top-0 start-0">
+                                <span class="text-white-50 small">Processing...</span>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- Image Switch Column -->
+        <div class="col-lg-3">
+            <div class="glass-card h-100 d-flex flex-column">
+                <div class="glass-header d-flex justify-content-between align-items-center py-2">
+                    <span class="fw-bold text-white small">Distribution</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="small text-white-50">Map</span>
+                        <label class="toggle-switch scale-75">
+                            <input type="checkbox" wire:model.live="isBallHeatmap" @checked($ballTab === 'heatmap')>
+                            <span class="slider"></span>
+                        </label>
+                        <span class="small text-white-50">Heat</span>
+                    </div>
+                </div>
+                <div class="p-2 flex-grow-1 d-flex flex-column">
+                    <div class="video-container bg-black flex-grow-1 position-relative rounded-3 overflow-hidden" style="min-height: 300px;">
+                        @if($ballTab==='minimap')
+                            @if ($balldropUrl)
+                                <img wire:key="ball-minimap-{{ $balldropUrl }}" src="{{ $balldropUrl }}" class="w-100 h-100 position-absolute top-0 start-0" style="object-fit: contain;">
+                            @else
+                                <div class="d-flex align-items-center justify-content-center h-100 w-100 position-absolute top-0 start-0">
+                                    <span class="text-white-50 small">Processing...</span>
+                                </div>
+                            @endif
+                        @else
+                            @if ($imageHeatmapBalldroppingsUrl)
+                                <img wire:key="ball-heatmap-{{ $imageHeatmapBalldroppingsUrl }}" src="{{ $imageHeatmapBalldroppingsUrl }}" class="w-100 h-100 position-absolute top-0 start-0" style="object-fit: contain;">
+                            @else
+                                <div class="d-flex align-items-center justify-content-center h-100 w-100 position-absolute top-0 start-0">
+                                    <span class="text-white-50 small">Processing...</span>
+                                </div>
+                            @endif
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
 
-
-
+        <!-- AI Insight Column -->
+        <div class="col-lg-6">
+            <div class="ai-insight-box h-100 p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-stars me-2 text-primary-300 fs-4"></i>
+                    <h5 class="fw-bold text-white mb-0">AI Ball Drop Insight</h5>
+                </div>
+                <div class="text-white-400 lh-lg">
+                    @if ($text_balldrop)
+                        {{ $text_balldrop }}
+                    @else
+                        <div class="d-flex flex-column align-items-center justify-content-center py-5 opacity-50">
+                            <div class="spinner-grow text-primary-300 mb-3" role="status"></div>
+                            <span>Analyzing shot placement...</span>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

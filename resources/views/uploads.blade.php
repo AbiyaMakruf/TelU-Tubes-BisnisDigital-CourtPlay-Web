@@ -7,28 +7,30 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-12 text-center mb-5">
-            <h2 class="fw-bold text-primary-500">Upload Your Video for Analysis</h2>
-            <p class="text-primary-500">Start your journey to better performance with CourtPlay AI.</p>
+            <h2 class="fw-bold text-white mb-2">Upload Your Video for Analysis</h2>
+            <p class="text-white-50 text-lg">Start your journey to better performance with CourtPlay AI.</p>
         </div>
     </div>
 
-    <div class="card bg-black-200 rounded-lg shadow-xl p-4 p-md-5">
+    <div class="glass-card p-4 p-md-5">
         <form id="uploadForm" method="POST" action="{{ route('videos.store') }}" enctype="multipart/form-data">
             @csrf
 
-            <div class="row align-items-stretch">
-                <div class="col-lg-6 mb-4 mb-lg-0 d-flex flex-column">
+            <div class="row align-items-stretch g-4">
+                <div class="col-lg-6 d-flex flex-column">
                     <div id="drop-area"
-                        class="bg-black-300 rounded-xl p-5 d-flex flex-column justify-content-center align-items-center flex-grow-1 @if ($hasReachedLimit) disabled-area @endif"
-                        style="min-height: 400px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        class="glass-card border-dashed p-5 d-flex flex-column justify-content-center align-items-center flex-grow-1 @if ($hasReachedLimit) disabled-area @endif"
+                        style="min-height: 400px; cursor: pointer; transition: all 0.3s; border: 2px dashed rgba(255,255,255,0.1); background: rgba(255,255,255,0.02);">
 
-                        <svg class="text-primary-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                             xmlns="http://www.w3.org/2000/svg" style="width: 80px; height: 80px;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                        </svg>
+                        <div class="mb-4 p-3 rounded-circle bg-white-5 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                            <svg class="text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg" style="width: 40px; height: 40px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                        </div>
 
-                        <p class="mb-1 text-primary-500 fs-5 fw-medium">
+                        <p class="mb-2 text-white fs-5 fw-medium text-center">
                             @if ($hasReachedLimit)
                                 LIMIT REACHED
                             @else
@@ -39,8 +41,9 @@
                         @php
                             $allowedExt = implode(', ', explode(',', env('UPLOAD_ALLOWED_MIMES', 'mp4,mov,avi')));
                         @endphp
-                        <p class="mb-4 text-primary-500 small">
-                            or click to select a file (Max {{ $maxUploadMb }} MB, types: {{ $allowedExt }})
+                        <p class="mb-4 text-white-50 small text-center">
+                            or click to select a file<br>
+                            (Max {{ $maxUploadMb }} MB, types: {{ $allowedExt }})
                         </p>
 
                         <input
@@ -62,20 +65,21 @@
                 </div>
 
                 <div class="col-lg-6 d-flex flex-column">
-                    <div class="flex-grow-1">
-                        <h4 class="text-primary-500 fw-bold mb-4">Project Details</h4>
+                    <div class="flex-grow-1 ps-lg-4">
+                        <h4 class="text-white fw-bold mb-4">Project Details</h4>
 
-                        <div class="mb-3 text-start">
-                            <label for="project_name" class="form-label text-white-400 small fw-semibold">Project Name</label>
+                        <div class="mb-4 text-start">
+                            <label for="project_name" class="form-label text-white-50 small fw-semibold">Project Name</label>
                             <input
                                 type="text"
                                 name="project_name"
                                 id="project_name"
-                                class="form-control input-custom bg-black-300 border-0 text-black-300 rounded-lg p-3"
+                                class="form-control glass-form-control text-white"
                                 placeholder="e.g., Training - 2"
                                 value="{{ old('project_name') }}"
                                 @if ($hasReachedLimit) disabled @endif
                                 required
+                                style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white;"
                             >
                             @error('project_name')
                                 <small class="text-danger mt-1">{{ $message }}</small>
@@ -83,44 +87,47 @@
                         </div>
 
                         <div class="mb-4 text-start">
-                            <label for="description" class="form-label text-white-400 small fw-semibold">Description (Optional)</label>
+                            <label for="description" class="form-label text-white-50 small fw-semibold">Description (Optional)</label>
                             <textarea
                                 name="description"
                                 id="description"
                                 rows="5"
-                                class="form-control input-custom bg-black-300 border-0 text-black-300  rounded-lg p-3"
+                                class="form-control glass-form-control text-white"
                                 placeholder="Describe the session or player..."
                                 @if ($hasReachedLimit) disabled @endif
+                                style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white;"
                             >{{ old('description') }}</textarea>
                             @error('description')
                                 <small class="text-danger mt-1">{{ $message }}</small>
                             @enderror
                         </div>
 
-                        <div class="text-start small mb-4">
+                        <div class="text-start small mb-4 p-3 rounded-3" style="background: rgba(255,255,255,0.05);">
                             @if ($hasReachedLimit)
                                 <div class="text-danger small fw-semibold">
                                     <i class="bi bi-exclamation-triangle-fill me-1"></i> VIDEO UPLOAD HAS REACHED ITS LIMIT
                                 </div>
                             @else
-                                <span class="text-primary-500">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    Video Limit: {{ $projectCount }} / {{ $maxLimit }} • Max file: {{ $maxUploadMb }} MB
+                                <span class="text-white-50">
+                                    <i class="bi bi-info-circle me-1 text-primary-500"></i>
+                                    Video Limit: <span class="text-white">{{ $projectCount }} / {{ $maxLimit }}</span> • Max file: <span class="text-white">{{ $maxUploadMb }} MB</span>
                                 </span>
                             @endif
                         </div>
                     </div>
 
-                    <button
-                        type="submit"
-                        id="submitBtn"
-                        class="btn btn-custom2 w-100 py-3 mt-auto"
-                        @if ($hasReachedLimit) disabled @endif
-                        disabled
-                    >
-                        <span id="btnText">Start Analysis Upload</span>
-                        <span id="loadingSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                    </button>
+                    <div class="ps-lg-4 mt-auto">
+                        <button
+                            type="submit"
+                            id="submitBtn"
+                            class="btn btn-custom2 w-100 py-3 fw-bold"
+                            @if ($hasReachedLimit) disabled @endif
+                            disabled
+                        >
+                            <span id="btnText">Start Analysis Upload</span>
+                            <span id="loadingSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </form>

@@ -125,6 +125,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth','admin'])->group(func
   Route::get('/posts', [AdminController::class,'postsIndex'])->name('posts.index');
   Route::get('/posts/create', [AdminController::class,'postsCreate'])->name('posts.create');
   Route::post('/posts', [AdminController::class,'postsStore'])->name('posts.store');
+  Route::post('/posts/generate-ai', [AdminController::class, 'postsGenerateAI'])->name('posts.generate-ai'); // New Route
   Route::get('/posts/{post}/edit', [AdminController::class,'postsEdit'])->name('posts.edit');
   Route::put('/posts/{post}', [AdminController::class,'postsUpdate'])->name('posts.update');
   Route::delete('/posts/{post}', [AdminController::class,'postsDestroy'])->name('posts.destroy');

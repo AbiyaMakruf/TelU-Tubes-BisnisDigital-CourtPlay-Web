@@ -29,6 +29,48 @@
     .navbar .nav-link.active { color: var(--primary-500, #a3ce14)!important; font-weight:600; }
     .btn.btn-custom { background: var(--primary-500, #a3ce14); color:#111; border:0; }
     .btn.btn-custom:hover { filter:brightness(1.05); }
+
+    /* Mobile Offcanvas Styling */
+    .offcanvas {
+        background: rgba(10, 10, 10, 0.95) !important;
+        backdrop-filter: blur(15px);
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .offcanvas-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1.5rem;
+    }
+
+    .offcanvas-body {
+        padding: 2rem 1.5rem;
+    }
+
+    .offcanvas .nav-link {
+        color: rgba(255, 255, 255, 0.7) !important;
+        font-size: 1.2rem;
+        font-weight: 500;
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+        text-align: left;
+    }
+
+    .offcanvas .nav-link:hover, 
+    .offcanvas .nav-link.active {
+        color: var(--primary-500, #a3ce14) !important;
+        padding-left: 15px;
+        background: linear-gradient(90deg, rgba(163, 206, 20, 0.1) 0%, transparent 100%);
+        border-left: 3px solid var(--primary-500, #a3ce14);
+    }
+
+    .offcanvas .btn-custom {
+        width: 100%;
+        padding: 12px;
+        font-weight: 600;
+        margin-top: 10px;
+        border-radius: 12px;
+    }
   </style>
   @livewireStyles
   @vite(['resources/css/app.css', 'resources/js/app.js'])

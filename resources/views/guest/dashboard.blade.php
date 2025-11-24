@@ -13,11 +13,14 @@
 
                     <!-- Hero Text -->
                     <div class="col-lg-7 d-flex flex-column align-items-center align-items-lg-start justify-content-center">
-                        <h1 class="mb-4 title-1">
+                        <h1 class="mb-4 title-1 display-3 fw-bold">
                             Be Expert in Tennis <br>
                             and Padel <span>using AI</span>
                         </h1>
-                        <a href="{{ route('signup') }}" class="btn btn-custom2 btn-lg">Get started for free</a>
+                        <p class="lead text-primary-500 mb-4" style="max-width: 500px;">
+                            Elevate your game with professional-grade analytics.
+                        </p>
+                        <a href="{{ route('signup') }}" class="btn btn-custom2 btn-lg px-5 py-3">Get started for free</a>
                     </div>
 
                     <!-- Floating Logos -->
@@ -227,26 +230,32 @@
 
         <div class="row justify-content-center g-4">
         <div class="col-md-4">
-            <div class="usecase-card p-4 border border-dark rounded-4 h-100">
-            <i class="bi bi-person-badge fs-2 text-primary-300 mb-3"></i>
-            <h5 class="text-primary-500 ">For Players</h5>
-            <p class="text-primary-500">Get personalized AI insights on your technique, movement, and decision-making.</p>
+            <div class="usecase-card p-4 rounded-4 h-100">
+            <div class="mb-4 d-inline-block p-3 rounded-circle bg-dark bg-opacity-50">
+                <i class="bi bi-person-badge fs-2 text-primary-300"></i>
+            </div>
+            <h5 class="text-primary-500 fw-bold mb-3">For Players</h5>
+            <p class="text-primary-500 opacity-75">Get personalized AI insights on your technique, movement, and decision-making.</p>
             </div>
         </div>
 
         <div class="col-md-4">
-            <div class="usecase-card p-4 border border-dark rounded-4 h-100">
-            <i class="bi bi-graph-up fs-2 text-primary-300 mb-3"></i>
-            <h5 class="text-primary-500 ">For Coaches</h5>
-            <p class="text-primary-500 ">Track athlete performance, analyze trends, and optimize training plans using data.</p>
+            <div class="usecase-card p-4 rounded-4 h-100">
+            <div class="mb-4 d-inline-block p-3 rounded-circle bg-dark bg-opacity-50">
+                <i class="bi bi-graph-up fs-2 text-primary-300"></i>
+            </div>
+            <h5 class="text-primary-500 fw-bold mb-3">For Coaches</h5>
+            <p class="text-primary-500 opacity-75">Track athlete performance, analyze trends, and optimize training plans using data.</p>
             </div>
         </div>
 
         <div class="col-md-4">
-            <div class="usecase-card p-4 border border-dark rounded-4 h-100">
-            <i class="bi bi-building fs-2 text-primary-300 mb-3"></i>
-            <h5 class="text-primary-500 ">For Clubs</h5>
-            <p class="text-primary-500 ">Centralize team stats, compare players, and elevate your club’s performance analytics.</p>
+            <div class="usecase-card p-4 rounded-4 h-100">
+            <div class="mb-4 d-inline-block p-3 rounded-circle bg-dark bg-opacity-50">
+                <i class="bi bi-building fs-2 text-primary-300"></i>
+            </div>
+            <h5 class="text-primary-500 fw-bold mb-3">For Clubs</h5>
+            <p class="text-primary-500 opacity-75">Centralize team stats, compare players, and elevate your club’s performance analytics.</p>
             </div>
         </div>
         </div>
@@ -270,64 +279,73 @@
             <div class="row justify-content-center">
 
                 <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card testimonial-card h-100 p-4 border-0 shadow-lg" >
+                    <div class="card testimonial-card h-100 p-4 rounded-4">
                         <div class="card-body">
-                            <p class="card-text fs-6 fst-italic text-white-400">
-                                <i class="fas fa-quote-left text-primary-300 me-2"></i>
+                            <div class="mb-3 text-primary-300">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <p class="card-text fs-6 fst-italic text-white-400 mb-4">
                                 "CourtPlay has revolutionized my coaching. I now have
                                 <strong>objective data</strong>
                                 to show my athletes, cutting correction time from weeks to just minutes.
                                 The heatmap analysis is a <strong>game-changer</strong>."
-                                <i class="fas fa-quote-right text-primary-300 ms-2"></i>
                             </p>
                         </div>
-                        <div class="d-flex align-items-center mt-3">
-                            <i class="bi bi-person-circle fs-2 text-primary-300 me-3"></i>
+                        <div class="d-flex align-items-center mt-auto pt-3 border-top border-secondary border-opacity-25">
+                            <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                                <i class="bi bi-person-fill fs-4 text-primary-300"></i>
+                            </div>
                             <div>
-                                <h5 class="mb-0 text-primary-300">Arjasubrata R. </h5>
-                                <p class="text-primary-500  small">Certified Tennis Instructor</p>
+                                <h5 class="mb-0 text-primary-300 fw-bold">Arjasubrata R.</h5>
+                                <p class="text-primary-500 small mb-0">Certified Tennis Instructor</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card testimonial-card h-100 p-4 border-0 shadow-lg">
+                    <div class="card testimonial-card h-100 p-4 rounded-4">
                         <div class="card-body">
-                            <p class="card-text fs-6 fst-italic text-white-400">
-                                <i class="fas fa-quote-left text-primary-300 me-2"></i>
+                            <div class="mb-3 text-primary-300">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <p class="card-text fs-6 fst-italic text-white-400 mb-4">
                                 "I always thought my forehand was my strength, but CourtPlay instantly showed me where I was making
                                 <strong>unforced errors under pressure</strong>.
                                 The personalized AI advice helped me fix it fast!"
-                                <i class="fas fa-quote-right text-primary-300 ms-2"></i>
                             </p>
                         </div>
-                        <div class="d-flex align-items-center mt-3">
-                            <i class="bi bi-person-circle fs-2 text-primary-300 me-3"></i>
+                        <div class="d-flex align-items-center mt-auto pt-3 border-top border-secondary border-opacity-25">
+                            <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                                <i class="bi bi-person-fill fs-4 text-primary-300"></i>
+                            </div>
                             <div>
-                                <h5 class="mb-0 text-primary-300">Makruf A.</h5>
-                                <p class="text-primary-500  small">Competitive Padel Player</p>
+                                <h5 class="mb-0 text-primary-300 fw-bold">Makruf A.</h5>
+                                <p class="text-primary-500 small mb-0">Competitive Padel Player</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card testimonial-card h-100 p-4 border-0 shadow-lg" >
+                    <div class="card testimonial-card h-100 p-4 rounded-4">
                         <div class="card-body">
-                            <p class="card-text fs-6 fst-italic text-white-400">
-                                <i class="fas fa-quote-left text-primary-300 me-2"></i>
+                            <div class="mb-3 text-primary-300">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <p class="card-text fs-6 fst-italic text-white-400 mb-4">
                                 "The ability to track player movement and fatigue over multiple matches is invaluable. It’s like having an
                                 <strong>entire analytics team</strong>
                                 for a fraction of the cost. Highly recommended for any club."
-                                <i class="fas fa-quote-right text-primary-300 ms-2"></i>
                             </p>
                         </div>
-                        <div class="d-flex align-items-center mt-3">
-                            <i class="bi bi-person-circle fs-2 text-primary-300 me-3"></i>
+                        <div class="d-flex align-items-center mt-auto pt-3 border-top border-secondary border-opacity-25">
+                            <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                                <i class="bi bi-person-fill fs-4 text-primary-300"></i>
+                            </div>
                             <div>
-                                <h5 class="mb-0 text-primary-300">Rahmanto N.</h5>
-                                <p class="text-primary-500 small">Sports Club Manager</p>
+                                <h5 class="mb-0 text-primary-300 fw-bold">Rahmanto N.</h5>
+                                <p class="text-primary-500 small mb-0">Sports Club Manager</p>
                             </div>
                         </div>
                     </div>
@@ -355,13 +373,13 @@
                     {{-- Q1: Hardware Requirements --}}
                     <div class="accordion-item" >
                         <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="background-color: transparent;">
+                            <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                                 Do I need special cameras or sensors to use CourtPlay?
                             </button>
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
                             <div class="accordion-body ">
-                                **Not at all!** One of CourtPlay's main advantages is its ability to analyze video recorded with standard devices, such as a smartphone (Android/iOS) or a regular digital camera. Just ensure your footage has decent resolution and the players and court are clearly visible.
+                                <strong>Not at all!</strong> One of CourtPlay's main advantages is its ability to analyze video recorded with standard devices, such as a smartphone (Android/iOS) or a regular digital camera. Just ensure your footage has decent resolution and the players and court are clearly visible.
                             </div>
                         </div>
                     </div>
@@ -369,13 +387,13 @@
                     {{-- Q2: Processing Time --}}
                     <div class="accordion-item" >
                         <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="background-color: transparent;">
+                            <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                 How long does it take to analyze one match?
                             </button>
                         </h2>
                         <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
                             <div class="accordion-body ">
-                                Processing time is very fast, thanks to cloud infrastructure optimization. On average, a **60-minute** match video will be fully analyzed and reported within **5 to 15 minutes**. You will receive a notification once your report is ready.
+                                Processing time is very fast, thanks to cloud infrastructure optimization. On average, a <strong>60-minute</strong> match video will be fully analyzed and reported within <strong>5 to 15 minutes</strong>. You will receive a notification once your report is ready.
                             </div>
                         </div>
                     </div>
@@ -383,7 +401,7 @@
                     {{-- Q3: Data Security --}}
                     <div class="accordion-item" >
                         <h2 class="accordion-header" id="headingThree">
-                            <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="background-color: transparent;">
+                            <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                                 Are my match data and personal information secure?
                             </button>
                         </h2>
@@ -397,13 +415,13 @@
                     {{-- Q4: Other Sports Support --}}
                     <div class="accordion-item" >
                         <h2 class="accordion-header" id="headingFour">
-                            <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" style="background-color: transparent;">
+                            <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                                 Does CourtPlay support sports other than Tennis and Padel?
                             </button>
                         </h2>
                         <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
                             <div class="accordion-body ">
-                                Currently, our main focus is on **Tennis and Padel**, where our AI delivers the most accurate results. However, we are developing and planning to expand the analysis scope to other racquet sports (like Badminton and Squash) in the future.
+                                Currently, our main focus is on <strong>Tennis and Padel</strong>, where our AI delivers the most accurate results. However, we are developing and planning to expand the analysis scope to other racquet sports (like Badminton and Squash) in the future.
                             </div>
                         </div>
                     </div>
@@ -484,7 +502,109 @@
 @endsection
 
 @push('styles')
+<style>
+    /* Modern Hero Section */
+    .hero {
+        min-height: 100vh;
+        background-image: 
+            radial-gradient(circle at 15% 50%, rgba(var(--primary-300-rgb), 0.08) 0%, transparent 25%),
+            radial-gradient(circle at 85% 30%, rgba(var(--primary-300-rgb), 0.08) 0%, transparent 25%);
+    }
+    
+    .hero h1.title-1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        text-shadow: 0 0 40px rgba(var(--primary-300-rgb), 0.3);
+    }
 
+    .btn-custom2 {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(var(--primary-300-rgb), 0.4);
+        border-radius: 50px;
+        padding: 12px 36px;
+        font-weight: 600;
+    }
+
+    .btn-custom2:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(var(--primary-300-rgb), 0.6);
+    }
+
+    /* Marquee Fade Effect */
+    .logo-marquee {
+        mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    }
+
+    /* Modern Cards */
+    .usecase-card, .testimonial-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .usecase-card:hover, .testimonial-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(var(--primary-300-rgb), 0.3) !important;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Steps Modernization */
+    .step {
+        padding: 1.5rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        border-left: 3px solid transparent;
+    }
+
+    .step.active {
+        background: rgba(var(--primary-300-rgb), 0.05);
+        border-left-color: var(--primary-300);
+    }
+
+    .step .dot {
+        box-shadow: 0 0 10px var(--primary-300);
+    }
+
+    /* Video Box Modernization */
+    .video-box {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Accordion Modernization */
+    .accordion-item {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px !important;
+        margin-bottom: 1rem;
+        overflow: hidden;
+    }
+
+    .accordion-button {
+        background: rgba(255,255,255,0.02);
+        color: var(--primary-300);
+        font-weight: 500;
+        box-shadow: none !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background: rgba(var(--primary-300-rgb), 0.1);
+        color: var(--primary-300);
+    }
+
+    .accordion-body {
+        background: rgba(0,0,0,0.2);
+        color: var(--primary-500);
+    }
+</style>
 @endpush
 @push('scripts')
 <script>
