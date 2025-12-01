@@ -13,6 +13,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\PublicProfileController;
 use App\Http\Controllers\SocialController;
+use App\Http\Controllers\MatchmakingController;
 
 
 
@@ -91,6 +92,59 @@ Route::middleware('auth')->group(function () {
     Route::get('/social', [SocialController::class, 'index'])->name('social');
     Route::post('/user/{username}/toggleFollow', [SocialController::class, 'toggleFollow'])->name('user.toggleFollow');
     Route::post('/user/{username}/follow', [SocialController::class, 'follow'])->name('user.follow');
+
+
+    // Matchmaking
+    Route::get('/matchmaking', [MatchmakingController::class, 'index'])->name('matchmaking.index');
+    Route::get('/matchmaking/search', [MatchmakingController::class, 'create'])->name('matchmaking.search.create');
+    Route::post('/matchmaking/search', [MatchmakingController::class, 'store'])->name('matchmaking.search.store');
+    Route::get('/matchmaking/search/{id}',[MatchmakingController::class, 'detailSearch'])->name('matchmaking.search.detail');
+    Route::get('/matchmaking/match/{id}',[MatchmakingController::class, 'detailMatch'])->name('matchmaking.match.detail');
+    // CANCEL SEARCH
+    Route::post('/matchmaking/search/{id}/cancel',
+        [MatchmakingController::class, 'cancelSearch']
+    )->name('matchmaking.search.cancel');
+
+    // CANCEL MATCH
+    Route::post('/matchmaking/match/{id}/cancel',
+        [MatchmakingController::class, 'cancelMatch']
+    )->name('matchmaking.match.cancel');
+
+    // add game
+    Route::post('/matchmaking/match/{id}/start',
+        [MatchmakingController::class, 'startGame']
+    )->name('matchmaking.match.start');
+
+    // finish match
+    Route::post('/matchmaking/match/{id}/finish',
+        [MatchmakingController::class, 'finishMatch']
+    )->name('matchmaking.match.finish');
+
+
+    // FORM TAMBAH GAME
+    Route::get('/matchmaking/match/{id}/games/create',
+        [MatchmakingController::class, 'createGame']
+    )->name('matchmaking.match.createGame');
+
+    // SIMPAN GAME BARU
+    Route::post('/matchmaking/match/{id}/games/store',
+        [MatchmakingController::class, 'storeGame']
+    )->name('matchmaking.match.storeGame');
+
+    // FORM EDIT GAME
+    Route::get('/matchmaking/match/{match_id}/games/{game_id}/edit',
+        [MatchmakingController::class, 'editGame']
+    )->name('matchmaking.match.editGame');
+
+    // UPDATE GAME
+    Route::post('/matchmaking/match/{match_id}/games/{game_id}/update',
+        [MatchmakingController::class, 'updateGame']
+    )->name('matchmaking.match.updateGame');
+
+    // DELETE GAME
+    Route::delete('/matchmaking/match/{match_id}/games/{game_id}',
+        [MatchmakingController::class, 'deleteGame']
+    )->name('matchmaking.match.deleteGame');
 
 
 
