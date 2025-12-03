@@ -22,14 +22,14 @@
          Combined history (search + match)
     ============================ --}}
     @if($history->isEmpty())
-        <div class="card border-0 shadow-sm text-center py-5 bg-black-200 text-white-400">
-            <div class="card-body py-4">
+        <div class="glass-card text-center py-5 text-white-400">
+            <div class="p-4">
                 <div class="mb-3">
                     <i class="bi bi-people fs-1 text-primary-300"></i>
                 </div>
                 <h5 class="fw-semibold text-white mb-2">No matchmaking activity yet</h5>
                 <p class="text-white-400 mb-4">Kick things off by creating a search and let us help you find the perfect playing partner.</p>
-                <a href="{{ route('matchmaking.search.create') }}" class="btn btn-custom px-4">
+                <a href="{{ route('matchmaking.search.create') }}" class="btn btn-custom px-4 py-2">
                     Create Your First Search
                 </a>
             </div>
@@ -165,16 +165,18 @@
         border: 1px solid rgba(255, 255, 255, 0.15);
     }
     .matchmaking-card {
-        background: linear-gradient(140deg, rgba(33,33,33,0.95), rgba(12,12,12,0.95));
-        border: 1px solid rgba(255, 255, 255, 0.04) !important;
-        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        background: rgba(255,255,255,0.03);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.06) !important;
+        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
         border-radius: 1.25rem;
         overflow: hidden;
     }
     .matchmaking-card:hover {
-        transform: translateY(-4px);
-        border-color: rgba(var(--primary-300-rgb), 0.4) !important;
-        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+        transform: translateY(-6px);
+        border-color: rgba(var(--primary-300-rgb), 0.32) !important;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(var(--primary-300-rgb), 0.06);
     }
     .matchmaking-page .status-pill {
         padding: 0.35rem 0.9rem;

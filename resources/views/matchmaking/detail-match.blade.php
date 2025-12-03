@@ -143,16 +143,18 @@
         color: var(--white-500);
     }
     .glass-card {
-        background: rgba(15, 15, 15, 0.92);
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         border-radius: 24px;
         padding: 2rem;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
     }
     .info-block,
     .player-item,
     .game-card {
-        background: rgba(255, 255, 255, 0.04);
+        background: rgba(255, 255, 255, 0.03);
         border-radius: 18px;
         border: 1px solid rgba(255, 255, 255, 0.08);
     }

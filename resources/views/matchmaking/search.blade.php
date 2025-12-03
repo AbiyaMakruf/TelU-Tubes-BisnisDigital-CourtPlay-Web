@@ -73,11 +73,13 @@
 <style>
     .matchmaking-shell { color: var(--white-500); }
     .glass-card {
-        background: rgba(15, 15, 15, 0.92);
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         border-radius: 24px;
         padding: 2rem;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
     }
     .form-card .form-label {
         color: var(--white-300);
@@ -88,16 +90,18 @@
     }
     .form-card .form-select,
     .form-card .form-control {
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 16px;
         color: var(--white-500);
         padding: 0.85rem 1rem;
+        transition: all 0.2s ease;
     }
     .form-card .form-select:focus,
     .form-card .form-control:focus {
-        border-color: rgba(var(--primary-300-rgb), 0.8);
-        box-shadow: 0 0 0 0.2rem rgba(var(--primary-300-rgb), 0.2);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(var(--primary-300-rgb), 0.5);
+        box-shadow: 0 0 0 0.25rem rgba(var(--primary-300-rgb), 0.15);
         color: var(--white-500);
     }
     option { color: #111; }
