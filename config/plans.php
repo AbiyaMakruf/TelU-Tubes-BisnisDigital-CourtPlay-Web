@@ -6,18 +6,34 @@ return [
         'free' => [
             'name' => 'Free',
             'price_idr' => 0,
-            'limit' => (int) env('UPLOAD_LIMIT_FREE', 3),
+            'limit' => (int) env('UPLOAD_LIMIT_FREE', 2),
             'max_mb' => (int) env('UPLOAD_MAX_FILE_MB_FREE', 200),
             'features' => [
-                '5 Analysis Videos',
-                '10 Minutes per Video',
+                '2 Analysis Videos',
+                '5 Minutes per Video',
                 'Standard Match Analysis',
                 '2GB of Storages',
+                'AI-Generated Highlights',
             ],
             'tone' => '#e6f9ff',
         ],
 
-
+        'starter' => [
+            'name' => 'Starter',
+            'price_idr' => 20000,
+            'limit' => (int) env('UPLOAD_LIMIT_STARTER', 5),
+            'max_mb' => (int) env('UPLOAD_MAX_FILE_MB_STARTER', 300),
+            'is_one_time' => true, // One-time purchase, not monthly
+            'features' => [
+                '5 Analysis Videos',
+                '10 Minutes per Video',
+                'Standard Match Analysis',
+                '2GB Storage',
+                'Basic Analytics Dashboard',
+                'AI-Generated Highlights',
+            ],
+            'tone' => '#fff4e6',
+        ],
 
         'plus' => [
             'name' => 'Plus',
@@ -31,18 +47,7 @@ return [
                 '5GB of Storage',
                 'Skill-Based Matchmaking',
                 'Advanced Profile Customization',
-            ],
-            'tone' => '#eefcc8',
-        ],
-
-         'pro' => [
-            'name' => 'Pro',
-            'price_idr' => 299000,
-            'limit' => (int) env('UPLOAD_LIMIT_PRO', 50),
-            'max_mb' => (int) env('UPLOAD_MAX_FILE_MB_PRO', 1024),
-            'features' => [
-                '40 Videos per Month',
-                '20 Minutes per Video',
+                'AI-Generated Highlights',
                 'Pro-Level Match Analysis',
                 '25GB of Storage',
                 'Skill-Based Matchmaking',
