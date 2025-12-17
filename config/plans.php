@@ -48,6 +48,18 @@ return [
                 'Skill-Based Matchmaking',
                 'Advanced Profile Customization',
                 'AI-Generated Highlights',
+            ],
+            'tone' => '#eefcc8',
+        ],
+
+         'pro' => [
+            'name' => 'Pro',
+            'price_idr' => 299000,
+            'limit' => (int) env('UPLOAD_LIMIT_PRO', 50),
+            'max_mb' => (int) env('UPLOAD_MAX_FILE_MB_PRO', 1024),
+            'features' => [
+                '40 Videos per Month',
+                '20 Minutes per Video',
                 'Pro-Level Match Analysis',
                 '25GB of Storage',
                 'Skill-Based Matchmaking',

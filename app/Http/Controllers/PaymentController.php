@@ -26,7 +26,7 @@ class PaymentController extends Controller
         try {
 
 
-            $request->validate(['plan' => 'required|in:free,pro,plus']);
+            $request->validate(['plan' => 'required|in:free,starter,plus,pro']);
             $user = Auth::user();
             $planKey = $request->plan;
 

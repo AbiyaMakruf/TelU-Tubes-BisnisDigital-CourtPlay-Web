@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->string('profile_picture_url')->nullable();
 
             // Role-based access
-            $table->string('role')->default('user')->comment('pro, plus, free, admin');
+            $table->string('role')->default('free')->comment('free, starter, plus, pro, admin');
 
             // Token login unik
             $table->string('login_token', 80)->nullable()->unique();

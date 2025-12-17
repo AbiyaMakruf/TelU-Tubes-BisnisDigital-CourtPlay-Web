@@ -19,9 +19,11 @@ class PlanController extends Controller
             $plans = [];
             foreach ($plansRaw as $key => $plan) {
                 $priceIdr = $plan['price_idr'] ?? 0;
+                $isOneTime = $plan['is_one_time'] ?? false;
+                
                 $plans[$key] = array_merge($plan, [
                     'price_idr' => $priceIdr,
-                    'price' => 'Rp' . number_format($priceIdr, 0, ',', '.') . ' / month',
+                    'price' => 'Rp' . number_format($priceIdr, 0, ',', '.') . ($isOneTime ? '' : ' / month'),
                 ]);
             }
 
@@ -42,7 +44,7 @@ class PlanController extends Controller
 
     public function changePlan(Request $request)
     {
-        $data = $request->validate(['plan' => 'required|in:free,pro,plus']);
+        $data = $request->validate(['plan' => 'required|in:free,starter,plus,pro']);
         $user = Auth::user();
 
         $user->role = $data['plan'];

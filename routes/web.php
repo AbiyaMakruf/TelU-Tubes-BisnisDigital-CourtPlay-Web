@@ -63,7 +63,6 @@ Route::middleware('auth')->group(function () {
 
     // Halaman tambahan
     Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
-    Route::get('/plan', [PageController::class, 'plan'])->name('plan');
     // Route::get('/profile', [PageController::class, 'profile'])->name('profile');
 
     // Upload video
