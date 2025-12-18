@@ -20,7 +20,7 @@ return [
 
         'starter' => [
             'name' => 'Starter',
-            'price_idr' => 20000,
+            'price_idr' => 19000,
             'limit' => (int) env('UPLOAD_LIMIT_STARTER', 5),
             'max_mb' => (int) env('UPLOAD_MAX_FILE_MB_STARTER', 300),
             'is_one_time' => true, // One-time purchase, not monthly

@@ -60,7 +60,7 @@
                     <div class="mb-3">
                         <h3 class="plan-name text-warning">{{ $plans['starter']['name'] ?? 'Starter' }}</h3>
                         <div class="plan-price" style="font-size: 2.5rem;">
-                            {{ $plans['starter']['price'] ?? 'Rp20.000' }}
+                            {{ $plans['starter']['price'] ?? 'Rp19.000' }}
                         </div>
                         <p class="text-white-50 small mb-2">Try our platform with limited videos.</p>
                         <div class="cancel-badge">
@@ -254,7 +254,7 @@
                             <tr>
                                 <td class="text-white-400"><i class="bi bi-tag me-2"></i>Price</td>
                                 <td class="text-center"><strong>Rp0</strong></td>
-                                <td class="text-center"><strong class="text-warning">Rp20k</strong><br><small class="text-white-50">One-time</small></td>
+                                <td class="text-center"><strong class="text-warning">Rp19k</strong><br><small class="text-white-50">One-time</small></td>
                                 <td class="text-center"><strong class="text-info">Rp0</strong><br><small class="text-white-50">1st month free</small></td>
                                 <td class="text-center"><strong class="text-primary-300">Rp209k</strong><br><small class="text-white-50">30% off 1st month</small></td>
                             </tr>
