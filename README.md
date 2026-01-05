@@ -29,6 +29,17 @@ Kita pake teknologi-teknologi kekinian biar performanya ngebut dan stabil! ⚡
 
 ![Tech Stack](README/tech_stack.png)
 
+### Versi Tech Stack (Laporan Akhir)
+Detail variasi stack yang kami gunakan juga tersedia di folder `laporan_akhir/`:
+
+| Backend & AI | Development Model |
+| :---: | :---: |
+| ![Tech Stack Backend & AI](laporan_akhir/tech_stack_backend_ai.png) | ![Tech Stack Development Model](laporan_akhir/tech_stack_development_model.png) |
+
+| General Overview | Web App |
+| :---: | :---: |
+| ![Tech Stack General](laporan_akhir/tech_stack_general.png) | ![Tech Stack Web App](laporan_akhir/tech_stack_webapp.png) |
+
 *   **Frontend & Backend Web:** Laravel 10 (PHP), Livewire 3, Blade Templates, Bootstrap 5 (Glassmorphism Style ✨).
 *   **Database:** PostgreSQL (via Supabase).
 *   **AI & Processing:** Python, OpenCV, YOLO, PyTorch.
@@ -180,6 +191,14 @@ Ini nih hasil kerja keras si AI! Dia bisa ngasih visualisasi keren kayak gini:
 | Heatmap Player | Minimap Ball |
 | :---: | :---: |
 | ![Heatmap](README/output_analytics/heatmap_player.png) | ![Minimap](README/output_analytics/minimap_ball.png) |
+
+---
+
+## 📂 Laporan Akhir & Media
+
+*   **Video Output AI:** `laporan_akhir/Contoh video output AI analytics.mp4`
+*   **Video Demo Web App:** `laporan_akhir/Video demo web app.mp4`
+*   **Slide Presentasi:** tersedia di folder `laporan_akhir/` (lihat dokumen PDF presentasi).
 
 ---
 
