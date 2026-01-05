@@ -13,20 +13,17 @@ class PlanController extends Controller
     {
         try {
             $role = strtolower((string) (Auth::user()->role ?? 'free'));
-            $usdToIdr = config('plans.usd_to_idr');
             $plansRaw = config('plans.plans');
 
-            // === Proses format harga & detail plan ===
+            // === Format harga & detail plan ===
             $plans = [];
             foreach ($plansRaw as $key => $plan) {
-                $priceUsd = $plan['price_usd'] ?? 0;
-                $priceIdr = $priceUsd * $usdToIdr;
-
+                $priceIdr = $plan['price_idr'] ?? 0;
+                $isOneTime = $plan['is_one_time'] ?? false;
+                
                 $plans[$key] = array_merge($plan, [
                     'price_idr' => $priceIdr,
-                    'price' => $priceUsd > 0
-                        ? 'Rp' . number_format($priceIdr, 0, ',', '.') . ' / month'
-                        : 'Rp0 / month',
+                    'price' => 'Rp' . number_format($priceIdr, 0, ',', '.') . ($isOneTime ? '' : ' / month'),
                 ]);
             }
 
@@ -47,7 +44,7 @@ class PlanController extends Controller
 
     public function changePlan(Request $request)
     {
-        $data = $request->validate(['plan' => 'required|in:free,pro,plus']);
+        $data = $request->validate(['plan' => 'required|in:free,starter,plus,pro']);
         $user = Auth::user();
 
         $user->role = $data['plan'];

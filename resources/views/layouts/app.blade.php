@@ -1,8 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PJRVZT7CVP"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PJRVZT7CVP');
+    </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="user-id" content="{{ auth()->check() ? auth()->user()->id : '' }}">
   <title>@yield('title','CourtPlay')</title>
 
   <!-- Vendor -->
@@ -18,14 +29,57 @@
     .navbar .nav-link.active { color: var(--primary-500, #a3ce14)!important; font-weight:600; }
     .btn.btn-custom { background: var(--primary-500, #a3ce14); color:#111; border:0; }
     .btn.btn-custom:hover { filter:brightness(1.05); }
-  </style>
 
+    /* Mobile Offcanvas Styling */
+    .offcanvas {
+        background: rgba(10, 10, 10, 0.95) !important;
+        backdrop-filter: blur(15px);
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .offcanvas-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1.5rem;
+    }
+
+    .offcanvas-body {
+        padding: 2rem 1.5rem;
+    }
+
+    .offcanvas .nav-link {
+        color: rgba(255, 255, 255, 0.7) !important;
+        font-size: 1.2rem;
+        font-weight: 500;
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+        text-align: left;
+    }
+
+    .offcanvas .nav-link:hover, 
+    .offcanvas .nav-link.active {
+        color: var(--primary-500, #a3ce14) !important;
+        padding-left: 15px;
+        background: linear-gradient(90deg, rgba(163, 206, 20, 0.1) 0%, transparent 100%);
+        border-left: 3px solid var(--primary-500, #a3ce14);
+    }
+
+    .offcanvas .btn-custom {
+        width: 100%;
+        padding: 12px;
+        font-weight: 600;
+        margin-top: 10px;
+        border-radius: 12px;
+    }
+  </style>
+  @livewireStyles
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
   @stack('styles')
 </head>
 <body>
 
   {{-- NAVBAR universal (guest & auth) --}}
-  <nav class="navbar navbar-expand-lg sticky-top px-4 py-3 navbar-scroll">
+  <nav class="navbar navbar-expand-lg fixed-top px-4 py-3 navbar-scroll">
     <div class="container-fluid">
       {{-- Brand: guest -> home, auth -> analytics --}}
       <a class="navbar-brand fw-bold" href="@auth {{ route('analytics') }} @else {{ route('home') }} @endauth">
@@ -57,6 +111,13 @@
               <a class="nav-link {{ request()->routeIs('plan') ? 'active' : '' }}"
                  href="{{ route('plan') }}">Plan</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link {{ request()->routeIs('social') ? 'active' : '' }}"
+                 href="{{ route('social') }}">Social</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{ request()->routeIs('matchmaking.*') ? 'active' : '' }}"
+                 href="{{ route('matchmaking.index') }}">Matchmaking</a>
           @endauth
 
           {{-- GUEST menu --}}
@@ -73,6 +134,7 @@
               <a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}"
                  href="{{ route('about') }}">About Us</a>
             </li>
+
           @endguest
 
           {{-- Umum untuk semua --}}
@@ -86,7 +148,7 @@
       {{-- Menu kanan (desktop) --}}
       <ul class="navbar-nav ms-auto align-items-center d-none d-lg-flex">
         @auth
-          <li class="nav-item me-2">
+          <li class="nav-item">
             <span class="nav-link fw-semibold text-primary-500">
               Hello, {{ \Illuminate\Support\Str::limit(auth()->user()->first_name ?? 'User', 18) }}
             </span>
@@ -131,14 +193,15 @@
       </button>
     </div>
 
-    <div class="offcanvas-body d-flex flex-column justify-content-between">
+    <div class="offcanvas-body d-flex flex-column justify-content ">
       <ul class="navbar-nav text-center">
         {{-- AUTH --}}
         @auth
           <li class="nav-item"><a class="nav-link" href="{{ route('analytics') }}">Analytics</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ route('videos.index') }}">Uploads</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ route('plan') }}">Plan</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('profile') }}">Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('social') }}">Social</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('matchmaking.index') }}">Matchmaking</a></li>
         @endauth
 
         {{-- GUEST --}}
@@ -150,13 +213,17 @@
 
         {{-- Umum --}}
         <li class="nav-item"><a class="nav-link" href="{{ route('news.index') }}">News</a></li>
+        <div class="border-top pt-3 text-center">
+
+        </div>
+
+
       </ul>
 
       <div class="border-top pt-3 text-center">
         @auth
-          <span class="nav-link fw-semibold text-primary-500 mb-2 d-block">
-            Hello, {{ \Illuminate\Support\Str::limit(auth()->user()->first_name ?? 'User', 18) }}
-          </span>
+
+        <a class="btn btn-custom w-100 mb-2" href="{{ route('profile') }}">Profile</a>
           <form action="{{ route('logout') }}" method="POST" class="d-inline">
             @csrf
             <button type="submit" class="btn btn-custom w-100">Logout</button>
@@ -179,6 +246,55 @@
   {{-- Scripts --}}
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{ asset('js/app.js') }}"></script>
+  @livewireScripts
+  <script>
+    Livewire.on('notify', (type, message) => {
+        if (typeof toastr[type] === 'function') toastr[type](message);
+    });
+  </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const meta = document.querySelector('meta[name="user-id"]');
+        if (!meta) return;
+
+        const userId = meta.content;
+        if (window.Echo) {
+            window.Echo.channel(`user-updates.${userId}`)
+                .listen('.VideoProcessed', (e) => {
+                    console.log('Project update received:', e.projectId);
+                    Livewire.dispatch('project-updated', { id: e.projectId });
+                    if (window.toastr) toastr.success('Project updated: ' + e.projectId);
+                });
+        }
+    });
+    </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const projectsContainer = document.getElementById('projectsContainer');
+        const searchInput = document.getElementById('searchInput');
+        const sortSelect = document.getElementById('sortSelect');
+
+        function loadProjects() {
+            const search = searchInput.value;
+            const sort = sortSelect.value;
+
+            fetch(`?search=${encodeURIComponent(search)}&sort=${encodeURIComponent(sort)}`, {
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            })
+            .then(res => res.text())
+            .then(html => {
+                projectsContainer.innerHTML = html;
+            });
+        }
+
+        searchInput.addEventListener("input", loadProjects);
+        sortSelect.addEventListener("change", loadProjects);
+    });
+    </script>
+
+
+
   @stack('scripts')
 </body>
 </html>

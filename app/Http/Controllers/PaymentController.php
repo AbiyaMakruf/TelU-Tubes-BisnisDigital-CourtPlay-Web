@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Log;
 use Xendit\Configuration;
 use Xendit\Invoice\InvoiceApi;
 use App\Models\User;
+use App\Mail\PlanChangedMail;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -15,31 +17,34 @@ class PaymentController extends Controller
 
     public function __construct()
     {
-        // Ambil API key dari config/xendit.php
         Configuration::setXenditKey(config('xendit.secret_key'));
         $this->invoiceApi = new InvoiceApi();
     }
 
-    /**
-     * Membuat transaksi dan langsung redirect ke Hosted Invoice Page (UI bawaan Xendit)
-     */
     public function createTransaction(Request $request)
     {
         try {
-            $request->validate(['plan' => 'required|in:free,pro,plus']);
+
+
+            $request->validate(['plan' => 'required|in:free,starter,plus,pro']);
             $user = Auth::user();
             $planKey = $request->plan;
 
             $plans = config('plans.plans');
-            $usdToIdr = config('plans.usd_to_idr');
-            $priceUsd = $plans[$planKey]['price_usd'] ?? 0;
-            $amount = $priceUsd * $usdToIdr;
+            if (!isset($plans[$planKey])) {
+                toastr()->error('Selected plan not found.');
+                return back();
+            }
 
-            // Jika free plan → langsung ubah role tanpa Xendit
+            $selectedPlan = $plans[$planKey];
+            $amount = (int) ($selectedPlan['price_idr'] ?? 0);
+
             if ($amount <= 0) {
                 $user->role = 'free';
                 $user->save();
-                return redirect()->route('plan')->with('success', 'You are now on Free Plan');
+
+                toastr()->success('You are now on Free Plan!');
+                return redirect()->route('plan');
             }
 
             $externalId = 'PLAN-' . strtoupper($planKey) . '-' . uniqid();
@@ -61,72 +66,97 @@ class PaymentController extends Controller
             // Buat invoice di Xendit
             $invoice = $this->invoiceApi->createInvoice($params);
 
-
-
-            // Log
-            Log::info('Xendit Invoice created', [
-                'user_id' => $user->id,
-                'plan' => $planKey,
-                'amount' => $amount,
+            Log::info('✅ Xendit Invoice created', [
+                'user_id'    => $user->id,
+                'plan'       => $planKey,
+                'amount'     => $amount,
                 'invoice_id' => $invoice['id'] ?? null,
             ]);
 
-            // Langsung redirect ke Hosted Invoice Page (UI bawaan Xendit)
+            // Redirect ke Hosted Invoice Page (Xendit UI)
             if (!empty($invoice['invoice_url'])) {
+                toastr()->success("Your plan updated to {$selectedPlan['name']}.");
                 return redirect()->away($invoice['invoice_url']);
             }
 
-            return back()->withErrors(['error' => 'Failed to generate Xendit invoice.']);
+            toastr()->error('Failed to generate Xendit invoice.');
+            return back();
 
         } catch (\Throwable $e) {
-            Log::error('Xendit Payment create failed: ' . $e->getMessage());
-            return back()->withErrors(['error' => 'Payment creation failed: ' . $e->getMessage()]);
+            Log::error('❌ Xendit Payment create failed', [
+                'error' => $e->getMessage(),
+            ]);
+            toastr()->error('Payment creation failed: ' . $e->getMessage());
+            return back();
         }
     }
 
-    /**
-     * Callback webhook dari Xendit
-     */
-    public function handleCallback(Request $request)
+    public function handleCallbackSuccess(Request $request)
     {
         try {
-            $payload = $request->all();
-            Log::info('Xendit Callback received', $payload);
+            // ✅ Validate only the key fields you need
+            $validated = $request->validate([
+                'status'          => ['required', 'string'],
+                'payer_email'     => ['required', 'email'],
+                'external_id'     => ['required', 'string'],
+                'payment_method'  => ['nullable', 'string'],
+                'payment_channel' => ['nullable', 'string'],
+            ]);
 
-            $status = $payload['status'] ?? null;
-            $externalId = $payload['external_id'] ?? null;
-            $payerEmail = $payload['payer_email'] ?? null;
+            Log::info('📩 Xendit Callback received', $validated);
 
-            if ($status === 'PAID' && $externalId) {
-                $plan = strtolower(explode('-', $externalId)[1] ?? 'free');
+            // Use validated data safely
+            $status         = strtoupper($validated['status']);
+            $payerEmail     = $validated['payer_email'];
+            $externalId     = $validated['external_id'];
+            $paymentMethod  = $validated['payment_method'] ?? null;
+            $paymentChannel = $validated['payment_channel'] ?? null;
+
+            // ---- your existing logic remains unchanged ----
+            if ($status === 'PAID' && !empty($externalId)) {
+
+                $parts = explode('-', $externalId);
+                $plan  = strtolower($parts[1] ?? 'free');
+
                 $user = User::where('email', $payerEmail)->first();
 
-                if ($user) {
-                    $planController = new \App\Http\Controllers\PlanController();
-
-                    $fakeRequest = new Request([
-                        'plan' => $plan
-                    ]);
-
-                    Auth::login($user);
-
-                    // Jalankan changePlan
-                    $response = $planController->changePlan($fakeRequest);
-
-                    Log::info("✅ PlanController::changePlan berhasil dipanggil untuk {$user->email} ke {$plan}");
-                    Auth::logout();
-
-                    return response()->json(['success' => true]);
-                } else {
-                    Log::warning("⚠️ User not found for callback: {$payerEmail}");
+                if (!$user) {
+                    Log::warning("⚠️ User not found for callback email: {$payerEmail}");
+                    return response()->json(['error' => 'User not found'], 404);
                 }
+
+                if ($user->role === $plan) {
+                    Log::info("ℹ️ Callback ignored — User {$user->email} already on {$plan} plan.");
+                    return response()->json(['success' => true, 'message' => 'User already on this plan']);
+                }
+
+                $oldPlan = $user->role;
+
+                try {
+                    Mail::to($user->email)->send(new PlanChangedMail($user, $oldPlan, $plan));
+                    Log::info("📧 Plan change email sent to {$user->email} ({$oldPlan} → {$plan})");
+                } catch (\Throwable $mailError) {
+                    Log::error("❌ Failed to send plan change email to {$user->email}: {$mailError->getMessage()}");
+                }
+
+                $user->update(['role' => $plan]);
+
+                Log::info("✅ User {$user->email} upgraded to {$plan} plan (via Xendit {$paymentMethod}-{$paymentChannel})");
+                return response()->json(['success' => true]);
             }
 
-            return response()->json(['success' => true]);
+            Log::warning("⚠️ Ignored callback with status={$status}, external_id={$externalId}");
+            return response()->json(['success' => true, 'message' => 'No action taken']);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::warning('⚠️ Invalid Xendit callback payload', $e->errors());
+            return response()->json([
+                'error' => 'Invalid payload',
+                'details' => $e->errors(),
+            ], 422);
         } catch (\Throwable $e) {
-            Log::error('Xendit callback error: ' . $e->getMessage());
+            Log::error('❌ Xendit callback error: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
-
     }
 }

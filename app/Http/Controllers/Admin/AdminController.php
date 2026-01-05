@@ -373,6 +373,69 @@ class AdminController extends Controller
         }
     }
 
+    public function postsGenerateAI(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+        ]);
+
+        $title = $request->input('title');
+        $apiKey = env('GEMINI_API_KEY');
+
+        if (!$apiKey) {
+            return response()->json(['error' => 'Gemini API Key not configured in .env'], 500);
+        }
+
+        try {
+            $client = new \GuzzleHttp\Client();
+            // Using gemini-1.5-flash as it is fast and efficient. 
+            // If "Gemini 2.5" was intended, it might be a future version or typo. 
+            // We use the current stable/beta endpoint.
+            $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={$apiKey}";
+
+            $prompt = "You are a sports news editor. Write a news article based on this title: \"{$title}\". 
+            1. Provide a short excerpt (max 280 chars).
+            2. Provide a full content body (HTML format is allowed, use <p>, <strong>, etc.).
+            3. Suggest a prompt for an image generation tool that would fit this article.
+            
+            Return the result strictly as a JSON object with keys: 'excerpt', 'content', 'image_prompt'.";
+
+            $response = $client->post($url, [
+                'headers' => ['Content-Type' => 'application/json'],
+                'json' => [
+                    'contents' => [
+                        [
+                            'parts' => [
+                                ['text' => $prompt]
+                            ]
+                        ]
+                    ],
+                    'generationConfig' => [
+                        'responseMimeType' => 'application/json'
+                    ]
+                ]
+            ]);
+
+            $body = json_decode($response->getBody(), true);
+            
+            if (isset($body['candidates'][0]['content']['parts'][0]['text'])) {
+                $generatedText = $body['candidates'][0]['content']['parts'][0]['text'];
+                $jsonContent = json_decode($generatedText, true);
+                
+                return response()->json([
+                    'success' => true,
+                    'data' => $jsonContent
+                ]);
+            }
+
+            return response()->json(['error' => 'No content generated.'], 500);
+
+        } catch (\Exception $e) {
+            Log::error('Gemini AI Error: ' . $e->getMessage());
+            return response()->json(['error' => 'AI Generation failed: ' . $e->getMessage()], 500);
+        }
+    }
+
     public function postsToggle(Post $post)
     {
         try {

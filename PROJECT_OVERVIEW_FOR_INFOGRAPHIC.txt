@@ -1,0 +1,67 @@
+PROJECT OVERVIEW: COURTPLAY
+===========================
+
+1. PROJECT DESCRIPTION
+----------------------
+CourtPlay is an advanced web-based sports analytics platform designed to revolutionize tennis and padel training. By leveraging Artificial Intelligence (AI) and Computer Vision, CourtPlay analyzes match or training videos to provide players and coaches with deep performance insights. The platform transforms raw video footage into actionable data, helping users improve their game through detailed statistics and visual feedback.
+
+2. CORE VALUE PROPOSITION
+-------------------------
+- "Elevate Your Game with AI"
+- Automated Video Analysis
+- Professional-Grade Statistics for Everyone
+- Community & Social Sharing
+
+3. KEY FEATURES
+---------------
+A. User Features:
+   - **Video Upload & Processing:** Seamless drag-and-drop video upload for AI analysis.
+   - **Analytics Dashboard:** 
+     - Shot Statistics (Forehand, Backhand, Serve counts).
+     - AI Movement Insight (Player movement tracking).
+     - Heatmaps (Court coverage visualization).
+     - Minimap Replay (Top-down view of player positions).
+   - **Social Hub:** Public profiles, follow system, and ability to share match analytics.
+   - **News & Blog:** Latest sports updates and tips.
+   - **Subscription Plans:** Tiered access to advanced analytics features.
+
+B. Admin Features:
+   - **Dashboard:** Overview of users, projects, and system health (Cloud Run metrics).
+   - **User & Project Management:** Control over registered users and uploaded content.
+   - **AI-Powered News Editor:** Integrated Gemini AI to automatically generate news articles, excerpts, and image prompts from a simple title.
+
+4. TECHNOLOGY STACK
+-------------------
+A. Backend & Frameworks:
+   - **Language:** PHP 8.1+
+   - **Framework:** Laravel 10
+   - **Live Updates:** Laravel Livewire 3 (for dynamic, reactive interfaces)
+
+B. Frontend:
+   - **Templating:** Laravel Blade
+   - **Styling:** Bootstrap 5, Custom CSS
+   - **Design System:** Glassmorphism (Blur effects), Dark Mode, Neon Green Accents (#a3ce14)
+   - **Build Tool:** Vite
+
+C. Database & Storage:
+   - **Database:** PostgreSQL
+   - **File Storage:** Google Cloud Storage (GCS)
+
+D. Infrastructure & Cloud (Google Cloud Platform):
+   - **Compute:** Google Cloud Run (Serverless container deployment)
+   - **Messaging:** Google Cloud Pub/Sub (Asynchronous video processing pipeline)
+   - **Containerization:** Docker
+
+E. Integrations & APIs:
+   - **AI/LLM:** Google Gemini API (Content Generation)
+   - **Payment Gateway:** Xendit (Subscription management)
+   - **Real-time WebSockets:** Pusher (Live notifications and updates)
+
+5. VISUAL IDENTITY FOR INFOGRAPHIC
+----------------------------------
+- **Theme:** Futuristic, High-Tech, Sports Performance.
+- **Color Palette:** 
+  - Backgrounds: Deep Black / Dark Grey (#1c1c1c, #292929)
+  - Accents: Neon Green / Tennis Ball Yellow (#a3ce14)
+  - Text: White & Light Grey
+- **Style Elements:** Glass cards (translucent backgrounds with blur), glowing borders, sleek typography, data visualization charts.

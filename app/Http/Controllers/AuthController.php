@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Follow;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -40,8 +41,19 @@ class AuthController extends Controller
                 'role'        => 'free',
                 'login_token' => bin2hex(random_bytes(32)),
             ]);
+            // dd($user->id);
+            Follow::create([
+                'followers'  => json_encode([]), // Tidak ada followers awalnya
+                'following'  => json_encode([]), // Tidak ada following awalnya
+                'user_id'    => $user->id, // ID pengguna yang baru dibuat
+            ]);
 
+            
             Auth::login($user);
+
+
+
+            // dd($user->id);
 
             try {
                 Mail::to($user->email)->send(new UserWelcomeMail($user));
@@ -75,7 +87,7 @@ class AuthController extends Controller
     {
         try {
             $credentials = $request->validate([
-                'email'    => 'required|string', // bisa email ATAU username
+                'email'    => 'required|string',
                 'password' => 'required|string',
             ]);
 
@@ -87,6 +99,7 @@ class AuthController extends Controller
 
                 /** @var \App\Models\User $user */
                 $user = Auth::user();
+
                 $user->login_token = bin2hex(random_bytes(32));
                 $user->save();
 

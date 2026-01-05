@@ -11,12 +11,20 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\PublicProfileController;
+use App\Http\Controllers\SocialController;
+use App\Http\Controllers\MatchmakingController;
+
 
 
 
 Route::get('/news',        [PostController::class, 'index'])->name('news.index');
 Route::get('/news/{slug}', [PostController::class, 'show'])->name('news.show');
-Route::post('/payment/callback', [PaymentController::class, 'handleCallback'])->name('payment.callback');
+Route::prefix('user')->group(function () {
+    Route::get('/{username}', [PublicProfileController::class, 'show'])->name('user.profile');
+});
+// Route::get('/{username}', [PublicProfileController::class, 'show'])->name('public.profile');
+// Route::post('/payment-complete', [PaymentController::class, 'handleCallbackSuccess'])->name('payment.callback');
 
 /*
 |--------------------------------------------------------------------------
@@ -55,7 +63,6 @@ Route::middleware('auth')->group(function () {
 
     // Halaman tambahan
     Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
-    Route::get('/plan', [PageController::class, 'plan'])->name('plan');
     // Route::get('/profile', [PageController::class, 'profile'])->name('profile');
 
     // Upload video
@@ -79,6 +86,66 @@ Route::middleware('auth')->group(function () {
         Route::post('/picture', [ProfileController::class, 'updateProfilePicture'])->name('profile.picture');
         Route::delete('/picture', [ProfileController::class, 'deleteProfilePicture'])->name('profile.picture.delete');
     });
+
+    // Social Controller
+    Route::get('/social', [SocialController::class, 'index'])->name('social');
+    Route::post('/user/{username}/toggleFollow', [SocialController::class, 'toggleFollow'])->name('user.toggleFollow');
+    Route::post('/user/{username}/follow', [SocialController::class, 'follow'])->name('user.follow');
+
+
+    // Matchmaking
+    Route::get('/matchmaking', [MatchmakingController::class, 'index'])->name('matchmaking.index');
+    Route::get('/matchmaking/search', [MatchmakingController::class, 'create'])->name('matchmaking.search.create');
+    Route::post('/matchmaking/search', [MatchmakingController::class, 'store'])->name('matchmaking.search.store');
+    Route::get('/matchmaking/search/{id}',[MatchmakingController::class, 'detailSearch'])->name('matchmaking.search.detail');
+    Route::get('/matchmaking/match/{id}',[MatchmakingController::class, 'detailMatch'])->name('matchmaking.match.detail');
+    // CANCEL SEARCH
+    Route::post('/matchmaking/search/{id}/cancel',
+        [MatchmakingController::class, 'cancelSearch']
+    )->name('matchmaking.search.cancel');
+
+    // CANCEL MATCH
+    Route::post('/matchmaking/match/{id}/cancel',
+        [MatchmakingController::class, 'cancelMatch']
+    )->name('matchmaking.match.cancel');
+
+    // add game
+    Route::post('/matchmaking/match/{id}/start',
+        [MatchmakingController::class, 'startGame']
+    )->name('matchmaking.match.start');
+
+    // finish match
+    Route::post('/matchmaking/match/{id}/finish',
+        [MatchmakingController::class, 'finishMatch']
+    )->name('matchmaking.match.finish');
+
+
+    // FORM TAMBAH GAME
+    Route::get('/matchmaking/match/{id}/games/create',
+        [MatchmakingController::class, 'createGame']
+    )->name('matchmaking.match.createGame');
+
+    // SIMPAN GAME BARU
+    Route::post('/matchmaking/match/{id}/games/store',
+        [MatchmakingController::class, 'storeGame']
+    )->name('matchmaking.match.storeGame');
+
+    // FORM EDIT GAME
+    Route::get('/matchmaking/match/{match_id}/games/{game_id}/edit',
+        [MatchmakingController::class, 'editGame']
+    )->name('matchmaking.match.editGame');
+
+    // UPDATE GAME
+    Route::post('/matchmaking/match/{match_id}/games/{game_id}/update',
+        [MatchmakingController::class, 'updateGame']
+    )->name('matchmaking.match.updateGame');
+
+    // DELETE GAME
+    Route::delete('/matchmaking/match/{match_id}/games/{game_id}',
+        [MatchmakingController::class, 'deleteGame']
+    )->name('matchmaking.match.deleteGame');
+
+
 
     // === di bawah semua route ===
     Route::post('/payment/create', [PaymentController::class, 'createTransaction'])->name('payment.create');
@@ -111,6 +178,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth','admin'])->group(func
   Route::get('/posts', [AdminController::class,'postsIndex'])->name('posts.index');
   Route::get('/posts/create', [AdminController::class,'postsCreate'])->name('posts.create');
   Route::post('/posts', [AdminController::class,'postsStore'])->name('posts.store');
+  Route::post('/posts/generate-ai', [AdminController::class, 'postsGenerateAI'])->name('posts.generate-ai'); // New Route
   Route::get('/posts/{post}/edit', [AdminController::class,'postsEdit'])->name('posts.edit');
   Route::put('/posts/{post}', [AdminController::class,'postsUpdate'])->name('posts.update');
   Route::delete('/posts/{post}', [AdminController::class,'postsDestroy'])->name('posts.destroy');

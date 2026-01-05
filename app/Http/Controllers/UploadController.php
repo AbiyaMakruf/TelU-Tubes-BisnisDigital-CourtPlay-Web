@@ -15,8 +15,8 @@ use JsonException;
 class UploadController extends Controller
 {
     const ROLE_FREE = 'free';
-    const ROLE_PRO  = 'pro';
     const ROLE_PLUS = 'plus';
+    const ROLE_PRO  = 'pro';
 
     public function index()
     {
@@ -60,7 +60,7 @@ class UploadController extends Controller
                 ])->withInput();
             }
 
-            $allowedMimes = env('UPLOAD_ALLOWED_MIMES', 'mp4,mov,avi');
+            $allowedMimes = implode(',', config('files.upload.allowed_mimes', ['mp4']));
             $maxUploadKb  = $limits['maxFileMb'] * 1024;
 
             $request->validate([
@@ -72,6 +72,7 @@ class UploadController extends Controller
                 'video.mimes' => "The video must be a file of type: {$allowedMimes}.",
             ]);
 
+            // Create project detail first
             $projectDetail = ProjectDetail::create([
                 'description' => $request->input('description'),
             ]);
@@ -96,6 +97,7 @@ class UploadController extends Controller
                 return back()->withInput();
             }
 
+            // Upload video ke Google Cloud Storage
             $file          = $request->file('video');
             $originalName  = $file->getClientOriginalName();
             $localFilePath = $file->getPathname();
@@ -132,12 +134,14 @@ class UploadController extends Controller
                 return back()->withErrors(['video' => 'Failed to upload video to cloud storage.'])->withInput();
             }
 
+            // Simpan informasi HW
             Hwinfo::create([
                 'user_id'    => $user->id,
                 'project_id' => $project->id,
                 'is_success' => false,
             ]);
 
+            // Kirim ke Pub/Sub
             try {
                 $payload = json_encode([
                     'user_id'            => $user->id,
@@ -176,7 +180,7 @@ class UploadController extends Controller
                 ]);
             }
 
-            toastr()->success("Video uploaded. Max per file for {$role} plan: {$limits['maxFileMb']} MB. Processing has started.");
+            toastr()->success("Video uploaded, processing has started.");
             return back();
         } catch (ValidationException $e) {
             Log::warning('Validation failed during upload', ['errors' => $e->errors()]);
@@ -195,28 +199,11 @@ class UploadController extends Controller
 
     private function resolveLimitsForRole(string $role): array
     {
-        $role = in_array($role, [self::ROLE_FREE, self::ROLE_PRO, self::ROLE_PLUS], true) ? $role : self::ROLE_FREE;
+        $role = in_array($role, [self::ROLE_FREE, self::ROLE_PLUS, self::ROLE_PRO], true) ? $role : self::ROLE_FREE;
+        $config = config("files.upload.plans.{$role}", config('files.upload.plans.free'));
 
-        switch ($role) {
-            case self::ROLE_PRO:
-                $maxProjects = (int) env('UPLOAD_LIMIT_PRO', 50);
-                $maxFileMb   = (int) env('UPLOAD_MAX_FILE_MB_PRO', 1024);
-                break;
-
-            case self::ROLE_PLUS:
-                $maxProjects = (int) env('UPLOAD_LIMIT_PLUS', 200);
-                $maxFileMb   = (int) env('UPLOAD_MAX_FILE_MB_PLUS', 2048);
-                break;
-
-            case self::ROLE_FREE:
-            default:
-                $maxProjects = (int) env('UPLOAD_LIMIT_FREE', 3);
-                $maxFileMb   = (int) env('UPLOAD_MAX_FILE_MB_FREE', 200);
-                break;
-        }
-
-        $maxProjects = max($maxProjects, 0);
-        $maxFileMb   = max($maxFileMb, 1);
+        $maxProjects = max((int) ($config['limit'] ?? 0), 0);
+        $maxFileMb   = max((int) ($config['max_file_mb'] ?? 1), 1);
 
         return [
             'maxProjects' => $maxProjects,

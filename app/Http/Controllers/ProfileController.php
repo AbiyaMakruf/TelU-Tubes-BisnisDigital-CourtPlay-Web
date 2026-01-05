@@ -11,30 +11,25 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 use App\Models\User;
 
-
-
-
 class ProfileController extends Controller
 {
-
     public function profile()
     {
         try {
             $user = Auth::user();
             if (!$user) return redirect()->route('login');
 
-            // Inisial sederhana; view yang atur fallback visual
+            // Inisial sederhana
             $fn = (string) ($user->first_name ?? '');
             $ln = (string) ($user->last_name ?? '');
             $initials = mb_strtoupper(mb_substr($fn, 0, 1) . mb_substr($ln, 0, 1));
             if ($initials === '') $initials = 'U';
 
             // Public profile URL
-            $baseUrl   = rtrim(config('app.url') ?: url('/'), '/');
-            $slug      = $user->username ?: Str::slug(trim($fn.' '.$ln)) ?: 'user';
-            $publicUrl = "{$baseUrl}/profiles/{$slug}";
+            $baseUrl   = 'courtplay.my.id';
+            $slug      = $user->username ?: Str::slug(trim($fn . ' ' . $ln)) ?: 'user';
+            $publicUrl = "{$baseUrl}/user/{$slug}";
 
-            // Lempar apa adanya; view yang memutuskan tampilkan foto atau inisial
             $photoUrl = $user->profile_picture_url;
 
             return view('profile', compact('user', 'initials', 'publicUrl', 'photoUrl'));
@@ -53,17 +48,18 @@ class ProfileController extends Controller
             $user = Auth::user();
 
             $request->validate([
-                'first_name' => ['required','string','max:255'],
-                'last_name'  => ['required','string','max:255'],
-                'username'   => ['required','string','max:50', Rule::unique('users','username')->ignore($user->id)],
-                'email'      => ['required','email','max:255', Rule::unique('users','email')->ignore($user->id)],
+                'first_name' => ['required', 'string', 'max:255'],
+                'last_name'  => ['required', 'string', 'max:255'],
+                'username'   => ['required', 'string', 'max:50', Rule::unique('users', 'username')->ignore($user->id)],
+                'email'      => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             ]);
 
-            $user->first_name = $request->first_name;
-            $user->last_name  = $request->last_name;
-            $user->username   = $request->username;
-            $user->email      = $request->email;
-            $user->save();
+            $user->update([
+                'first_name' => $request->first_name,
+                'last_name'  => $request->last_name,
+                'username'   => $request->username,
+                'email'      => $request->email,
+            ]);
 
             Log::info('Profile updated', ['user_id' => $user->id]);
             toastr()->success('Profile updated.');
@@ -89,11 +85,14 @@ class ProfileController extends Controller
     {
         try {
             $user  = Auth::user();
-            $maxMb = (int) env('PROFILE_MAX_IMAGE_MB', 2);
-            $mimes = env('PROFILE_ALLOWED_MIMES', 'jpg,jpeg,png,webp');
+
+            // Ambil konfigurasi dari config/files.php
+            $maxMb = (int) config('files.profile.max_image_mb', 2);
+            $mimes = implode(',', config('files.profile.allowed_mimes', ['jpg', 'jpeg', 'png', 'webp']));
+            $disk  = config('files.profile.storage_disk', 'public');
 
             $request->validate([
-                'avatar' => ["required","image","mimes:$mimes","max:".($maxMb*1024)],
+                'avatar' => ["required", "image", "mimes:$mimes", "max:" . ($maxMb * 1024)],
             ], [
                 'avatar.max'   => "Image may not be greater than {$maxMb} MB.",
                 'avatar.mimes' => "Image must be a file of type: {$mimes}.",
@@ -105,28 +104,28 @@ class ProfileController extends Controller
             $originalName  = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             $safeName      = preg_replace('/[^A-Za-z0-9_\-]/', '_', $originalName);
 
-            // ==== samakan dengan video: gunakan prefix uploads/profile_pictures/... ====
+            // Struktur penyimpanan sama seperti video
             $bucket  = env('GCS_BUCKET', 'courtplay-storage');
             $keyPath = env('GCS_KEY_PATH', 'storage/app/keys/courtplay-gcs-key.json');
             $keyFile = base_path($keyPath);
             $gac     = env('GOOGLE_APPLICATION_CREDENTIALS', $keyPath);
 
-            $folder  = "uploads/profile_pictures/{$user->id}/";
+            $folder   = "uploads/profile_pictures/{$user->id}/";
             $filename = $safeName . '-' . time() . '.' . $ext;
-            $object   = $folder . $filename;   // <- ini yang berubah
+            $object   = $folder . $filename;
 
             if (!getenv('GOOGLE_APPLICATION_CREDENTIALS')) {
                 putenv("GOOGLE_APPLICATION_CREDENTIALS={$gac}");
             }
 
+            // Upload ke GCS via helper
             $publicUrl = upload_object($bucket, $object, $localFilePath, $keyFile);
 
             if (is_string($localFilePath) && file_exists($localFilePath)) {
                 @unlink($localFilePath);
             }
 
-            $user->profile_picture_url = $publicUrl;
-            $user->save();
+            $user->update(['profile_picture_url' => $publicUrl]);
 
             Log::info('Profile picture updated to GCS', [
                 'user_id' => $user->id, 'bucket' => $bucket, 'object' => $object
@@ -146,7 +145,10 @@ class ProfileController extends Controller
                 if (isset($localFilePath) && is_string($localFilePath) && file_exists($localFilePath)) {
                     @unlink($localFilePath);
                 }
-            } catch (Throwable $t) {}
+            } catch (Throwable $t) {
+                // ignore unlink failure
+            }
+
             Log::error('Profile picture update failed', [
                 'user_id' => optional(Auth::user())->id,
                 'error'   => $e->getMessage()
@@ -164,11 +166,10 @@ class ProfileController extends Controller
 
             $url = (string) ($user->profile_picture_url ?? '');
             if ($url !== '') {
-                // cukup panggil helper yang baru
                 delete_object($url);
             }
 
-            User::whereKey($user->id)->update(['profile_picture_url' => null]);
+            $user->update(['profile_picture_url' => null]);
 
             toastr()->success('Profile picture removed.');
             return redirect()->route('profile');
@@ -181,7 +182,4 @@ class ProfileController extends Controller
             return back();
         }
     }
-
-
-
 }

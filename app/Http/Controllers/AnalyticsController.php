@@ -23,35 +23,63 @@ class AnalyticsController extends Controller
                 })
                 ->when($sort, function ($query, $sort) {
                     switch ($sort) {
-                        case 'oldest': $query->orderBy('upload_date', 'asc'); break;
-                        case 'done': $query->orderByDesc('is_mailed'); break;
-                        case 'inprocess': $query->orderBy('is_mailed', 'asc'); break;
-                        default: $query->orderBy('upload_date', 'desc'); break;
+                        case 'oldest':
+                            $query->orderBy('upload_date', 'asc');
+                            break;
+                        case 'done':
+                            $query->orderBy('is_mailed', 'desc');
+                            break;
+                        case 'inprocess':
+                            $query->orderBy('is_mailed', 'asc');
+                            break;
+                        default:
+                            $query->orderBy('upload_date', 'desc');
+                            break;
                     }
                 })
                 ->get();
 
             $role = strtolower((string) ($user->role ?? 'free'));
-            switch ($role) {
-                case 'pro':
-                    $maxLimit = (int) env('UPLOAD_LIMIT_PRO', 50);
-                    $maxUploadMb = (int) env('UPLOAD_MAX_FILE_MB_PRO', 1024);
-                    break;
-                case 'plus':
-                    $maxLimit = (int) env('UPLOAD_LIMIT_PLUS', 200);
-                    $maxUploadMb = (int) env('UPLOAD_MAX_FILE_MB_PLUS', 2048);
-                    break;
-                default:
-                    $maxLimit = (int) env('UPLOAD_LIMIT_FREE', 3);
-                    $maxUploadMb = (int) env('UPLOAD_MAX_FILE_MB_FREE', 200);
-                    break;
-            }
+            $uploadConfig = config("files.upload.plans.{$role}", config('files.upload.plans.free'));
+
+            $maxLimit = (int) $uploadConfig['limit'];
+            $maxUploadMb = (int) $uploadConfig['max_file_mb'];
 
             $projectCount = $projects->count();
             $percentageUsed = $maxLimit > 0 ? min(100, ($projectCount / $maxLimit) * 50) : 0;
             $videoInProcessCount = Project::where('user_id', $user->id)->where('is_mailed', false)->count();
             $videoDoneCount = Project::where('user_id', $user->id)->where('is_mailed', true)->count();
 
+            if ($request->ajax()) {
+            $html = '';
+
+            foreach ($projects as $project) {
+                $html .= '
+                <div class="col">
+                    <a href="'.route('analytics.show', $project->id).'" class="card-link text-decoration-none">
+                        <div class="project-item d-flex flex-row align-items-center p-3 rounded-4">
+                            <div class="project-thumbnail me-3">
+                                '.(
+                                    $project->link_image_thumbnail
+                                    ? '<img src="'.$project->link_image_thumbnail.'" class="img-fluid rounded">'
+                                    : '<i class="bi bi-camera-video fs-1 text-primary-300"></i>'
+                                ).'
+                            </div>
+
+                            <div class="flex-grow-1 text-start">
+                                <h5 class="fw-bold text-primary-500 mb-1">'.$project->project_name.'</h5>
+                                <p class="text-white-300 small mb-1">Uploaded: '.$project->upload_date->timezone("Asia/Jakarta")->format("d M Y, H:i").' WIB</p>
+                                <span class="badge '.($project->is_mailed ? 'bg-primary-300 text-black' : 'bg-warning text-black').'">
+                                    '.($project->is_mailed ? "Analysis Done" : "Processing...").'
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </div>';
+            }
+
+            return $html; // <-- HTML dikirim balik ke JavaScript
+        }
             return view('analytics', compact(
                 'projects',
                 'projectCount',
@@ -67,7 +95,10 @@ class AnalyticsController extends Controller
                 'currentSearch' => $search,
             ]);
         } catch (\Throwable $e) {
-            Log::error('Analytics index failed', ['user_id' => optional(Auth::user())->id, 'error' => $e->getMessage()]);
+            Log::error('Analytics index failed', [
+                'user_id' => optional(Auth::user())->id,
+                'error' => $e->getMessage()
+            ]);
             toastr()->error('Failed to load analytics.');
             return back();
         }
@@ -76,15 +107,17 @@ class AnalyticsController extends Controller
     public function show($id)
     {
         try {
-            $project = Project::with('projectDetails')->where('user_id', Auth::id())->findOrFail($id);
+            $project = Project::with('projectDetails')
+                ->where('user_id', Auth::id())
+                ->findOrFail($id);
+
             $detail = $project->projectDetails;
 
             $formatTime = function ($seconds) {
                 if (is_null($seconds)) return '00:00:00';
-                $h = floor($seconds / 3600);
                 $m = floor(($seconds % 3600) / 60);
                 $s = $seconds % 60;
-                return sprintf('%02d:%02d:%02d', $h, $m, $s);
+                return sprintf('%02d:%02d',  $m, $s);
             };
 
             $maxValue = max([
@@ -95,10 +128,25 @@ class AnalyticsController extends Controller
                 1
             ]);
 
-            return view('analytics_details', [
+            return view('analyticsDetails', [
                 'project' => $project,
-                'videoUrl' => $detail->link_video_object_detections ?? null,
-                'heatmapUrl' => $detail->link_image_heatmap_player ?? null,
+                'video_object_detection_Url' => $detail->link_video_object_detections ?? null,
+                'video_player_keypoints_Url' => $detail->link_video_player_keypoints ?? null,
+
+
+                //heatmap
+                'minimapUrl' => $detail->link_video_minimap_player ?? null,
+                'videoHeatmapUrl' => $detail->link_video_heatmap_player ?? null,
+                'imageHeatmapUrl' => $detail->link_image_heatmap_player ?? null,
+                'text_heatmap' => $detail->genai_heatmap_player_understanding ?? null,
+
+                //balldroppings
+                'videoBalldroppingsUrl' => $detail->link_video_ball_droppings ?? null,
+                'balldropUrl' => $detail->link_image_ball_droppings ?? null,
+                'imageHeatmapBalldroppingsUrl' => $detail->link_image_heatmap_ball_droppings ?? null,
+                'text_balldrop' => $detail->genai_ball_droppings_understanding ?? null,
+
+
                 'forehand' => $detail->forehand_count ?? 0,
                 'backhand' => $detail->backhand_count ?? 0,
                 'serve' => $detail->serve_count ?? 0,
@@ -108,11 +156,18 @@ class AnalyticsController extends Controller
                 'processingTime' => $formatTime($detail->video_processing_time ?? 0),
             ]);
         } catch (ModelNotFoundException $e) {
-            Log::warning('Project not found for show', ['user_id' => Auth::id(), 'project_id' => $id]);
+            Log::warning('Project not found for show', [
+                'user_id' => Auth::id(),
+                'project_id' => $id
+            ]);
             toastr()->error('Project not found.');
             return redirect()->route('analytics');
         } catch (\Throwable $e) {
-            Log::error('Analytics show failed', ['user_id' => Auth::id(), 'project_id' => $id, 'error' => $e->getMessage()]);
+            Log::error('Analytics show failed', [
+                'user_id' => Auth::id(),
+                'project_id' => $id,
+                'error' => $e->getMessage()
+            ]);
             toastr()->error('Failed to load project details.');
             return redirect()->route('analytics');
         }
